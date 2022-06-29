@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useShell } from 'utils/ShellProvider';
+import { BinProps } from 'interfaces/BinProps';
 
-export const Clear: () => JSX.Element = () => {
-  const { clearHistory } = useShell();
+export const Clear: React.FC<BinProps> = ({ terminate, clearHistory }) => {
+  useEffect(() => {
+    clearHistory();
+    terminate();
+  }, []);
 
-  return <></>;
+  return null;
 };

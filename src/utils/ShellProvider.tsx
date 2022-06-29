@@ -6,7 +6,6 @@ import { TextLine } from 'components/TextLine';
 interface ShellContextValue {
   history: Command[];
   processCommand: (command: string) => void;
-  clearHistory: () => void;
   callStack: number[];
 }
 
@@ -16,14 +15,15 @@ export interface Command {
   cmd: string;
   args: string[];
   terminate: () => void;
-  output: React.FC<BinProps> | (() => JSX.Element);
+  clearHistory: () => void;
+  output: React.FC<BinProps>;
 }
 
 interface Props {
   children: React.ReactNode;
 }
 
-type Executable = [string, React.FC<BinProps> | (() => JSX.Element)];
+type Executable = [string, React.FC<BinProps>];
 
 const ShellContext = createContext<ShellContextValue>({} as ShellContextValue);
 export const useShell = () => useContext(ShellContext);
@@ -34,6 +34,10 @@ export const ShellProvider = ({ children }: Props) => {
   const [callStack, setCallStack] = useState<number[]>([0]);
   const [history, setHistory] = useState<Command[]>([]);
   const pid = useRef<number>(1);
+
+  useEffect(() => {
+    console.log('history:', history);
+  }, [history]);
 
   // useEffect(() => {
   //   console.log('Callstack:', callStack);
@@ -70,15 +74,16 @@ export const ShellProvider = ({ children }: Props) => {
           cmd: command,
           args,
           terminate: terminateProgram,
+          clearHistory,
           output: Program || ProgramNotFoundComponent,
         },
       ]);
     },
-    [terminateProgram],
+    [terminateProgram, clearHistory],
   );
 
   return (
-    <ShellContext.Provider value={{ history, processCommand, callStack, clearHistory }}>
+    <ShellContext.Provider value={{ history, processCommand, callStack }}>
       {children}
     </ShellContext.Provider>
   );

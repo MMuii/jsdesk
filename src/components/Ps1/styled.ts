@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   white-space: nowrap;
-  margin-right: 0.5rem;
+  margin-right: 0.7rem;
 
   span {
     ${({ theme }) => css`

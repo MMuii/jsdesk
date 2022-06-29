@@ -27,7 +27,13 @@ export const Terminal = () => {
             <span>{h.cmd}</span>
           </HistoryEntry>
 
-          <h.output args={h.args} isFocused={isFocused} key={h.pid} terminate={h.terminate} />
+          <h.output
+            args={h.args}
+            isFocused={isFocused}
+            key={h.pid}
+            terminate={h.terminate}
+            clearHistory={h.clearHistory}
+          />
         </div>
       );
     });

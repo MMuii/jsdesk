@@ -7,7 +7,6 @@ export const Theme: React.FC<BinProps> = ({ args, terminate }) => {
   const [theme] = useState<boolean>(() => setTheme(args[0]));
 
   useEffect(() => {
-    console.log('args:', args);
     terminate();
   }, []);
 

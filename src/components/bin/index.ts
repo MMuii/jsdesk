@@ -1,18 +1,13 @@
-import { BinProps } from 'interfaces/BinProps';
-import { TestBin } from 'components/bin/TestBin';
-import { RandomImage } from 'components/bin/RandomImage';
-import { Counter } from 'components/bin/Counter';
-import { Picker } from 'components/bin/Picker';
-import { Theme } from 'components/bin/Theme';
-import { Clear } from 'components/bin/Clear';
+import { theme } from 'components/bin/theme/theme';
+import { unknownCommand } from 'components/bin/unknown-command';
+import { clear } from 'components/bin/clear';
+import { Binary } from 'utils/ShellProvider';
 
-const bins: { [key: string]: React.FC<BinProps> } = {
-  'test-bin': TestBin,
-  'random-image': RandomImage,
-  counter: Counter,
-  picker: Picker,
-  theme: Theme,
-  clear: Clear,
+const bins: { [key: string]: Binary } = {
+  theme: theme,
+  clear: clear,
 };
 
-export default bins;
+export default function getBin(name: string): Binary {
+  return bins[name] || unknownCommand;
+}

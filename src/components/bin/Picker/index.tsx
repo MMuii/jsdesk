@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useMachine } from '@xstate/react';
-import { BinProps } from 'interfaces/BinProps';
+import { BinProps, RenderableProps } from 'interfaces/BinProps';
 import { pickerMachine } from './machine';
 
-export const Picker: React.FC<BinProps> = ({ isFocused, terminate }) => {
+export const Picker: React.FC<RenderableProps> = ({ isFocused, terminate }) => {
   const [state, send] = useMachine(pickerMachine);
 
   useEffect(() => {

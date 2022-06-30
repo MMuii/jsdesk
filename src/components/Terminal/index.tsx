@@ -13,11 +13,11 @@ import {
 } from './styled';
 
 export const Terminal = () => {
-  const { history, processCommand, callStack } = useShell();
+  const { history, renderHistory, processCommand, callStack, theme } = useShell();
   const [inputValue, setInputValue] = useState<string>('');
 
-  const renderHistory = () =>
-    history.map(h => {
+  const renderRenderableHistory = () =>
+    renderHistory.map(h => {
       const isFocused = callStack.at(-1) === h.pid;
 
       return (
@@ -26,14 +26,15 @@ export const Terminal = () => {
             <Ps1 />
             <span>{h.cmd}</span>
           </HistoryEntry>
+          <h.component {...h.args} isFocused={isFocused} />
 
-          <h.output
-            args={h.args}
-            isFocused={isFocused}
-            key={h.pid}
-            terminate={h.terminate}
-            clearHistory={h.clearHistory}
-          />
+          {/*<h.output*/}
+          {/*  args={h.args}*/}
+          {/*  isFocused={isFocused}*/}
+          {/*  key={h.pid}*/}
+          {/*  terminate={h.terminate}*/}
+          {/*  clearHistory={h.clearHistory}*/}
+          {/*/>*/}
         </div>
       );
     });
@@ -58,7 +59,7 @@ export const Terminal = () => {
         <WindowName>xdterm</WindowName>
       </WindowBar>
       <HistoryContainer>
-        {renderHistory()}
+        {renderRenderableHistory()}
         {callStack.length <= 1 && (
           <InputLine
             handleSubmit={handleSubmit}

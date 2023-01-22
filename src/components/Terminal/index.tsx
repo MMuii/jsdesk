@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useShell } from 'utils/ShellProvider';
+import React, { useRef, useEffect, useMemo } from 'react';
+import { useShell } from 'utils/providers/ShellProvider';
+import { useInputLine } from 'utils/hooks/useInputLine';
 import { InputLine } from 'components/InputLine';
 import { Ps1 } from 'components/Ps1';
 import {
@@ -13,11 +14,22 @@ import {
 } from './styled';
 
 export const Terminal = () => {
-  const { history, renderHistory, processCommand, callStack, theme } = useShell();
-  const [inputValue, setInputValue] = useState<string>('');
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { renderHistory, processCommand, callStack, history } = useShell();
+  const { inputValue, handleInputChange, handleInputSubmit, isInputValid, hint } = useInputLine(
+    history,
+    inputRef,
+  );
 
-  const renderRenderableHistory = () =>
-    renderHistory.map(h => {
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [renderHistory]);
+
+  const renderableHistory = useMemo(() => {
+    return renderHistory.map(h => {
       const isFocused = callStack.at(-1) === h.pid;
 
       return (
@@ -27,29 +39,27 @@ export const Terminal = () => {
             <span>{h.cmd}</span>
           </HistoryEntry>
           <h.component {...h.args} isFocused={isFocused} />
-
-          {/*<h.output*/}
-          {/*  args={h.args}*/}
-          {/*  isFocused={isFocused}*/}
-          {/*  key={h.pid}*/}
-          {/*  terminate={h.terminate}*/}
-          {/*  clearHistory={h.clearHistory}*/}
-          {/*/>*/}
         </div>
       );
     });
+  }, [callStack, renderHistory]);
 
   const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.code === '13') {
       e.preventDefault();
-      console.log('running command:', inputValue);
       processCommand(inputValue);
-      setInputValue('');
+      handleInputSubmit();
+    }
+  };
+
+  const handleTerminalClick = () => {
+    if (inputRef.current) {
+      inputRef.current?.focus();
     }
   };
 
   return (
-    <TerminalContainer>
+    <TerminalContainer onClick={handleTerminalClick}>
       <WindowBar>
         <WindowBarButtonContainer>
           <WindowBarButton />
@@ -58,13 +68,16 @@ export const Terminal = () => {
         </WindowBarButtonContainer>
         <WindowName>xdterm</WindowName>
       </WindowBar>
-      <HistoryContainer>
-        {renderRenderableHistory()}
+      <HistoryContainer ref={terminalRef}>
+        {renderableHistory}
         {callStack.length <= 1 && (
           <InputLine
             handleSubmit={handleSubmit}
-            handleChange={value => setInputValue(value)}
+            handleChange={value => handleInputChange(value)}
             value={inputValue}
+            hint={hint}
+            isValid={isInputValid}
+            inputRef={inputRef}
           />
         )}
       </HistoryContainer>

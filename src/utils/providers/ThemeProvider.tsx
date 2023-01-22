@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
-import { useShell } from 'utils/ShellProvider';
+import { useShell } from 'utils/providers/ShellProvider';
 
 interface Props {
   children: React.ReactNode;

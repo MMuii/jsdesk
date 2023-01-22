@@ -2641,7 +2641,7 @@
     "selectionBackground": "#5a5753"
   },
   {
-    "name": "HaX0R_BLUE",
+    "name": "hax0r_blue",
     "black": "#010921",
     "red": "#10b6ff",
     "green": "#10b6ff",
@@ -2664,7 +2664,7 @@
     "selectionBackground": "#c1e4ff"
   },
   {
-    "name": "HaX0R_GR33N",
+    "name": "hax0r_gr33n",
     "black": "#001f0b",
     "red": "#15d00d",
     "green": "#15d00d",
@@ -3881,7 +3881,7 @@
     "yellow": "#ffd866"
   },
   {
-    "name": "Monokai Pro (Filter Octagon)",
+    "name": "Monokai Pro Filter Octagon",
     "black": "#000000",
     "red": "#d81e00",
     "green": "#5ea702",
@@ -3902,7 +3902,7 @@
     "foreground": "#eaf2f1"
   },
   {
-    "name": "Monokai Pro (Filter Ristretto)",
+    "name": "Monokai Pro Filter Ristretto",
     "background": "#2C2525",
     "black": "#403838",
     "blue": "#F38D70",

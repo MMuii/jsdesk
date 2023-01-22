@@ -1,5 +1,5 @@
 import React from 'react';
-import { Binary } from 'utils/ShellProvider';
+import { Binary } from 'utils/providers/ShellProvider';
 
 export const unknownCommand: Binary = ({ programName, terminate }) => {
   terminate();

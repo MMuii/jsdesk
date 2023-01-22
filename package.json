@@ -11,6 +11,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@xstate/react": "^3.0.0",
+    "framer-motion": "^8.5.0",
     "js-levenshtein": "^1.1.6",
     "lodash": "^4.17.21",
     "polished": "^4.2.2",

@@ -2,6 +2,10 @@ import { createGlobalStyle, css } from 'styled-components';
 import { lighten } from 'polished';
 
 export default createGlobalStyle`
+  * {
+    box-sizing: border-box;
+  }
+
   html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
   a, abbr, acronym, address, big, cite, code,
@@ -64,6 +68,7 @@ export default createGlobalStyle`
     width: 100vw;
     height: 100vh;
     font-family: 'Fira Code', monospace;
+    overflow: hidden;
 
     ${({ theme }) => css`
       background-image: radial-gradient(
@@ -73,5 +78,10 @@ export default createGlobalStyle`
         ${lighten(0.015, theme.background)} 100%
       );
     `};
+  }
+
+  #root {
+    width: 100%;
+    height: 100%;
   }
 `;

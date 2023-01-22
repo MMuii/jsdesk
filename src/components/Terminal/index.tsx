@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { useShell } from 'utils/providers/ShellProvider';
 import { useInputLine } from 'utils/hooks/useInputLine';
 import { InputLine } from 'components/InputLine';
@@ -11,11 +11,28 @@ import {
   WindowName,
   HistoryContainer,
   HistoryEntry,
+  DragContainer,
 } from './styled';
 
+const fullScreenAnimate = {
+  position: 'fixed',
+  x: 0,
+  y: 0,
+  height: '100vh',
+  width: '100vw',
+};
+
+const windowAnimate = {
+  height: '50rem',
+  width: '70rem',
+};
+
 export const Terminal = () => {
+  const [isClosed, setIsClosed] = useState<boolean>(false);
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const terminalRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const dragContainerRef = useRef<HTMLDivElement | null>(null);
   const { renderHistory, processCommand, callStack, history } = useShell();
   const { inputValue, handleInputChange, handleInputSubmit, isInputValid, hint } = useInputLine(
     history,
@@ -33,7 +50,7 @@ export const Terminal = () => {
       const isFocused = callStack.at(-1) === h.pid;
 
       return (
-        <div key={h.pid}>
+        <div key={h.time.getTime()}>
           <HistoryEntry>
             <Ps1 />
             <span>{h.cmd}</span>
@@ -45,6 +62,10 @@ export const Terminal = () => {
   }, [callStack, renderHistory]);
 
   const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (inputValue.length === 0) {
+      return;
+    }
+
     if (e.key === 'Enter' || e.code === '13') {
       e.preventDefault();
       processCommand(inputValue);
@@ -59,28 +80,44 @@ export const Terminal = () => {
   };
 
   return (
-    <TerminalContainer onClick={handleTerminalClick}>
-      <WindowBar>
-        <WindowBarButtonContainer>
-          <WindowBarButton />
-          <WindowBarButton />
-          <WindowBarButton />
-        </WindowBarButtonContainer>
-        <WindowName>xdterm</WindowName>
-      </WindowBar>
-      <HistoryContainer ref={terminalRef}>
-        {renderableHistory}
-        {callStack.length <= 1 && (
-          <InputLine
-            handleSubmit={handleSubmit}
-            handleChange={value => handleInputChange(value)}
-            value={inputValue}
-            hint={hint}
-            isValid={isInputValid}
-            inputRef={inputRef}
-          />
-        )}
-      </HistoryContainer>
-    </TerminalContainer>
+    <DragContainer ref={dragContainerRef}>
+      {!isClosed && (
+        <TerminalContainer
+          onClick={handleTerminalClick}
+          drag={!isFullScreen}
+          dragConstraints={dragContainerRef}
+          dragElastic={0}
+          dragMomentum={false}
+          initial={windowAnimate}
+          animate={isFullScreen ? fullScreenAnimate : windowAnimate}
+          transition={{
+            type: 'tween',
+            duration: 0.3,
+          }}
+        >
+          <WindowBar>
+            <WindowBarButtonContainer>
+              <WindowBarButton onClick={() => setIsClosed(true)} />
+              <WindowBarButton onClick={() => setIsFullScreen(false)} />
+              <WindowBarButton onClick={() => setIsFullScreen(true)} />
+            </WindowBarButtonContainer>
+            <WindowName>xdterm</WindowName>
+          </WindowBar>
+          <HistoryContainer ref={terminalRef}>
+            {renderableHistory}
+            {callStack.length <= 1 && (
+              <InputLine
+                handleSubmit={handleSubmit}
+                handleChange={value => handleInputChange(value)}
+                value={inputValue}
+                hint={hint}
+                isValid={isInputValid}
+                inputRef={inputRef}
+              />
+            )}
+          </HistoryContainer>
+        </TerminalContainer>
+      )}
+    </DragContainer>
   );
 };

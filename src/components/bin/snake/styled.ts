@@ -1,8 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Direction } from 'components/bin/snake/types';
-
-const CHAR_WIDTH = 0.841;
-const CHAR_HEIGHT = 1.89;
+import { CHAR_HEIGHT, CHAR_WIDTH } from 'consts';
 
 export const SnakeContiner = styled.div`
   display: flex;

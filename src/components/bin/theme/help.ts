@@ -4,7 +4,7 @@ export const help: CommandHelp = {
   name: 'theme - Changes theme of the terminal.',
   usage: 'theme [arg]',
   args: [
-    { text: 'ls [--c / --color] [--l]', description: 'list all available themes' },
+    { text: 'ls [--l] [--c / --color]', description: 'list all available themes' },
     { text: 'set [theme name]', description: 'set set a theme' },
     { text: 'random', description: 'set a random theme' },
   ],

@@ -13,6 +13,7 @@ import {
   HistoryEntry,
   DragContainer,
 } from './styled';
+import { useDragControls } from 'framer-motion';
 
 const fullScreenAnimate = {
   position: 'fixed',
@@ -38,6 +39,7 @@ export const Terminal = () => {
     history,
     inputRef,
   );
+  const dragControls = useDragControls();
 
   useEffect(() => {
     if (terminalRef.current) {
@@ -51,10 +53,12 @@ export const Terminal = () => {
 
       return (
         <div key={h.time.getTime()}>
-          <HistoryEntry>
-            <Ps1 />
-            <span>{h.cmd}</span>
-          </HistoryEntry>
+          {h.cmd && (
+            <HistoryEntry>
+              <Ps1 />
+              <span>{h.cmd}</span>
+            </HistoryEntry>
+          )}
           <h.component {...h.args} isFocused={isFocused} />
         </div>
       );
@@ -85,6 +89,8 @@ export const Terminal = () => {
         <TerminalContainer
           onClick={handleTerminalClick}
           drag={!isFullScreen}
+          dragListener={false}
+          dragControls={dragControls}
           dragConstraints={dragContainerRef}
           dragElastic={0}
           dragMomentum={false}
@@ -95,7 +101,10 @@ export const Terminal = () => {
             duration: 0.3,
           }}
         >
-          <WindowBar>
+          <WindowBar
+            onPointerDown={e => dragControls.start(e, { snapToCursor: false })}
+            isDraggable={!isFullScreen}
+          >
             <WindowBarButtonContainer>
               <WindowBarButton onClick={() => setIsClosed(true)} />
               <WindowBarButton onClick={() => setIsFullScreen(false)} />

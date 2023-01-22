@@ -1,4 +1,4 @@
-import { Command } from "utils/providers/ShellProvider";
+import { Command } from 'utils/providers/ShellProvider';
 
 export type Flags = { [key: string]: any };
 
@@ -9,7 +9,17 @@ export interface BinProps {
   terminate: () => void;
   clearHistory: () => void;
   setTheme: (theme: string) => boolean;
-  processCommand: (command: string, renderedCommandName?: string) => void;
+  processCommand: (
+    command: string,
+    renderedCommandName?: string,
+    renderOnlyComponent?: boolean,
+  ) => void;
+  processCommandAsync: (
+    command: string,
+    renderedCommandName?: string,
+    renderOnlyComponent?: boolean,
+    timeout?: number,
+  ) => void;
   history: Command[];
 }
 

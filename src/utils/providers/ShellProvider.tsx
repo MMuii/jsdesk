@@ -1,4 +1,12 @@
-import React, { useState, useContext, createContext, useRef, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useContext,
+  createContext,
+  useRef,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 import getBin from 'components/bin';
 import { BinProps, RenderableProps } from 'interfaces/BinProps';
 import { useTheme } from 'utils/hooks/useTheme';
@@ -8,7 +16,11 @@ import { parseCommand } from 'utils/parseCommand';
 interface ShellContextValue {
   history: Command[];
   renderHistory: Renderable[];
-  processCommand: (command: string) => void;
+  processCommand: (
+    command: string,
+    renderedCommandName?: string,
+    renderOnlyComponent?: boolean,
+  ) => void;
   callStack: number[];
   theme: Theme;
 }
@@ -20,7 +32,7 @@ export interface Command {
 }
 
 export interface Renderable {
-  cmd: string;
+  cmd: string | null;
   pid: number;
   time: Date;
   component: React.FC<RenderableProps>;
@@ -43,6 +55,13 @@ export const ShellProvider = ({ children }: Props) => {
   const [renderHistory, setRenderHistory] = useState<Renderable[]>([]);
   const pid = useRef<number>(1);
 
+  useEffect(() => {
+    console.log('history:', history);
+    console.log('renderHistory:', renderHistory);
+    console.log('callStack:', callStack);
+    console.log('________________________________');
+  }, [history, renderHistory, callStack]);
+
   const clearHistory = useCallback(() => setRenderHistory([]), []);
 
   const terminateProgram = useCallback(() => {
@@ -54,7 +73,7 @@ export const ShellProvider = ({ children }: Props) => {
   }, []);
 
   const processCommand = useCallback(
-    (command: string, renderedCommandName?: string) => {
+    (command: string, renderedCommandName?: string, renderOnlyComponent: boolean = false) => {
       const { args, flags } = parseCommand(command);
       const programName = args[0];
       const executionTime = new Date();
@@ -72,15 +91,18 @@ export const ShellProvider = ({ children }: Props) => {
         flags,
         setTheme,
         processCommand,
-        history
+        processCommandAsync,
+        history,
       };
 
       const programOutput = program(programArgs);
       if (programOutput) {
+        const cmd = renderOnlyComponent ? null : renderedCommandName ?? command;
+
         setRenderHistory(prev => [
           ...prev,
           {
-            cmd: renderedCommandName ?? command,
+            cmd,
             pid: pid.current,
             time: executionTime,
             component: programOutput,
@@ -89,22 +111,33 @@ export const ShellProvider = ({ children }: Props) => {
         ]);
       }
 
-      setHistory(prev => [
-        ...prev,
-        {
-          pid: pid.current,
-          time: executionTime,
-          cmd: command,
-        },
-      ]);
+      if (!renderOnlyComponent) {
+        setHistory(prev => [
+          ...prev,
+          {
+            pid: pid.current,
+            time: executionTime,
+            cmd: command,
+          },
+        ]);
+      }
     },
-    [terminateProgram, clearHistory, setTheme],
+    [terminateProgram, clearHistory, setTheme, history],
   );
 
-  // useEffect(() => {
-  //   console.log('history:', history);
-  // }, [history]);
-
+  const processCommandAsync = useCallback(
+    (
+      command: string,
+      renderedCommandName?: string,
+      renderOnlyComponent: boolean = false,
+      timeout: number = 0,
+    ) => {
+      setTimeout(() => {
+        processCommand(command, renderedCommandName, renderOnlyComponent);
+      }, timeout);
+    },
+    [processCommand],
+  );
 
   return (
     <ShellContext.Provider value={{ history, processCommand, callStack, renderHistory, theme }}>

@@ -1,17 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { kebabCase, random } from 'lodash';
 import { Binary } from 'utils/providers/ShellProvider';
 import terminalThemes from 'styles/themes.json';
 import { ColorBlocksContainer, ColorBlock } from './styled';
 
 const themeNames = terminalThemes.map(theme => kebabCase(theme.name));
+const possibleArgs = ['ls', 'set', 'random'];
 
-export const theme: Binary = ({ args, flags, terminate, setTheme, processCommand }) => {
+export const theme: Binary = ({
+  args,
+  flags,
+  terminate,
+  setTheme,
+  processCommandAsync,
+  history,
+}) => {
   terminate();
 
   if (args.length === 0) {
-    processCommand('help theme', 'theme');
+    processCommandAsync('help theme', 'theme');
     return null;
+  }
+
+  if (!possibleArgs.includes(args[0])) {
+    processCommandAsync('help theme', undefined, true);
+    return () => <div>Unknown argument: {args[0]}</div>;
   }
 
   if (args[0] === 'ls') {
@@ -39,7 +52,7 @@ export const theme: Binary = ({ args, flags, terminate, setTheme, processCommand
       return () => (
         <div>
           {themeNames.map((themeName, index) => {
-            return <div key={index}>{themeName}</div>;
+            return <div key={themeName + index}>{themeName}</div>;
           })}
         </div>
       );

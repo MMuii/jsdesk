@@ -10,7 +10,7 @@ import { date } from 'components/bin/date';
 import { cat } from 'components/bin/cat';
 import { about } from 'components/bin/about';
 import { history } from 'components/bin/history';
-import { pickerTest } from "components/picker-test";
+import { pickerTest } from 'components/picker-test';
 import { help as clearHelp } from 'components/bin/clear/help';
 import { help as helpHelp } from 'components/bin/help/help';
 import { help as neofetchHelp } from 'components/bin/neofetch/help';
@@ -18,7 +18,7 @@ import { help as themeHelp } from 'components/bin/theme/help';
 import { help as whoamiHelp } from 'components/bin/whoami/help';
 import { help as dateHelp } from 'components/bin/date/help';
 import { help as catHelp } from 'components/bin/cat/help';
-import { snake } from "components/bin/snake";
+import { snake } from 'components/bin/snake';
 
 export const bins: { [key: string]: Binary } = {
   theme: theme,
@@ -31,7 +31,7 @@ export const bins: { [key: string]: Binary } = {
   about: about,
   history: history, // TODO - add help
   pickerTest: pickerTest, // TODO - do wywalenia
-  snake: snake,
+  snake: snake, // TODO - add help
 };
 
 export const helpPages: { [key: string]: CommandHelp } = {

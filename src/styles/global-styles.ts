@@ -1,5 +1,5 @@
 import { createGlobalStyle, css } from 'styled-components';
-import { lighten } from 'polished';
+import { lighten, darken, getLuminance } from 'polished';
 
 export default createGlobalStyle`
   * {
@@ -70,14 +70,18 @@ export default createGlobalStyle`
     font-family: 'Fira Code', monospace;
     overflow: hidden;
 
-    ${({ theme }) => css`
-      background-image: radial-gradient(
-        circle at 100% 0%,
-        ${lighten(0.06, theme.background)} 0,
-        ${lighten(0.03, theme.background)} 50%,
-        ${lighten(0.015, theme.background)} 100%
-      );
-    `};
+    ${({ theme }) => {
+      const luminance = getLuminance(theme.background);
+      const colorTransformFn = luminance >= 0.5 ? darken : lighten;
+
+      return css`
+        background-image: radial-gradient(
+          circle,
+          ${colorTransformFn(0.1, theme.background)} 0,
+          ${colorTransformFn(0.01, theme.background)} 100%
+        );
+      `;
+    }};
   }
 
   #root {

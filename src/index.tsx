@@ -10,12 +10,12 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 localStorage.setItem('uptimeTimestamp', new Date().getTime().toString());
 
 root.render(
-  <React.StrictMode>
-    <ShellProvider>
-      <ThemeProvider>
-        <GlobalStyles />
-        <Terminal />
-      </ThemeProvider>
-    </ShellProvider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <ShellProvider>
+    <ThemeProvider>
+      <GlobalStyles />
+      <Terminal />
+    </ThemeProvider>
+  </ShellProvider>,
+  // </React.StrictMode>,
 );

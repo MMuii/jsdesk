@@ -32,7 +32,7 @@ export const TerminalContainer = styled(motion.div)`
   grid-template-columns: 1fr;
 `;
 
-export const WindowBar = styled.div`
+export const WindowBar = styled.div<{ isDraggable: boolean }>`
   width: 100%;
   height: 3rem;
   background: ${({ theme }) => {
@@ -43,6 +43,16 @@ export const WindowBar = styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1fr;
   place-items: center;
+
+  ${({ isDraggable }) =>
+    isDraggable &&
+    css`
+      cursor: grab;
+
+      &:active {
+        cursor: grabbing;
+      }
+    `}
 `;
 
 export const WindowBarButtonContainer = styled.div`

@@ -1,4 +1,4 @@
-import { Command } from 'utils/providers/ShellProvider';
+import { Command } from './Command';
 
 export type Flags = { [key: string]: any };
 

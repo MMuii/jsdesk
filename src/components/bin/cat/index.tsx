@@ -1,6 +1,5 @@
-import React from 'react';
-import { Binary } from 'utils/providers/ShellProvider';
 import { Flags } from 'interfaces/BinProps';
+import { Binary } from 'interfaces/Binary';
 
 const getCatImageUrl = (flags: Flags, timestamp: number): string => {
   let url = 'https://cataas.com/cat';

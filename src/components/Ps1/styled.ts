@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 export const Container = styled.div`
   white-space: nowrap;
   margin-right: 0.7rem;
+  float: left;
 
   span {
     ${({ theme }) => css`

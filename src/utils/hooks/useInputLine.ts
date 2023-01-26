@@ -1,7 +1,7 @@
-import { Command } from 'utils/providers/ShellProvider';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import levenshtein from 'js-levenshtein';
 import { bins } from 'components/bin';
+import { Command } from 'interfaces/Command';
 
 const programNames = Object.keys(bins);
 
@@ -12,8 +12,14 @@ export const useInputLine = (
   const [inputValue, setInputValue] = useState<string>('');
   const [hint, setHint] = useState<string>('');
 
-  const [historyPointer, setHistoryPointer] = useState<number>(0);
+  const [historyPointer, setHistoryPointer] = useState<number>(
+    history.length - 1 >= 0 ? history.length - 1 : 0,
+  );
   const uniqueHistory = useMemo(() => [...new Set(history.map(entry => entry.cmd))], [history]);
+
+  useEffect(() => {
+    setHistoryPointer(uniqueHistory.length - 1);
+  }, [uniqueHistory.length]);
 
   useEffect(() => {
     const handleArrowUp = (e: KeyboardEvent) => {
@@ -28,10 +34,14 @@ export const useInputLine = (
 
       const lastCommand = uniqueHistory[historyPointer];
       setInputValue(lastCommand);
-      console.log('historyPointer:', historyPointer);
-      console.log('lastCommand:', lastCommand);
 
-      const nextPointer = historyPointer >= uniqueHistory.length - 1 ? 0 : historyPointer + 1;
+      let nextPointer = historyPointer;
+      if (uniqueHistory.length === 0) {
+        nextPointer = 0;
+      } else {
+        nextPointer = historyPointer > 0 ? historyPointer - 1 : uniqueHistory.length - 1;
+      }
+
       setHistoryPointer(nextPointer);
     };
 

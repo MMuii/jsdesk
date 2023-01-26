@@ -10,6 +10,10 @@ export const useTheme = (): [Theme, (name: string) => boolean] => {
   const [theme, setTermTheme] = useState<Theme>(themes[0]);
 
   useEffect(() => {
+    console.log('theme:', theme);
+  }, [theme]);
+
+  useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
 
     setTheme(savedTheme || defaultTheme);

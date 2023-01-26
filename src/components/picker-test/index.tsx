@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Binary } from "utils/providers/ShellProvider";
+import { Binary } from 'interfaces/Binary';
+import { useEffect, useState } from 'react';
 
 const Counter = ({ terminate }: { terminate: any }) => {
   const [counter, setCounter] = useState<number>(0);
@@ -12,17 +12,16 @@ const Counter = ({ terminate }: { terminate: any }) => {
       } else if (e.key === 'p') {
         setCounter(prev => prev + 1);
       }
-    }
+    };
 
     document.addEventListener('keydown', handler);
 
     return () => document.removeEventListener('keydown', handler);
   }, []);
 
-
   return <div>Counter is: {counter}. Q to quit, P to add one</div>;
-}
+};
 
 export const pickerTest: Binary = ({ terminate }) => {
-  return () => <Counter terminate={terminate} />
-}
+  return () => <Counter terminate={terminate} />;
+};

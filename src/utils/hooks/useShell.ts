@@ -1,55 +1,16 @@
-import React, {
-  useState,
-  useContext,
-  createContext,
-  useRef,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
-import getBin from 'components/bin';
-import { BinProps, RenderableProps } from 'interfaces/BinProps';
-import { useTheme } from 'utils/hooks/useTheme';
+import { useAppTheme } from './../providers/ThemeProvider';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Theme } from 'interfaces/Theme';
+import { useTheme } from './useTheme';
+import { BinProps, RenderableProps } from 'interfaces/BinProps';
 import { parseCommand } from 'utils/parseCommand';
+import getBin from 'components/bin';
+import { Command } from 'interfaces/Command';
+import { Renderable } from 'interfaces/Renderable';
 
-interface ShellContextValue {
-  history: Command[];
-  renderHistory: Renderable[];
-  processCommand: (
-    command: string,
-    renderedCommandName?: string,
-    renderOnlyComponent?: boolean,
-  ) => void;
-  callStack: number[];
-  theme: Theme;
-}
-
-export interface Command {
-  pid: number;
-  time: Date;
-  cmd: string;
-}
-
-export interface Renderable {
-  cmd: string | null;
-  pid: number;
-  time: Date;
-  component: React.FC<RenderableProps>;
-  args: BinProps;
-}
-
-export type Binary = (props: BinProps) => React.FC<RenderableProps> | null;
-
-interface Props {
-  children: React.ReactNode;
-}
-
-const ShellContext = createContext<ShellContextValue>({} as ShellContextValue);
-export const useShell = () => useContext(ShellContext);
-
-export const ShellProvider = ({ children }: Props) => {
-  const [theme, setTheme] = useTheme();
+export const useShell = () => {
+  const [appTheme, setAppTheme] = useAppTheme();
+  // const [theme, setTheme] = useTheme();
   const [callStack, setCallStack] = useState<number[]>([0]);
   const [history, setHistory] = useState<Command[]>([]);
   const [renderHistory, setRenderHistory] = useState<Renderable[]>([]);
@@ -89,7 +50,7 @@ export const ShellProvider = ({ children }: Props) => {
         clearHistory,
         args: args.slice(1),
         flags,
-        setTheme,
+        setTheme: setAppTheme,
         processCommand,
         processCommandAsync,
         history,
@@ -122,7 +83,7 @@ export const ShellProvider = ({ children }: Props) => {
         ]);
       }
     },
-    [terminateProgram, clearHistory, setTheme, history],
+    [terminateProgram, clearHistory, setAppTheme, history],
   );
 
   const processCommandAsync = useCallback(
@@ -139,9 +100,5 @@ export const ShellProvider = ({ children }: Props) => {
     [processCommand],
   );
 
-  return (
-    <ShellContext.Provider value={{ history, processCommand, callStack, renderHistory, theme }}>
-      {children}
-    </ShellContext.Provider>
-  );
+  return { history, processCommand, callStack, renderHistory, theme: appTheme };
 };

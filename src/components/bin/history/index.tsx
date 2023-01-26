@@ -1,4 +1,4 @@
-import { Binary } from 'utils/providers/ShellProvider';
+import { Binary } from 'interfaces/Binary';
 
 export const history: Binary = ({ terminate, history }) => {
   terminate();

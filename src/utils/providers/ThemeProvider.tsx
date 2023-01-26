@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
-import { useShell } from 'utils/providers/ShellProvider';
+import { useTheme } from 'utils/hooks/useTheme';
 
 interface Props {
   children: React.ReactNode;
 }
 
-export const ThemeProvider: React.FC<Props> = ({ children }) => {
-  const { theme } = useShell();
+const ThemeContext = createContext([] as any);
+export const useAppTheme = () => useContext(ThemeContext);
 
-  return <StyledComponentsThemeProvider theme={theme}>{children}</StyledComponentsThemeProvider>;
+export const ThemeProvider: React.FC<Props> = ({ children }) => {
+  const [theme, setTheme] = useTheme();
+
+  return (
+    <StyledComponentsThemeProvider theme={theme}>
+      <ThemeContext.Provider value={[theme, setTheme]}>{children}</ThemeContext.Provider>
+    </StyledComponentsThemeProvider>
+  );
 };

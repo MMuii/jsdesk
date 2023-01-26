@@ -1,7 +1,6 @@
 import { theme } from 'components/bin/theme/theme';
 import { unknownCommand } from 'components/bin/unknown-command';
 import { clear } from 'components/bin/clear';
-import { Binary } from 'utils/providers/ShellProvider';
 import { CommandHelp } from 'interfaces/CommandHelp';
 import { whoami } from 'components/bin/whoami';
 import { neofetch } from 'components/bin/neofetch';
@@ -19,6 +18,7 @@ import { help as whoamiHelp } from 'components/bin/whoami/help';
 import { help as dateHelp } from 'components/bin/date/help';
 import { help as catHelp } from 'components/bin/cat/help';
 import { snake } from 'components/bin/snake';
+import { Binary } from 'interfaces/Binary';
 
 export const bins: { [key: string]: Binary } = {
   theme: theme,

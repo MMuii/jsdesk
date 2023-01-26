@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
 import { kebabCase, random } from 'lodash';
-import { Binary } from 'utils/providers/ShellProvider';
 import terminalThemes from 'styles/themes.json';
 import { ColorBlocksContainer, ColorBlock } from './styled';
+import { Binary } from 'interfaces/Binary';
 
 const themeNames = terminalThemes.map(theme => kebabCase(theme.name));
 const possibleArgs = ['ls', 'set', 'random'];

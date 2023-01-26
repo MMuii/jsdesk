@@ -1,9 +1,9 @@
 import React from 'react';
-import { Binary } from 'utils/providers/ShellProvider';
 import { bins } from 'components/bin';
 import { getHelpPage } from 'components/bin';
 import { Indented, Option } from './styled';
 import { HelpOption } from 'interfaces/CommandHelp';
+import { Binary } from 'interfaces/Binary';
 
 export const help: Binary = ({ terminate, args }) => {
   terminate();

@@ -5,6 +5,7 @@ import { DragContainer } from './styled';
 import { RenderableWindow, useWindowManager } from 'utils/hooks/useWindowManager';
 import { PicturePreview } from 'components/PicturePreview';
 import { IconsContainer } from './IconsContainer';
+import { AnimatePresence } from 'framer-motion';
 
 // const initialTerminal: RenderableWindow = {
 //   id: window.crypto.randomUUID(),
@@ -32,27 +33,29 @@ export const Desktop = () => {
   return (
     <DragContainer ref={dragContainerRef}>
       <IconsContainer openWindow={openWindow} />
-      {windows.map(({ id, component, name, windowProps, componentProps }) => {
-        const componentWithCustomProps = React.cloneElement(component, {
-          ...component.props,
-          ...componentProps,
-        });
+      <AnimatePresence>
+        {windows.map(({ id, component, name, windowProps, componentProps }) => {
+          const componentWithCustomProps = React.cloneElement(component, {
+            ...component.props,
+            ...componentProps,
+          });
 
-        return (
-          <Window
-            dragContainerRef={dragContainerRef}
-            key={id}
-            isFocused={zIndexList[0] === id}
-            onFocus={() => focusWindow(id)}
-            onWindowClose={() => closeWindow(id)}
-            name={name}
-            zIndex={100 - zIndexList.indexOf(id)}
-            {...windowProps}
-          >
-            {componentWithCustomProps}
-          </Window>
-        );
-      })}
+          return (
+            <Window
+              dragContainerRef={dragContainerRef}
+              key={id}
+              isFocused={zIndexList[0] === id}
+              onFocus={() => focusWindow(id)}
+              onWindowClose={() => closeWindow(id)}
+              name={name}
+              zIndex={100 - zIndexList.indexOf(id)}
+              {...windowProps}
+            >
+              {componentWithCustomProps}
+            </Window>
+          );
+        })}
+      </AnimatePresence>
     </DragContainer>
   );
 };

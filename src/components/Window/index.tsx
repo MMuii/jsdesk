@@ -32,6 +32,7 @@ interface FullScreenState {
 interface WindowVariantArgs {
   left: number;
   top: number;
+  rect: DOMRect;
   width?: number;
   height?: number;
 }
@@ -57,12 +58,20 @@ const variants: Variants = {
       duration: 0.2,
     },
   }),
-  initial: ({ left, top }: WindowVariantArgs) => ({
-    x: left - 70,
-    y: top - 70,
-    width: 200,
-    height: 200,
+  initial: ({ left, top, height, width }: WindowVariantArgs) => ({
+    x: left - 10,
+    y: top - 10,
+    height: height === undefined ? 'min-content' : height,
+    width: width === undefined ? 'min-content' : width,
     opacity: 0,
+  }),
+  exit: ({ rect }: WindowVariantArgs) => ({
+    opacity: 0,
+    x: rect.left - 10,
+    y: rect.top - 10,
+    transition: {
+      duration: 0.1,
+    },
   }),
 };
 
@@ -115,11 +124,13 @@ export const Window = ({
       variants={variants}
       initial="initial"
       animate={fullScreenState.isFullScreen ? 'fullScreen' : 'window'}
+      exit="exit"
       custom={{
         top: fullScreenState.beforeFullScreenPosition.top,
         left: fullScreenState.beforeFullScreenPosition.left,
         width,
         height,
+        rect: windowContainerRef.current?.getBoundingClientRect(),
       }}
       transition={{
         type: 'tween',

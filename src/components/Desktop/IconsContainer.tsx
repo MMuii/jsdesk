@@ -26,7 +26,6 @@ const initialTerminal: RenderableWindow = {
 
 const initialDesktopIcons: DesktopIcon[] = [
   { openingWindow: initialTerminal, name: 'term', icon: <IoTerminal /> },
-  { openingWindow: initialTerminal, name: 'diffTerm', icon: <IoTerminal /> },
 ];
 
 export const IconsContainer = ({ openWindow }: Props) => {

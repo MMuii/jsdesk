@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import {
   WindowContainer,
   WindowBarButtonContainer,
@@ -5,17 +6,18 @@ import {
   WindowName,
   WindowBar,
 } from 'components/Window/styled';
-import { useDragControls } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
-import { flushSync } from 'react-dom';
+import { useDragControls, Variants } from 'framer-motion';
 
 interface Props {
   children: React.ReactNode;
   dragContainerRef: React.MutableRefObject<HTMLDivElement | null>;
   isFocused: boolean;
   onFocus: () => void;
+  onWindowClose: () => void;
   name: string;
   zIndex: number;
+  width?: number;
+  height?: number;
   onWindowClick?: (e?: any) => void;
 }
 
@@ -27,39 +29,58 @@ interface FullScreenState {
   };
 }
 
-const variants = {
+interface WindowVariantArgs {
+  left: number;
+  top: number;
+  width?: number;
+  height?: number;
+}
+
+const variants: Variants = {
   fullScreen: {
-    // position: 'fixed',
     x: 0,
     y: 0,
     height: '100vh',
     width: '100vw',
+    opacity: 1,
+    transition: {
+      duration: 0.3,
+    },
   },
-  window: (variant: any) => {
-    console.log('variant:', variant);
-    return {
-      x: variant.left,
-      y: variant.top,
-      height: '50rem',
-      width: '70rem',
-    };
-  },
+  window: ({ left, top, height, width }: WindowVariantArgs) => ({
+    x: left,
+    y: top,
+    height: height === undefined ? 'min-content' : height,
+    width: width === undefined ? 'min-content' : width,
+    opacity: 1,
+    transition: {
+      duration: 0.2,
+    },
+  }),
+  initial: ({ left, top }: WindowVariantArgs) => ({
+    x: left - 70,
+    y: top - 70,
+    width: 200,
+    height: 200,
+    opacity: 0,
+  }),
 };
 
-// TODO - move ShellProvider down into Terminal component
 export const Window = ({
   dragContainerRef,
   onFocus,
+  onWindowClose,
   onWindowClick,
   isFocused,
   name,
   zIndex,
   children,
+  width,
+  height,
 }: Props) => {
-  const [isClosed, setIsClosed] = useState<boolean>(false);
   const [fullScreenState, setFullScreenState] = useState<FullScreenState>(() => {
-    const left = window.innerWidth / 2 - 700 / 2;
-    const top = window.innerHeight / 2 - 500 / 2;
+    const left = window.innerWidth / 2 - (width ?? 300) / 2;
+    const top = window.innerHeight / 2 - (height ?? 300) / 2;
 
     return {
       isFullScreen: false,
@@ -71,9 +92,7 @@ export const Window = ({
 
   const setFullScreen = () => {
     const { top, left } = windowContainerRef.current!.getBoundingClientRect();
-    flushSync(() => {
-      setFullScreenState({ isFullScreen: true, beforeFullScreenPosition: { top, left } });
-    });
+    setFullScreenState({ isFullScreen: true, beforeFullScreenPosition: { top, left } });
   };
 
   const minimizeWindow = () => {
@@ -82,8 +101,6 @@ export const Window = ({
       beforeFullScreenPosition: { ...prev.beforeFullScreenPosition },
     }));
   };
-
-  if (isClosed) return null;
 
   return (
     <WindowContainer
@@ -96,11 +113,13 @@ export const Window = ({
       dragElastic={0}
       dragMomentum={false}
       variants={variants}
-      initial="window"
+      initial="initial"
       animate={fullScreenState.isFullScreen ? 'fullScreen' : 'window'}
       custom={{
         top: fullScreenState.beforeFullScreenPosition.top,
         left: fullScreenState.beforeFullScreenPosition.left,
+        width,
+        height,
       }}
       transition={{
         type: 'tween',
@@ -115,8 +134,8 @@ export const Window = ({
         onDoubleClick={fullScreenState.isFullScreen ? minimizeWindow : setFullScreen}
         isDraggable={!fullScreenState.isFullScreen}
       >
-        <WindowBarButtonContainer>
-          <WindowBarButton onClick={() => setIsClosed(true)} />
+        <WindowBarButtonContainer $isFocused={isFocused}>
+          <WindowBarButton onClick={onWindowClose} />
           <WindowBarButton onClick={minimizeWindow} />
           <WindowBarButton onClick={setFullScreen} />
         </WindowBarButtonContainer>

@@ -19,6 +19,7 @@ export const WindowContainer = styled(motion.div)<{ $isFocused: boolean; $zIndex
   grid-template-rows: min-content 1fr;
   grid-template-columns: 1fr;
   z-index: ${({ $zIndex }) => $zIndex};
+  transition: box-shadow 0.15s;
 
   ${({ $isFocused }) =>
     $isFocused &&
@@ -35,10 +36,11 @@ export const WindowBar = styled.div<{ isDraggable: boolean }>`
     const { lightness } = parseToHsl(theme.background);
     return darken(lightness / 8, theme.background);
   }};
-  display: grid;
+  position: relative;
+  /* display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1fr;
-  place-items: center;
+  place-items: center; */
 
   ${({ isDraggable }) =>
     isDraggable &&
@@ -51,7 +53,110 @@ export const WindowBar = styled.div<{ isDraggable: boolean }>`
     `}
 `;
 
-export const WindowBarButtonContainer = styled.div`
+const windowButtonsStyleWhenFocused = css`
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:nth-child(1) {
+    margin-left: 1rem;
+    background: #ff605c;
+
+    &:hover {
+      background: ${darken(0.04, '#ff605c')};
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 0.7rem;
+        height: 0.7rem;
+        background: black;
+        opacity: 0.6;
+      }
+
+      &::after {
+        clip-path: polygon(
+          20% 0%,
+          0% 20%,
+          30% 50%,
+          0% 80%,
+          20% 100%,
+          50% 70%,
+          80% 100%,
+          100% 80%,
+          70% 50%,
+          100% 20%,
+          80% 0%,
+          50% 30%
+        );
+      }
+    }
+  }
+
+  &:nth-child(2) {
+    background: #ffbd44;
+
+    &:hover {
+      background: ${darken(0.08, '#ffbd44')};
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 0.8rem;
+        height: 0.1rem;
+        background: black;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  &:nth-child(3) {
+    background: #00ca4e;
+
+    &:hover {
+      background: ${darken(0.04, '#00ca4e')};
+
+      &::after,
+      &::before {
+        content: '';
+        position: absolute;
+        width: 0.45rem;
+        height: 0.45rem;
+        background: black;
+        opacity: 0.6;
+      }
+
+      &::after {
+        top: 0.3rem;
+        left: 0.3rem;
+        clip-path: polygon(100% 0, 0 0, 0 100%);
+      }
+
+      &::before {
+        bottom: 0.3rem;
+        right: 0.3rem;
+        clip-path: polygon(100% 0, 100% 100%, 0 100%);
+      }
+    }
+  }
+`;
+
+const windowButtonsStyleNotFocused = css`
+  &:nth-child(1) {
+    margin-left: 1rem;
+  }
+
+  background: ${({ theme }) => lighten(0.05, theme.background)};
+  opacity: 1;
+`;
+
+export const WindowBarButtonContainer = styled.div<{ $isFocused: boolean }>`
   display: flex;
   width: 100%;
   height: 100%;
@@ -61,97 +166,8 @@ export const WindowBarButtonContainer = styled.div`
     margin-right: 0.8rem;
     position: relative;
 
-    &:hover {
-      cursor: pointer;
-    }
-
-    &:nth-child(1) {
-      margin-left: 1rem;
-      background: #ff605c;
-
-      &:hover {
-        background: ${darken(0.04, '#ff605c')};
-
-        &::after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 0.7rem;
-          height: 0.7rem;
-          background: black;
-          opacity: 0.6;
-        }
-
-        &::after {
-          clip-path: polygon(
-            20% 0%,
-            0% 20%,
-            30% 50%,
-            0% 80%,
-            20% 100%,
-            50% 70%,
-            80% 100%,
-            100% 80%,
-            70% 50%,
-            100% 20%,
-            80% 0%,
-            50% 30%
-          );
-        }
-      }
-    }
-
-    &:nth-child(2) {
-      background: #ffbd44;
-
-      &:hover {
-        background: ${darken(0.08, '#ffbd44')};
-
-        &::after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 0.8rem;
-          height: 0.1rem;
-          background: black;
-          opacity: 0.6;
-        }
-      }
-    }
-
-    &:nth-child(3) {
-      background: #00ca4e;
-
-      &:hover {
-        background: ${darken(0.04, '#00ca4e')};
-
-        &::after,
-        &::before {
-          content: '';
-          position: absolute;
-          width: 0.45rem;
-          height: 0.45rem;
-          background: black;
-          opacity: 0.6;
-        }
-
-        &::after {
-          top: 0.3rem;
-          left: 0.3rem;
-          clip-path: polygon(100% 0, 0 0, 0 100%);
-        }
-
-        &::before {
-          bottom: 0.3rem;
-          right: 0.3rem;
-          clip-path: polygon(100% 0, 100% 100%, 0 100%);
-        }
-      }
-    }
+    ${({ $isFocused }) =>
+      $isFocused ? windowButtonsStyleWhenFocused : windowButtonsStyleNotFocused};
   }
 `;
 
@@ -166,4 +182,8 @@ export const WindowName = styled.div`
   font-family: 'Roboto', sans-serif;
   font-size: 1.6rem;
   font-weight: bold;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `;

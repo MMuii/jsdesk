@@ -88,8 +88,16 @@ export const Window = ({
   height,
 }: Props) => {
   const [fullScreenState, setFullScreenState] = useState<FullScreenState>(() => {
-    const left = window.innerWidth / 2 - (width ?? 300) / 2;
-    const top = window.innerHeight / 2 - (height ?? 300) / 2;
+    const h = height ?? 300;
+    const w = width ?? 300;
+
+    const maxTop = window.innerHeight - h;
+    let top = window.innerHeight / 2 - h / 2;
+    if (top > maxTop) top = maxTop;
+
+    const maxLeft = window.innerWidth - w;
+    let left = window.innerWidth / 2 - w / 2;
+    if (left > maxLeft) left = maxLeft;
 
     return {
       isFullScreen: false,

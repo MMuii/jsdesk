@@ -20,6 +20,8 @@ export const WindowContainer = styled(motion.div)<{ $isFocused: boolean; $zIndex
   grid-template-columns: 1fr;
   z-index: ${({ $zIndex }) => $zIndex};
   transition: box-shadow 0.15s;
+  max-height: 100vh;
+  max-width: 100vw;
 
   ${({ $isFocused }) =>
     $isFocused &&

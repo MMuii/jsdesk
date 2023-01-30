@@ -7,15 +7,15 @@ import { PicturePreview } from 'components/PicturePreview';
 import { IconsContainer } from './IconsContainer';
 import { AnimatePresence } from 'framer-motion';
 
-// const initialTerminal: RenderableWindow = {
-//   id: window.crypto.randomUUID(),
-//   component: <Terminal />,
-//   name: 'term',
-//   windowProps: {
-//     width: 700,
-//     height: 500,
-//   },
-// };
+const initialTerminal: RenderableWindow = {
+  id: window.crypto.randomUUID(),
+  component: <Terminal />,
+  name: 'term',
+  windowProps: {
+    width: 700,
+    height: 500,
+  },
+};
 
 // const initialWindow: RenderableWindow = {
 //   id: window.crypto.randomUUID(),
@@ -25,7 +25,7 @@ import { AnimatePresence } from 'framer-motion';
 
 export const Desktop = () => {
   const { windows, openWindow, focusWindow, closeWindow, zIndexList } = useWindowManager([
-    // initialTerminal,
+    initialTerminal,
     // initialWindow,
   ]);
   const dragContainerRef = useRef<HTMLDivElement | null>(null);

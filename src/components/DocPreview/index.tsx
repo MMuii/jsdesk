@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
-import { PDFDocumentProxy } from 'pdfjs-dist/types/src/display/api';
 import { PDFPageProxy } from 'react-pdf';
 import {
   ControlsSeparatorLine,
@@ -25,7 +24,7 @@ export const DocPreview = ({ docName }: Props) => {
   const [pageWidth, setPageWidth] = useState<number>(-1);
   const [scale, setScale] = useState<number>(1);
 
-  const onDocumentLoadSuccess = async (pdfObject: PDFDocumentProxy) => {
+  const onDocumentLoadSuccess = async (pdfObject: any) => {
     const page = await pdfObject.getPage(1);
     setNumPages(pdfObject.numPages);
     const width = page.view[2];

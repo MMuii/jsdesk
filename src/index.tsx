@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom/client';
 import GlobalStyles from 'styles/global-styles';
 import { ThemeProvider } from 'utils/providers/ThemeProvider';
 import { Desktop } from 'components/Desktop';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);

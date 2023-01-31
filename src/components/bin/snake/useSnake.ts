@@ -42,11 +42,11 @@ const getNewHeadPosition = (head: SnakeBodyElement, direction: Direction): Snake
       return { xPos: newX, yPos: head.yPos };
     }
     case 'down': {
-      const newY = head.yPos === MAP_HEIGHT - 1 ? 0 : head.yPos + 1;
+      const newY = head.yPos === MAP_HEIGHT - 2 ? 0 : head.yPos + 1;
       return { xPos: head.xPos, yPos: newY };
     }
     case 'right': {
-      const newX = head.xPos === MAP_WIDTH - 1 ? 0 : head.xPos + 1;
+      const newX = head.xPos === MAP_WIDTH - 2 ? 0 : head.xPos + 1;
       return { xPos: newX, yPos: head.yPos };
     }
   }

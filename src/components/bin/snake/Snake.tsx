@@ -56,7 +56,7 @@ export const Snake = ({ terminate, isFocused }: RenderableProps) => {
       return (
         <div>
           You don't have any <br />
-          high scores yet :(
+          high scores yet
         </div>
       );
     }

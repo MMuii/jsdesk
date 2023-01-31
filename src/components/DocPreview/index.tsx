@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
+import resume from 'assets/pdf/resume.pdf';
+// import { PDFDocumentProxy } from 'pdfjs-dist/types/src/display/api';
 import { PDFPageProxy } from 'react-pdf';
 import {
   ControlsSeparatorLine,
@@ -66,10 +68,7 @@ export const DocPreview = ({ docName }: Props) => {
         <DownloadIcon onClick={() => alert('todo download')} />
       </PdfRendererControlPanel>
       <DocContainer>
-        <Document
-          file="https://auoqhuzfnpyypxhpveji.supabase.co/storage/v1/object/public/pdf/resume.pdf"
-          onLoadSuccess={onDocumentLoadSuccess}
-        >
+        <Document file={resume} onLoadSuccess={onDocumentLoadSuccess}>
           <Page pageNumber={pageNumber} scale={scale} onRenderSuccess={onRenderSuccess} />
         </Document>
       </DocContainer>

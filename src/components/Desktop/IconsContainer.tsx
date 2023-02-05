@@ -1,13 +1,14 @@
 import { DesktopIcon } from 'components/DesktopIcon';
 import { Terminal } from 'components/Terminal';
 import { RenderableWindow } from 'utils/hooks/useWindowManager';
-import { IoTerminal } from 'react-icons/io5';
+import { IoTerminal, IoFolder } from 'react-icons/io5';
 import { HiDocument } from 'react-icons/hi';
 import { DesktopIconsContainer } from './styled';
 import { DocPreview } from 'components/DocPreview';
 
 interface Props {
   openWindow: (window: RenderableWindow) => void;
+  desktopFiles: Array<[string, string]>;
 }
 
 interface DesktopIcon {
@@ -41,17 +42,34 @@ const initialDesktopIcons: DesktopIcon[] = [
   { openingWindow: initialDocPreview, name: 'resume.pdf', icon: <HiDocument /> },
 ];
 
-export const IconsContainer = ({ openWindow }: Props) => {
+const getFileIcon = (fileType: string): React.ReactElement => {
+  switch (fileType) {
+    case 'dir':
+      return <IoFolder />;
+    default:
+      return <IoFolder />;
+  }
+};
+
+export const IconsContainer = ({ openWindow, desktopFiles }: Props) => {
   const renderIcons = () => {
-    return initialDesktopIcons.map(({ openingWindow, name, icon }, idx) => (
-      <DesktopIcon
-        onDoubleClick={() => openWindow(openingWindow)}
-        tabIndex={0}
-        name={name}
-        icon={icon}
-        key={idx} // TODO - replace this after implementing icons reorder
-      />
-    ));
+    const desktopFilesIcons: DesktopIcon[] = desktopFiles.map(([fileName, fileType]) => ({
+      openingWindow: initialTerminal,
+      name: fileName,
+      icon: getFileIcon(fileType),
+    }));
+
+    return [...initialDesktopIcons, ...desktopFilesIcons].map(
+      ({ openingWindow, name, icon }, idx) => (
+        <DesktopIcon
+          onDoubleClick={() => openWindow(openingWindow)}
+          tabIndex={0}
+          name={name}
+          icon={icon}
+          key={idx} // TODO - replace this after implementing icons reorder
+        />
+      ),
+    );
   };
 
   return <DesktopIconsContainer>{renderIcons()}</DesktopIconsContainer>;

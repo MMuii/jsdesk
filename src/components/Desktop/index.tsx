@@ -6,6 +6,8 @@ import { RenderableWindow, useWindowManager } from 'utils/hooks/useWindowManager
 import { PicturePreview } from 'components/PicturePreview';
 import { IconsContainer } from './IconsContainer';
 import { AnimatePresence } from 'framer-motion';
+import { useFs } from 'utils/providers/FSProvider';
+import { DocPreview } from 'components/DocPreview';
 
 const initialTerminal: RenderableWindow = {
   id: window.crypto.randomUUID(),
@@ -23,16 +25,27 @@ const initialTerminal: RenderableWindow = {
 //   name: 'ImgViewer',
 // };
 
+const initialDocPreview: RenderableWindow = {
+  id: window.crypto.randomUUID(),
+  component: <DocPreview docName="resume.pdf" />,
+  name: 'DocPreview - resume.pdf',
+  windowProps: {
+    height: 842,
+    width: 597,
+  },
+};
+
 export const Desktop = () => {
   const { windows, openWindow, focusWindow, closeWindow, zIndexList } = useWindowManager([
     initialTerminal,
     // initialWindow,
   ]);
+  const { listFiles } = useFs();
   const dragContainerRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <DragContainer ref={dragContainerRef}>
-      <IconsContainer openWindow={openWindow} />
+      <IconsContainer openWindow={openWindow} desktopFiles={listFiles('/')} />
       <AnimatePresence>
         {windows.map(({ id, component, name, windowProps, componentProps }) => {
           const componentWithCustomProps = React.cloneElement(component, {

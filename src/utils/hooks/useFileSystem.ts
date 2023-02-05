@@ -44,7 +44,13 @@ const initialFs: FileSystem = {
   },
 };
 
+// TODO - handle when path starts with /, eg. /dir/name
+// TODO - handle case when path starts with . eg. ./dir/name
 const getPathFromPathString = (pathString: string): Path => {
+  if (pathString === '/') {
+    return ['/'];
+  }
+
   return pathString.split('/');
 };
 
@@ -63,10 +69,6 @@ const getAbsoluteRefByPath = (fs: FileSystem, path: Path): Directory | null => {
     return null;
   }
 };
-
-// const getRelativeRefByPath = (fs: FileSystem, currentPath: Path, relativePath: string): Directory | null => {
-
-// };
 
 const getPathRelativeToPath = (currentPath: Path, relativePathString: string): Path => {
   const relativePath = getPathFromPathString(relativePathString);
@@ -93,12 +95,13 @@ export const useFileSystem = () => {
     console.log('location:', location);
   }, [location]);
 
-  const listFiles = (): Array<[string, string]> => {
-    const currentDirRef = getAbsoluteRefByPath(fs, location) as Directory;
-    return Object.entries(currentDirRef.files).map(([fileName, content]) => [
-      fileName,
-      content.type,
-    ]);
+  // TODO - handle case when pathString is not a valid directory
+  const listFiles = (pathString?: string): Array<[string, string]> => {
+    const path = pathString === undefined ? location : getPathFromPathString(pathString);
+    console.log('path:', path);
+    const dirRef = getAbsoluteRefByPath(fs, path) as Directory;
+
+    return Object.entries(dirRef.files).map(([fileName, content]) => [fileName, content.type]);
   };
 
   const makeDirectory = (pathString: string): string | null => {

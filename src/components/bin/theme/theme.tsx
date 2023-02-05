@@ -6,14 +6,7 @@ import { Binary } from 'interfaces/Binary';
 const themeNames = terminalThemes.map(theme => kebabCase(theme.name));
 const possibleArgs = ['ls', 'set', 'random'];
 
-export const theme: Binary = ({
-  args,
-  flags,
-  terminate,
-  setTheme,
-  processCommandAsync,
-  history,
-}) => {
+export const theme: Binary = ({ args, flags, terminate, setTheme, processCommandAsync }) => {
   terminate();
 
   if (args.length === 0) {

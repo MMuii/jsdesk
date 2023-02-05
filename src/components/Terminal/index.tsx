@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 import { useInputLine } from 'utils/hooks/useInputLine';
 import { InputLine } from 'components/InputLine';
-import { Ps1 } from 'components/Ps1';
+import { NoRerenderedPs1 } from 'components/Ps1';
 import { HistoryContainer } from './styled';
 import { useShell } from 'utils/hooks/useShell';
 
@@ -28,7 +28,7 @@ export const Terminal = () => {
         <div key={h.time.getTime()}>
           {h.cmd && (
             <div>
-              <Ps1 />
+              <NoRerenderedPs1 />
               <span>{h.cmd}</span>
             </div>
           )}

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
 import resume from 'assets/pdf/resume.pdf';
-// import { PDFDocumentProxy } from 'pdfjs-dist/types/src/display/api';
 import { PDFPageProxy } from 'react-pdf';
 import {
   ControlsSeparatorLine,

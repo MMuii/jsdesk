@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Binary } from 'interfaces/Binary';
-import { useFs } from 'utils/providers/FSProvider';
+import { useFsSession } from 'utils/providers/FSSessionProvider';
 
 export const rmdir: Binary = ({ terminate, args, processCommandAsync }) => {
   terminate();
@@ -11,7 +11,7 @@ export const rmdir: Binary = ({ terminate, args, processCommandAsync }) => {
   }
 
   return () => {
-    const { removeDirectory } = useFs();
+    const { removeDirectory } = useFsSession();
     const [result, setResult] = useState<null | string>(null);
 
     useEffect(() => {

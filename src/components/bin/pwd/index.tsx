@@ -1,6 +1,6 @@
 import { Binary } from 'interfaces/Binary';
 import { noRerendered } from 'utils/hocs/noRerendered';
-import { useFs } from 'utils/providers/FSProvider';
+import { useFsSession } from 'utils/providers/FSSessionProvider';
 
 const Location = noRerendered(({ location }: { location: string[] }) => (
   <div>{location[0] + location.slice(1).join('/')}</div>
@@ -9,7 +9,7 @@ const Location = noRerendered(({ location }: { location: string[] }) => (
 export const pwd: Binary = ({ terminate }) => {
   terminate();
   return () => {
-    const { location } = useFs();
+    const { location } = useFsSession();
     return <Location location={location} />;
   };
 };

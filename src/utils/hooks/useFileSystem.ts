@@ -1,3 +1,4 @@
+import { useFsContext } from 'utils/providers/FSProvider';
 import { useState, useEffect } from 'react';
 import produce from 'immer';
 import { useLocalStorage } from './useLocalStorage';
@@ -88,7 +89,7 @@ const getPathRelativeToPath = (currentPath: Path, relativePathString: string): P
 };
 
 export const useFileSystem = () => {
-  const [fs, setFs] = useLocalStorage('fs', initialFs);
+  const [fs, setFs] = useFsContext();
   const [location, setLocation] = useState<Path>(['/']);
 
   useEffect(() => {

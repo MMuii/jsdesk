@@ -1,5 +1,5 @@
 import { noRerendered } from 'utils/hocs/noRerendered';
-import { useFs } from 'utils/providers/FSProvider';
+import { useFsSession } from 'utils/providers/FSSessionProvider';
 import { Container } from './styled';
 
 const Location = noRerendered(({ currentDir }: { currentDir: string }) => (
@@ -14,7 +14,7 @@ const Location = noRerendered(({ currentDir }: { currentDir: string }) => (
 ));
 
 export const Ps1 = () => {
-  const { location } = useFs();
+  const { location } = useFsSession();
 
   const currentDir = location[location.length - 1] === '/' ? '~' : location[location.length - 1];
 
@@ -31,7 +31,7 @@ export const Ps1 = () => {
 };
 
 export const NoRerenderedPs1 = () => {
-  const { location } = useFs();
+  const { location } = useFsSession();
   const currentDir = location[location.length - 1] === '/' ? '~' : location[location.length - 1];
 
   return <Location currentDir={currentDir} />;

@@ -1,7 +1,7 @@
 import { Binary } from 'interfaces/Binary';
-import { useFs } from 'utils/providers/FSProvider';
 import { noRerendered } from 'utils/hocs/noRerendered';
 import { FileEntry, GridContainer } from './styled';
+import { useFsSession } from 'utils/providers/FSSessionProvider';
 
 interface Props {
   dirs: Array<[string, string]>;
@@ -29,7 +29,7 @@ export const ls: Binary = ({ terminate, flags }) => {
   terminate();
 
   return () => {
-    const { listFiles } = useFs();
+    const { listFiles } = useFsSession();
     return <List dirs={listFiles()} listMode={flags.l !== undefined} />;
   };
 };

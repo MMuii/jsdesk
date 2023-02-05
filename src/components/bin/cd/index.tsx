@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Binary } from 'interfaces/Binary';
-import { useFs } from 'utils/providers/FSProvider';
+import { useFsSession } from 'utils/providers/FSSessionProvider';
 
 export const cd: Binary = ({ terminate, args }) => {
   terminate();
 
   return () => {
-    const { changeDirectory } = useFs();
+    const { changeDirectory } = useFsSession();
     const [result, setResult] = useState<null | string>(null);
 
     useEffect(() => {

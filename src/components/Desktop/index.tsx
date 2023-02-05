@@ -6,8 +6,9 @@ import { RenderableWindow, useWindowManager } from 'utils/hooks/useWindowManager
 import { PicturePreview } from 'components/PicturePreview';
 import { IconsContainer } from './IconsContainer';
 import { AnimatePresence } from 'framer-motion';
-import { useFs } from 'utils/providers/FSProvider';
 import { DocPreview } from 'components/DocPreview';
+import { useFsSession } from 'utils/providers/FSSessionProvider';
+import { useFileSystem } from 'utils/hooks/useFileSystem';
 
 const initialTerminal: RenderableWindow = {
   id: window.crypto.randomUUID(),
@@ -40,7 +41,7 @@ export const Desktop = () => {
     initialTerminal,
     // initialWindow,
   ]);
-  const { listFiles } = useFs();
+  const { listFiles } = useFileSystem();
   const dragContainerRef = useRef<HTMLDivElement | null>(null);
 
   return (

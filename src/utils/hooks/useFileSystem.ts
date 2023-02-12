@@ -1,48 +1,18 @@
 import { useFsContext } from 'utils/providers/FSProvider';
 import { useState, useEffect } from 'react';
 import produce from 'immer';
-import { useLocalStorage } from './useLocalStorage';
+import { Directory, FileSystem, Path } from 'interfaces/fs';
 
-type Path = string[];
+const parsePath = (path: string | Path): Path => {
+  if (typeof path === 'object') {
+    return path;
+  }
 
-interface Directory {
-  files: { [key: string]: Directory };
-  type: string;
-}
+  if (path === '/') {
+    return ['/'];
+  }
 
-interface FileSystem {
-  '/': Directory;
-}
-
-const initialFs: FileSystem = {
-  '/': {
-    type: 'dir',
-    files: {
-      img: {
-        type: 'dir',
-        files: {
-          dupa: {
-            type: 'dir',
-            files: {
-              'file.txt': {
-                type: 'file',
-                // @ts-ignore
-                value: 'value',
-              },
-            },
-          },
-          cyce: {
-            type: 'dir',
-            files: {},
-          },
-          wadowice: {
-            type: 'dir',
-            files: {},
-          },
-        },
-      },
-    },
-  },
+  return path.split('/');
 };
 
 // TODO - handle when path starts with /, eg. /dir/name
@@ -97,13 +67,16 @@ export const useFileSystem = () => {
   }, [location]);
 
   // TODO - handle case when pathString is not a valid directory
-  const listFiles = (pathString?: string): Array<[string, string]> => {
+  const listFiles = (pathString?: string): Array<[string, Directory]> => {
     const path = pathString === undefined ? location : getPathFromPathString(pathString);
     console.log('path:', path);
     const dirRef = getAbsoluteRefByPath(fs, path) as Directory;
 
-    return Object.entries(dirRef.files).map(([fileName, content]) => [fileName, content.type]);
+    return Object.entries(dirRef.files);
+    // return Object.entries(dirRef.files).map(([fileName, content]) => [fileName, content.type]);
   };
+
+  const getCurrentDirRef = (() => getAbsoluteRefByPath(fs, location)) as () => Directory;
 
   const makeDirectory = (pathString: string): string | null => {
     const newPath = getPathRelativeToPath(location, pathString);
@@ -119,6 +92,7 @@ export const useFileSystem = () => {
         const newDirName = newPath.at(-1) as string;
         dirRef.files[newDirName] = {
           type: 'dir',
+          updatedAt: new Date().toISOString(),
           files: {},
         };
       }),
@@ -159,11 +133,25 @@ export const useFileSystem = () => {
     return null;
   };
 
+  const changeDirectoryAbsolute = (pathString: string | Path): string | null => {
+    const newPath = parsePath(pathString);
+    const newPathRef = getAbsoluteRefByPath(fs, newPath);
+
+    if (!newPathRef || newPathRef.type !== 'dir') {
+      return `cd: Directory ${pathString} does not exist`;
+    }
+
+    setLocation(newPath);
+    return null;
+  };
+
   return {
     location,
     changeDirectory,
+    changeDirectoryAbsolute,
     removeDirectory,
     makeDirectory,
     listFiles,
+    getCurrentDirRef,
   };
 };

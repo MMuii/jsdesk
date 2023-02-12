@@ -39,10 +39,6 @@ export const WindowBar = styled.div<{ isDraggable: boolean }>`
     return darken(lightness / 8, theme.background);
   }};
   position: relative;
-  /* display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 1fr;
-  place-items: center; */
 
   ${({ isDraggable }) =>
     isDraggable &&

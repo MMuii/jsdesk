@@ -5,13 +5,17 @@ import { IoTerminal, IoFolder } from 'react-icons/io5';
 import { HiDocument } from 'react-icons/hi';
 import { DesktopIconsContainer } from './styled';
 import { DocPreview } from 'components/DocPreview';
+import { FileExplorer } from 'components/FileExplorer';
+import { getIconByFileType } from 'utils/fs/getIconByFileType';
+import { Directory } from 'interfaces/fs';
 
 interface Props {
   openWindow: (window: RenderableWindow) => void;
-  desktopFiles: Array<[string, string]>;
+  desktopFiles: Array<[string, Directory]>;
 }
 
 interface DesktopIcon {
+  // TODO - rename to avoid naming conflict with DesktopIcon component
   openingWindow: RenderableWindow;
   name: string;
   icon: React.ReactElement;
@@ -42,21 +46,32 @@ const initialDesktopIcons: DesktopIcon[] = [
   { openingWindow: initialDocPreview, name: 'resume.pdf', icon: <HiDocument /> },
 ];
 
-const getFileIcon = (fileType: string): React.ReactElement => {
+const getOpeningWindow = (fileName: string, fileType: string): RenderableWindow => {
   switch (fileType) {
     case 'dir':
-      return <IoFolder />;
+      return {
+        id: window.crypto.randomUUID(),
+        component: <FileExplorer />,
+        name: 'File explorer',
+        windowProps: {
+          height: 500,
+          width: 700,
+        },
+        componentProps: {
+          initialPath: ['/', fileName],
+        },
+      };
     default:
-      return <IoFolder />;
+      return initialTerminal; // TODO
   }
 };
 
 export const IconsContainer = ({ openWindow, desktopFiles }: Props) => {
   const renderIcons = () => {
-    const desktopFilesIcons: DesktopIcon[] = desktopFiles.map(([fileName, fileType]) => ({
-      openingWindow: initialTerminal,
+    const desktopFilesIcons: DesktopIcon[] = desktopFiles.map(([fileName, content]) => ({
+      openingWindow: getOpeningWindow(fileName, content.type),
       name: fileName,
-      icon: getFileIcon(fileType),
+      icon: getIconByFileType(content.type),
     }));
 
     return [...initialDesktopIcons, ...desktopFilesIcons].map(

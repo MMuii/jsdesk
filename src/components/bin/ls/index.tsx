@@ -30,6 +30,11 @@ export const ls: Binary = ({ terminate, flags }) => {
 
   return () => {
     const { listFiles } = useFsSession();
-    return <List dirs={listFiles()} listMode={flags.l !== undefined} />;
+    return (
+      <List
+        dirs={listFiles().map(([fileName, content]) => [fileName, content.type])}
+        listMode={flags.l !== undefined}
+      />
+    );
   };
 };

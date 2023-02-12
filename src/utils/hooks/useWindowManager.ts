@@ -15,9 +15,9 @@ export const useWindowManager = (startingWindows: RenderableWindow[]) => {
   const [windows, setWindows] = useState<RenderableWindow[]>(startingWindows);
   const [zIndexList, setZIndexList] = useState<string[]>(startingWindows.map(window => window.id));
 
-  const openWindow = ({ component, name, windowProps }: RenderableWindow) => {
+  const openWindow = ({ component, name, windowProps, componentProps }: RenderableWindow) => {
     const id = window.crypto.randomUUID();
-    setWindows(prev => [...prev, { id, component, name, windowProps }]);
+    setWindows(prev => [...prev, { id, component, name, windowProps, componentProps }]);
     setZIndexList(prev => [id, ...prev]);
   };
 

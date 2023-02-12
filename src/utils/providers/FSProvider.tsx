@@ -1,27 +1,23 @@
+import { FileSystem } from 'interfaces/fs';
 import { createContext, useContext } from 'react';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
-
-interface Directory {
-  files: { [key: string]: Directory };
-  type: string;
-}
-
-interface FileSystem {
-  '/': Directory;
-}
 
 const initialFs: FileSystem = {
   '/': {
     type: 'dir',
+    updatedAt: new Date().toISOString(),
     files: {
       img: {
         type: 'dir',
+        updatedAt: new Date().toISOString(),
         files: {
           dupa: {
             type: 'dir',
+            updatedAt: new Date().toISOString(),
             files: {
               'file.txt': {
-                type: 'file',
+                type: 'txt',
+                updatedAt: new Date().toISOString(),
                 // @ts-ignore
                 value: 'value',
               },
@@ -29,10 +25,12 @@ const initialFs: FileSystem = {
           },
           cyce: {
             type: 'dir',
+            updatedAt: new Date().toISOString(),
             files: {},
           },
           wadowice: {
             type: 'dir',
+            updatedAt: new Date().toISOString(),
             files: {},
           },
         },

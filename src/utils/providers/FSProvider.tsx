@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 
 const initialFs: FileSystem = {
-  '/': {
+  desktop: {
     type: 'dir',
     updatedAt: new Date().toISOString(),
     files: {

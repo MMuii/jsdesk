@@ -58,7 +58,7 @@ const getOpeningWindow = (fileName: string, fileType: string): RenderableWindow 
           width: 700,
         },
         componentProps: {
-          initialPath: ['/', fileName],
+          initialPath: ['desktop', fileName],
         },
       };
     default:

@@ -17,7 +17,7 @@ export const PathContainer = styled.div`
   font-size: 1.2rem;
   padding: 1rem;
   border-top: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
-  background: ${({ theme }) => darken(0.025, theme.background)};
+  background: ${({ theme }) => darken(0.04, theme.background)};
 
   svg {
     margin-right: 0.5rem;
@@ -50,7 +50,7 @@ export const CurrentDirHeaderContainer = styled.div`
   padding: 1rem 2rem;
   display: flex;
   gap: 2rem;
-  background: ${({ theme }) => darken(0.025, theme.background)};
+  background: ${({ theme }) => darken(0.04, theme.background)};
   border-bottom: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
 
   > div {

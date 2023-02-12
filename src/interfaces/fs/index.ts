@@ -1,7 +1,7 @@
 export type Path = string[];
 
 export interface FileSystem {
-  '/': Directory;
+  desktop: Directory;
 }
 
 export interface Directory {

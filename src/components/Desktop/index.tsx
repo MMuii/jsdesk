@@ -46,7 +46,7 @@ export const Desktop = () => {
 
   return (
     <DragContainer ref={dragContainerRef}>
-      <IconsContainer openWindow={openWindow} desktopFiles={listFiles('/')} />
+      <IconsContainer openWindow={openWindow} desktopFiles={listFiles('desktop')} />
       <AnimatePresence>
         {windows.map(({ id, component, name, windowProps, componentProps }) => {
           const componentWithCustomProps = React.cloneElement(component, {

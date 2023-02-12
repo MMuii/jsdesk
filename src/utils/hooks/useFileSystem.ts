@@ -8,9 +8,9 @@ const parsePath = (path: string | Path): Path => {
     return path;
   }
 
-  if (path === '/') {
-    return ['/'];
-  }
+  // if (path === '/') {
+  //   return ['/'];
+  // }
 
   return path.split('/');
 };
@@ -18,16 +18,16 @@ const parsePath = (path: string | Path): Path => {
 // TODO - handle when path starts with /, eg. /dir/name
 // TODO - handle case when path starts with . eg. ./dir/name
 const getPathFromPathString = (pathString: string): Path => {
-  if (pathString === '/') {
-    return ['/'];
-  }
+  // if (pathString === 'desktop') {
+  //   return ['desktop'];
+  // }
 
   return pathString.split('/');
 };
 
 const getAbsoluteRefByPath = (fs: FileSystem, path: Path): Directory | null => {
   try {
-    let dir = fs['/'] as any;
+    let dir = fs['desktop'] as any;
 
     if (path.length > 1) {
       path.slice(1)?.forEach(dirName => {
@@ -60,7 +60,7 @@ const getPathRelativeToPath = (currentPath: Path, relativePathString: string): P
 
 export const useFileSystem = () => {
   const [fs, setFs] = useFsContext();
-  const [location, setLocation] = useState<Path>(['/']);
+  const [location, setLocation] = useState<Path>(['desktop']);
 
   useEffect(() => {
     console.log('location:', location);

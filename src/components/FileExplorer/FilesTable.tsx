@@ -34,10 +34,10 @@ export const FilesTable = ({ directories, changeDirectory }: Props) => {
     <div>
       <FileTable>
         <FileTableHeaderRow>
-          <th>Name</th>
-          <th>Date modified</th>
-          <th>Size</th>
-          <th>Type</th>
+          <th style={{ width: '45%' }}>Name</th>
+          <th style={{ width: '25%' }}>Date modified</th>
+          <th style={{ width: '15%' }}>Size</th>
+          <th style={{ width: '15%' }}>Type</th>
         </FileTableHeaderRow>
         {renderCurrentLocationFiles()}
       </FileTable>

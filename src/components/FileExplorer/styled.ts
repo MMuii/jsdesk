@@ -85,6 +85,7 @@ export const NavArrow = styled(BsChevronLeft)<{ $enabled: boolean }>`
 
 export const FileTable = styled.table`
   width: 100%;
+  table-layout: fixed;
 `;
 
 export const FileTableHeaderRow = styled.tr`
@@ -127,6 +128,9 @@ export const FileTableRow = styled.tr<{ $type: string }>`
 
   > td {
     padding: 0.4rem 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 
     &:first-child {
       display: flex;

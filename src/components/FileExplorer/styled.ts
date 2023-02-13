@@ -83,16 +83,63 @@ export const NavArrow = styled(BsChevronLeft)<{ $enabled: boolean }>`
     `}
 `;
 
-export const FileEntry = styled.div<{ $type: string }>`
+export const FileTable = styled.table`
+  width: 100%;
+`;
+
+export const FileTableHeaderRow = styled.tr`
+  th {
+    text-align: left;
+    margin: 0 1rem;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
+
+    &:nth-child(1) {
+      padding-left: 2rem;
+    }
+
+    &:nth-child(2),
+    &:nth-child(3),
+    &:nth-child(4) {
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        height: 70%;
+        transform: translateY(-50%);
+        width: 1px;
+        background: ${({ theme }) => highlightDynamically(theme, 0.2)};
+
+        cursor: pointer;
+      }
+    }
+  }
+`;
+
+export const FileTableRow = styled.tr<{ $type: string }>`
   width: 100%;
   cursor: pointer;
   user-select: none;
   font-size: 1.2rem;
-  padding: 0.4rem 1rem;
-  border-radius: 0.6rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+
+  > td {
+    padding: 0.4rem 1rem;
+
+    &:first-child {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: 1rem;
+    }
+
+    &:nth-child(3) {
+      text-align: right;
+      margin-right: 1rem;
+    }
+  }
 
   &:nth-child(even) {
     background: ${({ theme }) => darken(0.025, theme.background)};
@@ -108,7 +155,7 @@ export const FileEntry = styled.div<{ $type: string }>`
     }
   }
 
-  > svg {
+  svg {
     color: ${({ theme, $type }) => ($type === 'dir' ? theme.green : theme.foreground)};
   }
 `;

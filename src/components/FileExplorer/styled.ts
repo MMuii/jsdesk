@@ -2,7 +2,7 @@ import { highlightDynamically } from 'utils/styles/highlightDynamically';
 import styled, { css } from 'styled-components';
 import { BsChevronLeft } from 'react-icons/bs';
 import { FaChevronRight } from 'react-icons/fa';
-import { darken } from 'polished';
+import { darken, lighten } from 'polished';
 
 export const Container = styled.div`
   display: grid;
@@ -83,41 +83,131 @@ export const NavArrow = styled(BsChevronLeft)<{ $enabled: boolean }>`
     `}
 `;
 
-export const FileTable = styled.table`
-  width: 100%;
-  table-layout: fixed;
+export const TableWrapper = styled.div`
+  overflow: auto; /* Clips any scrollbars that appear */
+  position: relative;
+
+  ${({ theme }) => {
+    const slightlyLightened = lighten(0.08, theme.background);
+    const lightened = lighten(0.25, theme.background);
+    const darkened = darken(0.05, lightened);
+
+    return css`
+      &::-webkit-scrollbar {
+        background-color: ${slightlyLightened};
+        width: 16px;
+      }
+
+      /* background of the scrollbar except button or resizer */
+      &::-webkit-scrollbar-track {
+        background-color: ${slightlyLightened};
+      }
+
+      /* scrollbar itself */
+      &::-webkit-scrollbar-thumb {
+        background-color: ${lightened};
+        border-radius: 16px;
+        border: 4px solid ${slightlyLightened};
+
+        &:hover {
+          background-color: ${darkened};
+        }
+      }
+
+      /* set button(top and bottom of the scrollbar) */
+      &::-webkit-scrollbar-button {
+        display: none;
+      }
+    `;
+  }}
 `;
 
-export const FileTableHeaderRow = styled.tr`
-  th {
-    text-align: left;
-    margin: 0 1rem;
-    padding: 1rem 1rem;
-    border-bottom: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
+export const ResizableTable = styled.table`
+  width: 100%;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr);
+  grid-template-rows: min-content;
+  grid-auto-flow: row;
 
-    &:nth-child(1) {
-      padding-left: 2rem;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 3.2rem;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: ${({ theme }) => highlightDynamically(theme, 0.2)};
+    border-radius: 0px;
+  }
+
+  thead,
+  tbody,
+  tr {
+    display: contents;
+  }
+
+  tbody tr:first-child td {
+    position: relative;
+    padding-top: 0.6rem;
+    margin-top: 0.5rem;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -0.5rem;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: ${({ theme }) => highlightDynamically(theme, 0.2)};
     }
 
-    &:nth-child(2),
-    &:nth-child(3),
-    &:nth-child(4) {
-      position: relative;
+    &:first-child::before {
+      left: -1rem;
+      width: calc(1rem + 100%);
+    }
 
-      &::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        height: 70%;
-        transform: translateY(-50%);
-        width: 1px;
-        background: ${({ theme }) => highlightDynamically(theme, 0.2)};
-
-        cursor: pointer;
-      }
+    &:last-child::before {
+      right: 1rem;
+      width: calc(1rem + 100%);
     }
   }
+
+  th {
+    position: relative;
+    font-size: 1.2rem;
+    padding: 1rem;
+  }
+
+  th,
+  td {
+    text-align: left;
+    height: min-content;
+
+    span {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  tr > th:last-child div {
+    margin-right: 1rem;
+  }
+`;
+
+export const ResizeHandle = styled.div`
+  display: block;
+  position: absolute;
+  cursor: col-resize;
+  height: 50% !important;
+  width: 1px;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  border-right: 2px solid transparent;
+  background: ${({ theme }) => highlightDynamically(theme, 0.2)};
 `;
 
 export const FileTableRow = styled.tr<{ $type: string }>`
@@ -130,26 +220,30 @@ export const FileTableRow = styled.tr<{ $type: string }>`
     padding: 0.4rem 1rem;
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
 
     &:first-child {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       margin-left: 1rem;
+      border-radius: 0.6rem 0 0 0.6rem;
     }
 
     &:nth-child(3) {
       text-align: right;
+    }
+
+    &:last-child {
+      border-radius: 0 0.6rem 0.6rem 0;
       margin-right: 1rem;
     }
   }
 
-  &:nth-child(even) {
+  &:nth-child(even) > td {
     background: ${({ theme }) => darken(0.025, theme.background)};
   }
 
-  &:focus {
+  &:focus-within > td {
     outline: none;
     background: ${({ theme }) => theme.foreground};
     color: ${({ theme }) => theme.background};

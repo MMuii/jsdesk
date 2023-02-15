@@ -8,20 +8,12 @@ const parsePath = (path: string | Path): Path => {
     return path;
   }
 
-  // if (path === '/') {
-  //   return ['/'];
-  // }
-
   return path.split('/');
 };
 
 // TODO - handle when path starts with /, eg. /dir/name
 // TODO - handle case when path starts with . eg. ./dir/name
 const getPathFromPathString = (pathString: string): Path => {
-  // if (pathString === 'desktop') {
-  //   return ['desktop'];
-  // }
-
   return pathString.split('/');
 };
 
@@ -41,8 +33,7 @@ const getAbsoluteRefByPath = (fs: FileSystem, path: Path): Directory | null => {
   }
 };
 
-const getPathRelativeToPath = (currentPath: Path, relativePathString: string): Path => {
-  const relativePath = getPathFromPathString(relativePathString);
+const getPathRelativeToPath = (currentPath: Path, relativePath: Path): Path => {
   const resultPath = [...currentPath];
 
   relativePath.forEach(dirName => {
@@ -69,19 +60,19 @@ export const useFileSystem = () => {
   // TODO - handle case when pathString is not a valid directory
   const listFiles = (pathString?: string): Array<[string, Directory]> => {
     const path = pathString === undefined ? location : getPathFromPathString(pathString);
-    console.log('path:', path);
     const dirRef = getAbsoluteRefByPath(fs, path) as Directory;
 
     return Object.entries(dirRef.files);
-    // return Object.entries(dirRef.files).map(([fileName, content]) => [fileName, content.type]);
   };
 
   const getCurrentDirRef = (() => getAbsoluteRefByPath(fs, location)) as () => Directory;
 
-  const makeDirectory = (pathString: string): string | null => {
-    const newPath = getPathRelativeToPath(location, pathString);
+  const makeDirectoryRelative = (pathString: string | Path): string | null => {
+    const path = parsePath(pathString);
+    const newPath = getPathRelativeToPath(location, path);
     const parentPath = [...newPath.slice(0, -1)];
     const parentPathRef = getAbsoluteRefByPath(fs, parentPath);
+
     if (!parentPathRef || parentPathRef.type !== 'dir') {
       return `mkdir: Directory ${parentPath.join('/')} does not exist`;
     }
@@ -101,8 +92,9 @@ export const useFileSystem = () => {
     return null;
   };
 
-  const removeDirectory = (pathString: string): string | null => {
-    const newPath = getPathRelativeToPath(location, pathString);
+  const removeDirectory = (pathString: string | Path): string | null => {
+    const path = parsePath(pathString);
+    const newPath = getPathRelativeToPath(location, path);
     const newPathRef = getAbsoluteRefByPath(fs, newPath);
 
     if (!newPathRef) {
@@ -121,8 +113,9 @@ export const useFileSystem = () => {
     return null;
   };
 
-  const changeDirectory = (pathString: string): string | null => {
-    const newPath = getPathRelativeToPath(location, pathString);
+  const changeDirectory = (pathString: string | Path): string | null => {
+    const path = parsePath(pathString);
+    const newPath = getPathRelativeToPath(location, path);
     const newPathRef = getAbsoluteRefByPath(fs, newPath);
 
     if (!newPathRef || newPathRef.type !== 'dir') {
@@ -150,7 +143,7 @@ export const useFileSystem = () => {
     changeDirectory,
     changeDirectoryAbsolute,
     removeDirectory,
-    makeDirectory,
+    makeDirectoryRelative,
     listFiles,
     getCurrentDirRef,
   };

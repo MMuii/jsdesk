@@ -11,11 +11,11 @@ export const mkdir: Binary = ({ terminate, args, processCommandAsync }) => {
   }
 
   return () => {
-    const { makeDirectory } = useFsSession();
+    const { makeDirectoryRelative } = useFsSession();
     const [result, setResult] = useState<null | string>(null);
 
     useEffect(() => {
-      setResult(makeDirectory(args[0]));
+      setResult(makeDirectoryRelative(args[0]));
     }, []);
 
     if (typeof result === 'string') {

@@ -1,5 +1,5 @@
 import { FileSystem } from 'interfaces/fs';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 
 const initialFs: FileSystem = {
@@ -50,5 +50,8 @@ export const useFsContext = () => useContext(FSContext);
 
 export const FSProvider = ({ children }: Props) => {
   const [fs, setFs] = useLocalStorage('fs', initialFs);
+  useEffect(() => {
+    console.log('fs:', fs);
+  }, [fs]);
   return <FSContext.Provider value={[fs, setFs]}>{children}</FSContext.Provider>;
 };

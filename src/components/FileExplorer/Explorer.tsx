@@ -12,7 +12,13 @@ interface Props {
 }
 
 export const Explorer = ({ initialPath }: Props) => {
-  const { location, getCurrentDirRef, changeDirectory, changeDirectoryAbsolute } = useFsSession();
+  const {
+    location,
+    getCurrentDirRef,
+    changeDirectory,
+    changeDirectoryAbsolute,
+    makeDirectoryRelative,
+  } = useFsSession();
 
   useEffect(() => {
     changeDirectoryAbsolute(initialPath);
@@ -27,16 +33,27 @@ export const Explorer = ({ initialPath }: Props) => {
     ));
 
     // @ts-ignore
-    // const result = directories.reduce((r, a) => r.concat(a, <Chevron />), directories);
-    const result = directories.flatMap(dir => [dir, <Chevron />]);
+    const result = directories.flatMap((dir, idx) => [dir, <Chevron key={idx} />]);
     result.pop();
     return result;
   };
 
+  const currentDirFiles = getCurrentDirRef().files;
+
   return (
     <Container>
-      <HeaderNavigation location={location} changeDirectoryAbsolute={changeDirectoryAbsolute} />
-      <FilesTable directories={getCurrentDirRef().files} changeDirectory={changeDirectory} />
+      <HeaderNavigation
+        location={location}
+        changeDirectoryAbsolute={changeDirectoryAbsolute}
+        makeDirectory={() => {
+          makeDirectoryRelative(['New folder']);
+        }}
+      />
+      <FilesTable
+        directories={currentDirFiles}
+        changeDirectory={changeDirectory}
+        location={location}
+      />
       <PathContainer>
         <UnchangeablePathWrapper>
           <FiHardDrive />

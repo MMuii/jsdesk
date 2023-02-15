@@ -1,10 +1,13 @@
 import weakKey from 'weak-key';
-import { Directory } from 'interfaces/fs';
+import { Directory, Path } from 'interfaces/fs';
 import { getIconByFileType } from 'utils/fs/getIconByFileType';
 import { FileTableRow, ResizableTable, ResizeHandle, TableWrapper } from './styled';
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useWindowManagerContext } from 'components/Desktop';
+import { TextEditor } from 'components/TextEditor';
 
 interface Props {
+  location: Path;
   directories: { [key: string]: Directory };
   changeDirectory: (pathString: string) => string | null;
 }
@@ -19,11 +22,12 @@ const createHeaders = (headers: string[]) => {
   }));
 };
 
-export const FilesTable = ({ directories, changeDirectory }: Props) => {
+export const FilesTable = ({ directories, changeDirectory, location }: Props) => {
   const [tableHeight] = useState<string | number>('auto');
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const tableElement = useRef<HTMLTableElement | null>(null);
   const columns = createHeaders(headers);
+  const { openWindow } = useWindowManagerContext();
 
   const mouseMove = useCallback(
     (e: MouseEvent) => {
@@ -70,6 +74,30 @@ export const FilesTable = ({ directories, changeDirectory }: Props) => {
     setActiveIndex(index);
   };
 
+  const handleFileDoubleClick = (filename: string, content: Directory) => {
+    switch (content.type) {
+      case 'dir': {
+        changeDirectory(filename);
+        return;
+      }
+      case 'txt': {
+        console.log('location:', location);
+        openWindow({
+          id: window.crypto.randomUUID(),
+          component: <TextEditor filePath={[...location, filename]} />,
+          name: 'TextEdit',
+          windowProps: {
+            width: 700,
+            height: 700,
+          },
+          // componentProps: {
+          //   filePath:
+          // }
+        });
+      }
+    }
+  };
+
   const renderCurrentLocationFiles = () => {
     const files = Object.entries(directories);
 
@@ -95,7 +123,7 @@ export const FilesTable = ({ directories, changeDirectory }: Props) => {
     return files.map(([fileName, content]) => {
       return (
         <FileTableRow
-          onDoubleClick={() => changeDirectory(fileName)}
+          onDoubleClick={() => handleFileDoubleClick(fileName, content)}
           $type={content.type}
           key={weakKey(content)}
         >

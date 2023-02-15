@@ -49,23 +49,26 @@ export const CurrentDirHeaderContainer = styled.div`
   font-size: 1.6rem;
   padding: 1rem 2rem;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 2rem;
   background: ${({ theme }) => darken(0.04, theme.background)};
   border-bottom: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
+`;
 
-  > div {
-    display: flex;
-    gap: 0.6rem;
+export const CurrentDirHeaderButtonsWrapper = styled.div`
+  display: flex;
+  gap: 0.6rem;
+  box-sizing: content-box;
+
+  svg {
     box-sizing: content-box;
+    padding: 0.5rem;
+    border-radius: 0.8rem;
+    cursor: pointer;
 
-    svg {
-      box-sizing: content-box;
-      padding: 0.5rem;
-      border-radius: 0.8rem;
-
-      &:hover {
-        background: ${({ theme }) => highlightDynamically(theme, 0.1)};
-      }
+    &:hover {
+      background: ${({ theme }) => highlightDynamically(theme, 0.1)};
     }
   }
 

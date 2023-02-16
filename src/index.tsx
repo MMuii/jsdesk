@@ -4,6 +4,7 @@ import { ThemeProvider } from 'utils/providers/ThemeProvider';
 import { Desktop } from 'components/Desktop';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import { FSProvider } from 'utils/providers/FSProvider';
+import { ContextMenuProvider } from 'utils/providers/ContextMenuProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
@@ -13,8 +14,10 @@ root.render(
   // <React.StrictMode>
   <FSProvider>
     <ThemeProvider>
-      <GlobalStyles />
-      <Desktop />
+      <ContextMenuProvider>
+        <GlobalStyles />
+        <Desktop />
+      </ContextMenuProvider>
     </ThemeProvider>
   </FSProvider>,
   // </React.StrictMode>,

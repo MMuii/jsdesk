@@ -9,6 +9,8 @@ import { AnimatePresence } from 'framer-motion';
 import { DocPreview } from 'components/DocPreview';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
 import { useFileSystem } from 'utils/hooks/useFileSystem';
+import { ContextMenu } from 'components/ContextMenu';
+import { useContextMenu } from 'utils/providers/ContextMenuProvider';
 
 interface WindowManagerContextValue {
   openWindow: (window: RenderableWindow) => void;
@@ -52,9 +54,19 @@ export const Desktop = () => {
   ]);
   const { listFiles } = useFileSystem();
   const dragContainerRef = useRef<HTMLDivElement | null>(null);
+  const { openContextMenu } = useContextMenu();
 
   return (
-    <DragContainer ref={dragContainerRef}>
+    <DragContainer
+      ref={dragContainerRef}
+      onContextMenuCapture={e => {
+        console.log('Context menu w desktop');
+        openContextMenu(e, [
+          { text: 'Test', onClick: () => alert('dupa') },
+          { text: 'test 2', onClick: () => alert('cyce') },
+        ]);
+      }}
+    >
       <IconsContainer openWindow={openWindow} desktopFiles={listFiles('desktop')} />
       <AnimatePresence>
         <WindowManagerContext.Provider value={{ openWindow, closeWindow }}>

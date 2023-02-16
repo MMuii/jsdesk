@@ -5,6 +5,8 @@ import { FileTableRow, ResizableTable, ResizeHandle, TableWrapper } from './styl
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useWindowManagerContext } from 'components/Desktop';
 import { TextEditor } from 'components/TextEditor';
+import { useContextMenu } from 'utils/providers/ContextMenuProvider';
+import { ContextMenuOption } from 'components/ContextMenu';
 
 interface Props {
   location: Path;
@@ -28,6 +30,7 @@ export const FilesTable = ({ directories, changeDirectory, location }: Props) =>
   const tableElement = useRef<HTMLTableElement | null>(null);
   const columns = createHeaders(headers);
   const { openWindow } = useWindowManagerContext();
+  const { openContextMenu } = useContextMenu();
 
   const mouseMove = useCallback(
     (e: MouseEvent) => {
@@ -121,11 +124,17 @@ export const FilesTable = ({ directories, changeDirectory, location }: Props) =>
     }
 
     return files.map(([fileName, content]) => {
+      const rowContextMenuOptions: ContextMenuOption[] = [
+        { text: 'Open', onClick: () => handleFileDoubleClick(fileName, content) },
+        { text: 'Rename', onClick: () => console.log('renaming :)') },
+      ];
+
       return (
         <FileTableRow
           onDoubleClick={() => handleFileDoubleClick(fileName, content)}
           $type={content.type}
           key={weakKey(content)}
+          onContextMenuCapture={e => openContextMenu(e, rowContextMenuOptions)}
         >
           <td tabIndex={0}>
             {getIconByFileType(content.type)}

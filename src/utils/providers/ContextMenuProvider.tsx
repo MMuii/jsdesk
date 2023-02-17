@@ -11,7 +11,11 @@ interface Position {
 }
 
 interface ContextMenuContextValue {
-  openContextMenu: (e: React.MouseEvent, options: ContextMenuOption[]) => void;
+  openContextMenu: (
+    e: React.MouseEvent,
+    triggerRefs: Element[],
+    options: ContextMenuOption[],
+  ) => void;
 }
 
 const ContextMenuContext = createContext({} as ContextMenuContextValue);
@@ -22,8 +26,17 @@ export const ContextMenuProvider = ({ children }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState<ContextMenuOption[]>([]);
 
-  const openContextMenu = (e: React.MouseEvent, options: ContextMenuOption[]) => {
+  const openContextMenu = (
+    e: React.MouseEvent,
+    triggerRefs: Element[],
+    options: ContextMenuOption[],
+  ) => {
+    if (!triggerRefs.some(triggerRef => triggerRef.contains(e.target as Element))) {
+      return;
+    }
+
     e.preventDefault();
+    e.stopPropagation();
     setPos({ x: e.clientX + 5, y: e.clientY });
     setOptions(options);
     setIsOpen(true);

@@ -61,7 +61,7 @@ export const Desktop = () => {
       ref={dragContainerRef}
       onContextMenuCapture={e => {
         console.log('Context menu w desktop');
-        openContextMenu(e, [
+        openContextMenu(e, [dragContainerRef.current!.firstChild] as Element[], [
           { text: 'Test', onClick: () => alert('dupa') },
           { text: 'test 2', onClick: () => alert('cyce') },
         ]);

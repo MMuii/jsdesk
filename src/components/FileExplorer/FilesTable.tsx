@@ -1,17 +1,18 @@
 import weakKey from 'weak-key';
 import { Directory, Path } from 'interfaces/fs';
-import { getIconByFileType } from 'utils/fs/getIconByFileType';
-import { FileTableRow, ResizableTable, ResizeHandle, TableWrapper } from './styled';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useWindowManagerContext } from 'components/Desktop';
 import { TextEditor } from 'components/TextEditor';
 import { useContextMenu } from 'utils/providers/ContextMenuProvider';
 import { ContextMenuOption } from 'components/ContextMenu';
+import { FileTableRow, EmptyFileTableRow } from './FileTableRow';
+import { ResizableTable, ResizeHandle, TableWrapper } from './styled';
 
 interface Props {
   location: Path;
   directories: { [key: string]: Directory };
   changeDirectory: (pathString: string) => string | null;
+  renameFile: (pathString: string | Path, newName: string) => string | null;
 }
 
 const headers = ['Name', 'Date modified', 'Size', 'Type'];
@@ -24,10 +25,12 @@ const createHeaders = (headers: string[]) => {
   }));
 };
 
-export const FilesTable = ({ directories, changeDirectory, location }: Props) => {
+export const FilesTable = ({ directories, changeDirectory, location, renameFile }: Props) => {
   const [tableHeight] = useState<string | number>('auto');
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [renamingTableRowIndex, setRenamingTableRowIndex] = useState<number | null>(null);
   const tableElement = useRef<HTMLTableElement | null>(null);
+  const tableRowElements = useRef<Array<HTMLTableRowElement | null>>([]);
   const columns = createHeaders(headers);
   const { openWindow } = useWindowManagerContext();
   const { openContextMenu } = useContextMenu();
@@ -93,9 +96,6 @@ export const FilesTable = ({ directories, changeDirectory, location }: Props) =>
             width: 700,
             height: 700,
           },
-          // componentProps: {
-          //   filePath:
-          // }
         });
       }
     }
@@ -105,51 +105,35 @@ export const FilesTable = ({ directories, changeDirectory, location }: Props) =>
     const files = Object.entries(directories);
 
     if (files.length === 0) {
-      return (
-        <FileTableRow $type="" style={{ pointerEvents: 'none' }}>
-          <td tabIndex={0}>
-            <span>Directory is empty</span>
-          </td>
-          <td tabIndex={0}>
-            <span>-</span>
-          </td>
-          <td tabIndex={0}>
-            <span>-</span>
-          </td>
-          <td tabIndex={0}>
-            <span>-</span>
-          </td>
-        </FileTableRow>
-      );
+      return <EmptyFileTableRow />;
     }
 
-    return files.map(([fileName, content]) => {
+    return files.map(([fileName, content], idx) => {
       const rowContextMenuOptions: ContextMenuOption[] = [
         { text: 'Open', onClick: () => handleFileDoubleClick(fileName, content) },
-        { text: 'Rename', onClick: () => console.log('renaming :)') },
+        {
+          text: 'Rename',
+          onClick: () => setRenamingTableRowIndex(idx),
+        },
       ];
 
       return (
         <FileTableRow
           onDoubleClick={() => handleFileDoubleClick(fileName, content)}
-          $type={content.type}
+          content={content}
+          fileName={fileName}
           key={weakKey(content)}
-          onContextMenuCapture={e => openContextMenu(e, rowContextMenuOptions)}
-        >
-          <td tabIndex={0}>
-            {getIconByFileType(content.type)}
-            <span>{fileName}</span>
-          </td>
-          <td tabIndex={0}>
-            <span>{new Date(content.updatedAt).toLocaleString()}</span>
-          </td>
-          <td tabIndex={0}>
-            <span>120 kB</span>
-          </td>
-          <td tabIndex={0}>
-            <span>{content.type}</span>
-          </td>
-        </FileTableRow>
+          onContextMenuCapture={e =>
+            openContextMenu(e, [tableRowElements.current[idx] as Element], rowContextMenuOptions)
+          }
+          ref={el => (tableRowElements.current[idx] = el)}
+          isRenaming={renamingTableRowIndex === idx}
+          onRename={newName => {
+            setRenamingTableRowIndex(null);
+            renameFile([...location, fileName], newName);
+          }}
+          onRenameCancel={() => setRenamingTableRowIndex(null)}
+        />
       );
     });
   };

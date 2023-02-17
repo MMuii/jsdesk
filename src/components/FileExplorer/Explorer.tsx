@@ -18,6 +18,7 @@ export const Explorer = ({ initialPath }: Props) => {
     changeDirectory,
     changeDirectoryAbsolute,
     makeDirectoryRelative,
+    renameFileAbsolute,
   } = useFsSession();
 
   useEffect(() => {
@@ -46,12 +47,13 @@ export const Explorer = ({ initialPath }: Props) => {
         location={location}
         changeDirectoryAbsolute={changeDirectoryAbsolute}
         makeDirectory={() => {
-          makeDirectoryRelative(['New folder']);
+          makeDirectoryRelative(['New folder'], true);
         }}
       />
       <FilesTable
         directories={currentDirFiles}
         changeDirectory={changeDirectory}
+        renameFile={renameFileAbsolute}
         location={location}
       />
       <PathContainer>

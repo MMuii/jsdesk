@@ -213,7 +213,7 @@ export const ResizeHandle = styled.div`
   background: ${({ theme }) => highlightDynamically(theme, 0.2)};
 `;
 
-export const FileTableRow = styled.tr<{ $type: string }>`
+export const FileTableRow = styled.tr<{ $type: string; $isRenaming: boolean }>`
   width: 100%;
   cursor: pointer;
   user-select: none;
@@ -225,6 +225,7 @@ export const FileTableRow = styled.tr<{ $type: string }>`
     white-space: nowrap;
 
     &:first-child {
+      padding: ${({ $isRenaming }) => ($isRenaming ? '0.2rem' : '0.4rem')} 1rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -258,5 +259,21 @@ export const FileTableRow = styled.tr<{ $type: string }>`
 
   svg {
     color: ${({ theme, $type }) => ($type === 'dir' ? theme.green : theme.foreground)};
+    min-width: 1.2rem;
+  }
+`;
+
+export const FileTableRowInput = styled.input`
+  background: ${({ theme }) => highlightDynamically(theme, 0.1, 0.5, 'foreground')};
+  font-size: 1.2rem;
+  padding: 0rem;
+  margin: 0rem;
+  max-width: 100%;
+  border: none;
+  font-family: 'Fira COde', monospace;
+  border-radius: 0.4rem;
+
+  &:focus {
+    outline: none;
   }
 `;

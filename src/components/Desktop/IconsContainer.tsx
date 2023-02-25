@@ -7,11 +7,11 @@ import { DesktopIconsContainer } from './styled';
 import { DocPreview } from 'components/DocPreview';
 import { FileExplorer } from 'components/FileExplorer';
 import { getIconByFileType } from 'utils/fs/getIconByFileType';
-import { Directory } from 'interfaces/fs';
+import { File } from 'utils/hooks/useFileSystem/File';
 
 interface Props {
   openWindow: (window: RenderableWindow) => void;
-  desktopFiles: Array<[string, Directory]>;
+  desktopFiles: File[];
 }
 
 interface DesktopIcon {
@@ -58,7 +58,7 @@ const getOpeningWindow = (fileName: string, fileType: string): RenderableWindow 
           width: 700,
         },
         componentProps: {
-          initialPath: ['desktop', fileName],
+          initialPath: ['/', fileName],
         },
       };
     default:
@@ -68,10 +68,10 @@ const getOpeningWindow = (fileName: string, fileType: string): RenderableWindow 
 
 export const IconsContainer = ({ openWindow, desktopFiles }: Props) => {
   const renderIcons = () => {
-    const desktopFilesIcons: DesktopIcon[] = desktopFiles.map(([fileName, content]) => ({
-      openingWindow: getOpeningWindow(fileName, content.type),
-      name: fileName,
-      icon: getIconByFileType(content.type),
+    const desktopFilesIcons: DesktopIcon[] = desktopFiles.map(({ name, type }) => ({
+      openingWindow: getOpeningWindow(name, type),
+      name: name,
+      icon: getIconByFileType(type),
     }));
 
     return [...initialDesktopIcons, ...desktopFilesIcons].map(

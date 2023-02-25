@@ -15,7 +15,7 @@ export const mkdir: Binary = ({ terminate, args, processCommandAsync }) => {
     const [result, setResult] = useState<null | string>(null);
 
     useEffect(() => {
-      setResult(makeDirectoryRelative(args[0]));
+      setResult(makeDirectoryRelative(args[0]) ?? null);
     }, []);
 
     if (typeof result === 'string') {

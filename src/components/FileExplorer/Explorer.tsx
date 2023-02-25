@@ -16,20 +16,20 @@ export const Explorer = ({ initialPath }: Props) => {
     location,
     getCurrentDirRef,
     changeDirectory,
-    changeDirectoryAbsolute,
     makeDirectoryRelative,
-    renameFileAbsolute,
+    moveFileAbsolute,
+    removeDirectory,
   } = useFsSession();
 
   useEffect(() => {
-    changeDirectoryAbsolute(initialPath);
+    changeDirectory(initialPath);
   }, []);
 
   const renderBottomNavigation = () => {
     const directories = location.map((dir, idx) => (
-      <div key={`${dir}${idx}`} onClick={() => changeDirectoryAbsolute(location.slice(0, idx + 1))}>
+      <div key={`${dir}${idx}`} onClick={() => changeDirectory(location.slice(0, idx + 1))}>
         <IoFolder />
-        <div>{dir}</div>
+        <div>{dir === '/' ? 'desktop' : dir}</div>
       </div>
     ));
 
@@ -45,7 +45,7 @@ export const Explorer = ({ initialPath }: Props) => {
     <Container>
       <HeaderNavigation
         location={location}
-        changeDirectoryAbsolute={changeDirectoryAbsolute}
+        changeDirectory={changeDirectory}
         makeDirectory={() => {
           makeDirectoryRelative(['New folder'], true);
         }}
@@ -53,7 +53,8 @@ export const Explorer = ({ initialPath }: Props) => {
       <FilesTable
         directories={currentDirFiles}
         changeDirectory={changeDirectory}
-        renameFile={renameFileAbsolute}
+        moveFile={moveFileAbsolute}
+        removeFile={removeDirectory}
         location={location}
       />
       <PathContainer>

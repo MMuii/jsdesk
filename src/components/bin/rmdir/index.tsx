@@ -15,7 +15,7 @@ export const rmdir: Binary = ({ terminate, args, processCommandAsync }) => {
     const [result, setResult] = useState<null | string>(null);
 
     useEffect(() => {
-      setResult(removeDirectory(args[0]));
+      setResult(removeDirectory(args[0]) ?? null);
     }, []);
 
     if (typeof result === 'string') {

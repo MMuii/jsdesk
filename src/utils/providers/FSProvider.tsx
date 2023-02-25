@@ -1,57 +1,55 @@
-import { FileSystem } from 'interfaces/fs';
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
+import { JSONFile, File } from 'utils/hooks/useFileSystem/File';
+import { FileSystem } from 'utils/hooks/useFileSystem/FileSystem';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 
-const initialFs: FileSystem = {
-  desktop: {
-    type: 'dir',
-    updatedAt: new Date().toISOString(),
-    files: {
-      img: {
-        type: 'dir',
-        updatedAt: new Date().toISOString(),
-        files: {
-          dupa: {
-            type: 'dir',
-            updatedAt: new Date().toISOString(),
-            files: {
-              'file.txt': {
-                type: 'txt',
-                updatedAt: new Date().toISOString(),
-                // @ts-ignore
-                value: 'value',
-              },
-            },
-          },
-          cyce: {
-            type: 'dir',
-            updatedAt: new Date().toISOString(),
-            files: {},
-          },
-          wadowice: {
-            type: 'dir',
-            updatedAt: new Date().toISOString(),
-            files: {},
-          },
-        },
-      },
-    },
-  },
+const documentsDir: JSONFile = {
+  files: [],
+  type: 'dir',
+  updatedAt: new Date().toISOString(),
+  name: 'documents',
+  isDirectory: true,
+  content: null,
+  path: ['/', 'documents'],
+};
+
+const fileSystemRoot: JSONFile = {
+  files: [documentsDir],
+  type: 'dir',
+  updatedAt: new Date().toISOString(),
+  name: '/',
+  isDirectory: true,
+  content: null,
+  path: ['/'],
 };
 
 interface Props {
   children: React.ReactNode;
 }
 
-type ContextValue = [FileSystem, (value: FileSystem | ((val: FileSystem) => FileSystem)) => void];
+interface ContextValue {
+  root: File;
+  setRoot(root: File): void;
+}
 
 const FSContext = createContext({} as ContextValue);
 export const useFsContext = () => useContext(FSContext);
 
 export const FSProvider = ({ children }: Props) => {
-  const [fs, setFs] = useLocalStorage('fs', initialFs);
-  useEffect(() => {
-    console.log('fs:', fs);
-  }, [fs]);
-  return <FSContext.Provider value={[fs, setFs]}>{children}</FSContext.Provider>;
+  const [localStorageFs, setLocalStorageFs] = useLocalStorage('fs', fileSystemRoot);
+  const [root, setRoot] = useState(FileSystem.parseRoot(localStorageFs));
+
+  const setRootWithLocalStorageSync = useCallback(
+    (root: File) => {
+      setLocalStorageFs(root);
+      setRoot(root);
+    },
+    [setLocalStorageFs],
+  );
+
+  return (
+    <FSContext.Provider value={{ root, setRoot: setRootWithLocalStorageSync }}>
+      {children}
+    </FSContext.Provider>
+  );
 };

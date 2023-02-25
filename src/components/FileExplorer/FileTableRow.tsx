@@ -1,12 +1,11 @@
 import { forwardRef, useEffect, useState } from 'react';
-import { Directory } from 'interfaces/fs';
 import { getIconByFileType } from 'utils/fs/getIconByFileType';
 import { FileTableRow as StyledTableRow, FileTableRowInput } from './styled';
+import { File } from 'utils/hooks/useFileSystem/File';
 
 interface Props {
   onDoubleClick: () => void;
-  content: Directory;
-  fileName: string;
+  file: File;
   onContextMenuCapture: (e: React.MouseEvent) => void;
   isRenaming: boolean;
   onRename: (newName: string) => void;
@@ -14,19 +13,8 @@ interface Props {
 }
 
 export const FileTableRow = forwardRef<HTMLTableRowElement, Props>(
-  (
-    {
-      onDoubleClick,
-      content,
-      onContextMenuCapture,
-      fileName,
-      isRenaming,
-      onRename,
-      onRenameCancel,
-    },
-    ref,
-  ) => {
-    const [renamedName, setRenamedName] = useState(fileName);
+  ({ onDoubleClick, onContextMenuCapture, isRenaming, onRename, onRenameCancel, file }, ref) => {
+    const [renamedName, setRenamedName] = useState(file.name);
 
     useEffect(() => {
       const escHandler = (e: KeyboardEvent) => {
@@ -51,7 +39,7 @@ export const FileTableRow = forwardRef<HTMLTableRowElement, Props>(
 
     const renderFileName = () => {
       if (!isRenaming) {
-        return <span>{fileName}</span>;
+        return <span>{file.name}</span>;
       }
 
       const onInputBlur = () => {
@@ -79,23 +67,23 @@ export const FileTableRow = forwardRef<HTMLTableRowElement, Props>(
         onDoubleClick={onDoubleClick}
         ref={ref}
         onContextMenuCapture={onContextMenuCapture}
-        $type={content.type}
+        $type={file.type}
         $isRenaming={isRenaming}
       >
         <td tabIndex={0}>
           <>
-            {getIconByFileType(content.type)}
+            {getIconByFileType(file.type)}
             {renderFileName()}
           </>
         </td>
         <td tabIndex={0}>
-          <span>{new Date(content.updatedAt).toLocaleString()}</span>
+          <span>{new Date(file.updatedAt).toLocaleString()}</span>
         </td>
         <td tabIndex={0}>
           <span>120 kB</span>
         </td>
         <td tabIndex={0}>
-          <span>{content.type}</span>
+          <span>{file.type}</span>
         </td>
       </StyledTableRow>
     );

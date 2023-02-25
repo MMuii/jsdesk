@@ -6,11 +6,11 @@ import { CurrentDirHeaderButtonsWrapper, CurrentDirHeaderContainer, NavArrow } f
 
 interface Props {
   location: Path;
-  changeDirectoryAbsolute: (pathString: string | Path) => string | null;
+  changeDirectory: (pathString: string | Path) => string | void;
   makeDirectory: () => void;
 }
 
-export const HeaderNavigation = ({ location, changeDirectoryAbsolute, makeDirectory }: Props) => {
+export const HeaderNavigation = ({ location, changeDirectory, makeDirectory }: Props) => {
   const [currentLocation, { set, undo, redo, canRedo, canUndo }] = useUndo(location);
 
   useEffect(() => {
@@ -18,14 +18,16 @@ export const HeaderNavigation = ({ location, changeDirectoryAbsolute, makeDirect
   }, [location, set]);
 
   const undoLocation = () => {
-    changeDirectoryAbsolute(currentLocation.past.at(-1) as Path);
+    changeDirectory(currentLocation.past.at(-1) as Path);
     undo();
   };
 
   const redoLocation = () => {
-    changeDirectoryAbsolute(currentLocation.future.at(0) as Path);
+    changeDirectory(currentLocation.future.at(0) as Path);
     redo();
   };
+
+  const displayedLocation = location.at(-1) === '/' ? 'desktop' : location.at(-1);
 
   return (
     <CurrentDirHeaderContainer>
@@ -38,7 +40,7 @@ export const HeaderNavigation = ({ location, changeDirectoryAbsolute, makeDirect
             style={{ transform: 'rotate(180deg)' }}
           />
         </div>
-        <span>{location.at(-1)}</span>
+        <span>{displayedLocation}</span>
       </CurrentDirHeaderButtonsWrapper>
       <CurrentDirHeaderButtonsWrapper>
         <HiFolderPlus

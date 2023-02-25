@@ -6,7 +6,7 @@ interface Props {
   initialPath?: Path;
 }
 
-export const FileExplorer = ({ initialPath = ['desktop'] }: Props) => {
+export const FileExplorer = ({ initialPath = ['/'] }: Props) => {
   return (
     <FSSessionProvider>
       <Explorer initialPath={initialPath} />

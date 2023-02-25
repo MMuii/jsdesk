@@ -5,14 +5,16 @@ import { useWindowManagerContext } from 'components/Desktop';
 import { TextEditor } from 'components/TextEditor';
 import { useContextMenu } from 'utils/providers/ContextMenuProvider';
 import { ContextMenuOption } from 'components/ContextMenu';
+import { File } from 'utils/hooks/useFileSystem/File';
 import { FileTableRow, EmptyFileTableRow } from './FileTableRow';
 import { ResizableTable, ResizeHandle, TableWrapper } from './styled';
 
 interface Props {
   location: Path;
-  directories: { [key: string]: Directory };
-  changeDirectory: (pathString: string) => string | null;
-  renameFile: (pathString: string | Path, newName: string) => string | null;
+  directories: File[];
+  changeDirectory: (pathString: string) => string | void;
+  moveFile: (path: string | Path, newPath: string | Path) => string | void;
+  removeFile: (path: string | Path) => string | void;
 }
 
 const headers = ['Name', 'Date modified', 'Size', 'Type'];
@@ -25,7 +27,13 @@ const createHeaders = (headers: string[]) => {
   }));
 };
 
-export const FilesTable = ({ directories, changeDirectory, location, renameFile }: Props) => {
+export const FilesTable = ({
+  directories,
+  changeDirectory,
+  location,
+  moveFile,
+  removeFile,
+}: Props) => {
   const [tableHeight] = useState<string | number>('auto');
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [renamingTableRowIndex, setRenamingTableRowIndex] = useState<number | null>(null);
@@ -80,17 +88,17 @@ export const FilesTable = ({ directories, changeDirectory, location, renameFile 
     setActiveIndex(index);
   };
 
-  const handleFileDoubleClick = (filename: string, content: Directory) => {
-    switch (content.type) {
+  const handleFileDoubleClick = (file: File) => {
+    switch (file.type) {
       case 'dir': {
-        changeDirectory(filename);
+        changeDirectory(file.name);
         return;
       }
       case 'txt': {
         console.log('location:', location);
         openWindow({
           id: window.crypto.randomUUID(),
-          component: <TextEditor filePath={[...location, filename]} />,
+          component: <TextEditor filePath={[...location, file.name]} />,
           name: 'TextEdit',
           windowProps: {
             width: 700,
@@ -102,27 +110,28 @@ export const FilesTable = ({ directories, changeDirectory, location, renameFile 
   };
 
   const renderCurrentLocationFiles = () => {
-    const files = Object.entries(directories);
-
-    if (files.length === 0) {
+    if (directories.length === 0) {
       return <EmptyFileTableRow />;
     }
 
-    return files.map(([fileName, content], idx) => {
+    return directories.map((file, idx) => {
       const rowContextMenuOptions: ContextMenuOption[] = [
-        { text: 'Open', onClick: () => handleFileDoubleClick(fileName, content) },
+        { text: 'Open', onClick: () => handleFileDoubleClick(file) },
         {
           text: 'Rename',
           onClick: () => setRenamingTableRowIndex(idx),
+        },
+        {
+          text: 'Delete',
+          onClick: () => removeFile(file.path),
         },
       ];
 
       return (
         <FileTableRow
-          onDoubleClick={() => handleFileDoubleClick(fileName, content)}
-          content={content}
-          fileName={fileName}
-          key={weakKey(content)}
+          onDoubleClick={() => handleFileDoubleClick(file)}
+          file={file}
+          key={weakKey(file)}
           onContextMenuCapture={e =>
             openContextMenu(e, [tableRowElements.current[idx] as Element], rowContextMenuOptions)
           }
@@ -130,7 +139,7 @@ export const FilesTable = ({ directories, changeDirectory, location, renameFile 
           isRenaming={renamingTableRowIndex === idx}
           onRename={newName => {
             setRenamingTableRowIndex(null);
-            renameFile([...location, fileName], newName);
+            moveFile(file.path, [...file.path.slice(0, -1), newName]);
           }}
           onRenameCancel={() => setRenamingTableRowIndex(null)}
         />

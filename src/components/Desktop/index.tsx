@@ -11,6 +11,7 @@ import { useFsSession } from 'utils/providers/FSSessionProvider';
 import { useFileSystem } from 'utils/hooks/useFileSystem';
 import { ContextMenu } from 'components/ContextMenu';
 import { useContextMenu } from 'utils/providers/ContextMenuProvider';
+import { File } from 'utils/hooks/useFileSystem/File';
 
 interface WindowManagerContextValue {
   openWindow: (window: RenderableWindow) => void;
@@ -67,7 +68,7 @@ export const Desktop = () => {
         ]);
       }}
     >
-      <IconsContainer openWindow={openWindow} desktopFiles={listFiles('desktop')} />
+      <IconsContainer openWindow={openWindow} desktopFiles={listFiles(['/']) as File[]} />
       <AnimatePresence>
         <WindowManagerContext.Provider value={{ openWindow, closeWindow }}>
           {windows.map(({ id, component, name, windowProps, componentProps }) => {

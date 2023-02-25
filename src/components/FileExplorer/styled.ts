@@ -152,7 +152,6 @@ export const ResizableTable = styled.table`
 
   tbody tr:first-child td {
     position: relative;
-    padding-top: 0.6rem;
     margin-top: 0.5rem;
 
     &::before {
@@ -270,7 +269,7 @@ export const FileTableRowInput = styled.input`
   margin: 0rem;
   max-width: 100%;
   border: none;
-  font-family: 'Fira COde', monospace;
+  font-family: 'Fira Code', monospace;
   border-radius: 0.4rem;
 
   &:focus {

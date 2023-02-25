@@ -16,7 +16,8 @@ const Location = noRerendered(({ currentDir }: { currentDir: string }) => (
 export const Ps1 = () => {
   const { location } = useFsSession();
 
-  const currentDir = location[location.length - 1] === '/' ? '~' : location[location.length - 1];
+  const currentDir =
+    location[location.length - 1] === '/' ? 'desktop' : location[location.length - 1];
 
   return (
     <Container>
@@ -32,7 +33,8 @@ export const Ps1 = () => {
 
 export const NoRerenderedPs1 = () => {
   const { location } = useFsSession();
-  const currentDir = location[location.length - 1] === '/' ? '~' : location[location.length - 1];
+  const currentDir =
+    location[location.length - 1] === '/' ? 'desktop' : location[location.length - 1];
 
   return <Location currentDir={currentDir} />;
 };

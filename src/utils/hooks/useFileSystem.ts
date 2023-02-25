@@ -1,233 +1,186 @@
 import { useFsContext } from 'utils/providers/FSProvider';
 import { useState, useEffect } from 'react';
 import produce from 'immer';
-import { Directory, FileSystem, Path } from 'interfaces/fs';
-
-const getCopyNumber = (filename: string, allFileNamesInDir: string[]): number => {
-  const regexp = new RegExp(`${filename} \\((?<copyNumber>[0-9]+)\\)`);
-  const copyNumbers = allFileNamesInDir.reduce((numbers, fname) => {
-    const match = fname.match(regexp);
-    if (match === null) {
-      return numbers;
-    }
-
-    return [...numbers, Number(match.groups!.copyNumber)];
-  }, [] as number[]);
-
-  const copyNumbersStreak = copyNumbers.sort().reduce((numbers, currentNumber) => {
-    if (!numbers.length || currentNumber === numbers[numbers.length - 1] + 1) {
-      return [...numbers, currentNumber];
-    }
-
-    return [...numbers];
-  }, [] as number[]);
-
-  return copyNumbersStreak.length ? copyNumbersStreak[copyNumbersStreak.length - 1] + 1 : 1;
-};
-
-const parsePath = (path: string | Path): Path => {
-  if (typeof path === 'object') {
-    return path;
-  }
-
-  return path.split('/');
-};
-
-// TODO - handle when path starts with /, eg. /dir/name
-// TODO - handle case when path starts with . eg. ./dir/name
-const getPathFromPathString = (pathString: string): Path => {
-  return pathString.split('/');
-};
-
-// TODO - better error handling, instead of null return an enum
-const getAbsoluteRefByPath = (fs: FileSystem, path: Path): Directory | null => {
-  try {
-    let dir = fs['desktop'] as any;
-
-    if (path.length > 1) {
-      path.slice(1)?.forEach(dirName => {
-        dir = dir.files[dirName];
-      });
-    }
-
-    return dir;
-  } catch (err) {
-    return null;
-  }
-};
-
-const getPathRelativeToPath = (currentPath: Path, relativePath: Path): Path => {
-  const resultPath = [...currentPath];
-
-  relativePath.forEach(dirName => {
-    if (dirName === '..') {
-      if (resultPath.length > 1) {
-        resultPath.pop();
-      }
-    } else {
-      resultPath.push(dirName);
-    }
-  });
-
-  return resultPath;
-};
+import { Path } from 'interfaces/fs';
+import { FileSystem } from './useFileSystem/FileSystem';
+import { FileSystemError } from './useFileSystem/FileSystemError';
+import { File } from './useFileSystem/File';
 
 export const useFileSystem = () => {
-  const [fs, setFs] = useFsContext();
-  const [location, setLocation] = useState<Path>(['desktop']);
+  const { root, setRoot } = useFsContext();
+  const [location, setLocation] = useState<Path>(['/']);
+
+  useEffect(() => {
+    console.log('root:', root);
+  }, [root]);
 
   useEffect(() => {
     console.log('location:', location);
   }, [location]);
 
-  // TODO - handle case when pathString is not a valid directory
-  const listFiles = (pathString?: string): Array<[string, Directory]> => {
-    const path = pathString === undefined ? location : getPathFromPathString(pathString);
-    const dirRef = getAbsoluteRefByPath(fs, path) as Directory;
+  const workOnDraftFs = (fn: (fs: FileSystem) => void): File => {
+    const draft = produce<File | FileSystemError>(root, draftRoot => {
+      const fs = new FileSystem(draftRoot as File, location);
+      try {
+        fn(fs);
+      } catch (err) {
+        if (err instanceof FileSystemError) {
+          return err;
+        }
 
-    return Object.entries(dirRef.files);
+        throw err;
+      }
+    });
+
+    if (draft instanceof FileSystemError) {
+      throw draft;
+    }
+
+    return draft;
   };
 
-  const getCurrentDirRef = (() => getAbsoluteRefByPath(fs, location)) as () => Directory;
+  const changeDirectory = (path: string | Path): string | void => {
+    const fs = new FileSystem(root, location);
+
+    try {
+      const file = fs.getFileByPath(path);
+      if (!file.isDirectory) {
+        return `cd: Directory ${path} is not a directory`;
+      }
+
+      setLocation(file.path);
+    } catch (err) {
+      if (err instanceof FileSystemError) {
+        console.error(err);
+        return `cd: ${err.message}`;
+      }
+
+      throw err;
+    }
+  };
+
+  const removeDirectory = (path: string | Path): string | void => {
+    try {
+      const newRoot = workOnDraftFs(fs => {
+        const fileToDelete = fs.getFileByPath(path);
+        const parentFile = fs.getParent(fileToDelete);
+        parentFile.deleteFile(fileToDelete.name);
+      });
+
+      setRoot(newRoot);
+    } catch (err) {
+      if (err instanceof FileSystemError) {
+        console.error(err);
+        return `cd: ${err.message}`;
+      }
+
+      throw err;
+    }
+  };
 
   const makeDirectoryRelative = (
-    pathString: string | Path,
+    path: string | Path,
     addEvenIfExists: boolean = false,
-  ): string | null => {
-    const path = parsePath(pathString);
-    const newDirPathRelative = getPathRelativeToPath(location, path);
-    const newDirPathRef = getAbsoluteRefByPath(fs, newDirPathRelative);
+  ): string | void => {
+    try {
+      const newRoot = workOnDraftFs(fs => {
+        const newDirPathAbsolute = fs.getAbsolutePathByRelativePath(path);
+        const doesFileExist = fs.doesFileExist(newDirPathAbsolute);
 
-    const parentDirPath = [...newDirPathRelative.slice(0, -1)];
-    const parentDirRef = getAbsoluteRefByPath(fs, parentDirPath);
+        const newDirParentPath = newDirPathAbsolute.slice(0, -1);
+        let newDirName = newDirPathAbsolute[newDirPathAbsolute.length - 1];
+        const newDirParent = fs.getFileByPath(newDirParentPath);
 
-    if (!parentDirRef || parentDirRef.type !== 'dir') {
-      return `mkdir: Directory ${parentDirPath.join('/')} does not exist`;
+        if (doesFileExist) {
+          if (!addEvenIfExists) {
+            throw new FileSystemError(`Directory ${newDirName} already exists`);
+          }
+
+          const copyNumber = newDirParent.getCopyNumberForNewAlreadyExistingChildFile(newDirName);
+          newDirName += ` (${copyNumber})`;
+        }
+
+        newDirParent.addFile({ type: 'dir', name: newDirName, content: null, isDirectory: true });
+      });
+
+      setRoot(newRoot);
+    } catch (err) {
+      if (err instanceof FileSystemError) {
+        console.error(err);
+        return `mkdir: ${err.message}`;
+      }
+
+      throw err;
     }
+  };
 
-    if (newDirPathRef) {
-      if (addEvenIfExists) {
-        const copyNumber = getCopyNumber(
-          newDirPathRelative[newDirPathRelative.length - 1],
-          Object.keys(parentDirRef.files),
-        );
-        newDirPathRelative[newDirPathRelative.length - 1] += ` (${copyNumber})`;
-      } else {
-        return `mkdir: Directory ${newDirPathRelative.join('/')} already exists`;
+  // @ts-ignore
+  const listFiles = (p?: string | Path): File[] | string => {
+    const path = p ?? location;
+
+    try {
+      const fs = new FileSystem(root, location);
+      const file = fs.getFileByPath(path);
+
+      if (!file.isDirectory) {
+        throw new FileSystemError(`File ${FileSystem.getPathAsString(path)} is not a directory`);
+      }
+
+      return file.files;
+    } catch (err) {
+      if (err instanceof FileSystemError) {
+        return `ls: ${err.message}`;
       }
     }
-
-    setFs(
-      produce(draft => {
-        const parentDirRef = getAbsoluteRefByPath(draft, parentDirPath) as Directory;
-        const newDirName = newDirPathRelative[newDirPathRelative.length - 1];
-        parentDirRef.files[newDirName] = {
-          type: 'dir',
-          updatedAt: new Date().toISOString(),
-          files: {},
-        };
-      }),
-    );
-
-    return null;
   };
 
-  const removeDirectory = (pathString: string | Path): string | null => {
-    const path = parsePath(pathString);
-    const fileToDeletePath = getPathRelativeToPath(location, path);
-    const fileToDeletePathRef = getAbsoluteRefByPath(fs, fileToDeletePath);
-
-    if (!fileToDeletePathRef) {
-      return `rm: Directory or file ${pathString} does not exist`;
-    }
-
-    setFs(
-      produce(draft => {
-        const [fileToDelete, parentPath] = [fileToDeletePath.pop(), fileToDeletePath];
-        const parentDirRef = getAbsoluteRefByPath(draft, parentPath);
-
-        delete parentDirRef!.files[fileToDelete as any];
-      }),
-    );
-
-    return null;
+  const getCurrentDirRef = (): File => {
+    const fs = new FileSystem(root, location);
+    return fs.getFileByPath(location);
   };
 
-  const changeDirectory = (pathString: string | Path): string | null => {
-    const path = parsePath(pathString);
-    const newPath = getPathRelativeToPath(location, path);
-    const newPathRef = getAbsoluteRefByPath(fs, newPath);
+  const moveFileAbsolute = (curPath: string | Path, destPath: string | Path): string | void => {
+    try {
+      const newRoot = workOnDraftFs(fs => {
+        if (fs.arePathsEqual(curPath, destPath)) {
+          return;
+        }
 
-    if (!newPathRef || newPathRef.type !== 'dir') {
-      return `cd: Directory ${pathString} does not exist`;
+        const curFile = fs.getFileByPath(curPath);
+        if (!curFile) {
+          throw new FileSystemError(`File ${FileSystem.getPathAsString(curPath)} does not exist`);
+        }
+
+        const destParentPathAbs = fs.getParentPathByPath(destPath);
+        const destParent = fs.getFileByPath(destParentPathAbs);
+        const newFileName = destPath[destPath.length - 1];
+        if (destParent.files.some(file => file.name === newFileName)) {
+          throw new FileSystemError(`File ${newFileName} already exists`);
+        }
+
+        destParent.addFile({ ...curFile, name: newFileName });
+        const curFileParent = fs.getParent(curFile);
+        curFileParent.files = curFileParent.files.filter(file => file.name !== curFile.name);
+      });
+
+      setRoot(newRoot);
+    } catch (err) {
+      if (err instanceof FileSystemError) {
+        console.error(err);
+        return `mv: ${err.message}`;
+      }
+
+      throw err;
     }
-
-    setLocation(newPath);
-    return null;
-  };
-
-  const changeDirectoryAbsolute = (pathString: string | Path): string | null => {
-    const newPath = parsePath(pathString);
-    const newPathRef = getAbsoluteRefByPath(fs, newPath);
-
-    if (!newPathRef || newPathRef.type !== 'dir') {
-      return `cd: Directory ${pathString} does not exist`;
-    }
-
-    setLocation(newPath);
-    return null;
-  };
-
-  const moveFileAbsolute = (pathString: string | Path, newPath: string | Path): string | null => {
-    const currentFilePath = parsePath(pathString);
-    const currentFileRef = getAbsoluteRefByPath(fs, currentFilePath);
-    if (!currentFileRef) {
-      return `cd: File ${pathString} does not exist`;
-    }
-
-    const movedFilePath = parsePath(newPath);
-    const movedFilePathRef = getAbsoluteRefByPath(fs, movedFilePath);
-    if (!movedFilePathRef) {
-      return `mv: ${}`
-    }
-
-    return null;
-  }
-
-  const renameFileAbsolute = (pathString: string | Path, newName: string): string | null => {
-    const currentFilePath = parsePath(pathString);
-    const currentFileRef = getAbsoluteRefByPath(fs, currentFilePath);
-    if (!currentFileRef) {
-      return `cd: File ${pathString} does not exist`;
-    }
-
-    const parentPath = getPathRelativeToPath(currentFilePath, ['..']);
-    const parentDirRef = getAbsoluteRefByPath(fs, parentPath);
-    if (newName in parentDirRef!.files) {
-      return `dupa`;
-    }
-
-    setFs(
-      produce(draft => {
-        const parentPathRef = getAbsoluteRefByPath(draft, parentPath) as Directory;
-        const oldName = currentFilePath.at(-1) as string;
-        parentPathRef.files[newName] = {} as Directory;
-        Object.assign(parentPathRef.files[newName], parentPathRef.files[oldName]);
-        delete parentPathRef.files[oldName];
-      }),
-    );
-
-    return null;
   };
 
   return {
     location,
     changeDirectory,
-    changeDirectoryAbsolute,
     removeDirectory,
     makeDirectoryRelative,
     listFiles,
     getCurrentDirRef,
-    renameFileAbsolute,
+    moveFileAbsolute,
   };
 };

@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Binary } from 'interfaces/Binary';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
 
-export const mkdir: Binary = ({ terminate, args, processCommandAsync }) => {
+export const touch: Binary = ({ terminate, args, processCommandAsync }) => {
   terminate();
 
   if (args.length === 0) {
-    processCommandAsync('help mkdir', 'mkdir');
+    processCommandAsync('help touch', 'touch');
     return null;
   }
 
@@ -15,7 +15,7 @@ export const mkdir: Binary = ({ terminate, args, processCommandAsync }) => {
     const [result, setResult] = useState<null | string>(null);
 
     useEffect(() => {
-      setResult(makeFileRelative(args[0], 'dir') ?? null);
+      setResult(makeFileRelative(args[0], 'txt') ?? null);
     }, []);
 
     if (typeof result === 'string') {

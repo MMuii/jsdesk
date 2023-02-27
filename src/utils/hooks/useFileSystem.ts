@@ -78,8 +78,9 @@ export const useFileSystem = () => {
     }
   };
 
-  const makeDirectoryRelative = (
+  const makeFileRelative = (
     path: string | Path,
+    type: string,
     addEvenIfExists: boolean = false,
   ): string | void => {
     try {
@@ -100,7 +101,7 @@ export const useFileSystem = () => {
           newDirName += ` (${copyNumber})`;
         }
 
-        newDirParent.addFile({ type: 'dir', name: newDirName, content: null, isDirectory: true });
+        newDirParent.addFile({ type, name: newDirName, content: null, isDirectory: true });
       });
 
       setRoot(newRoot);
@@ -178,7 +179,7 @@ export const useFileSystem = () => {
     location,
     changeDirectory,
     removeDirectory,
-    makeDirectoryRelative,
+    makeFileRelative,
     listFiles,
     getCurrentDirRef,
     moveFileAbsolute,

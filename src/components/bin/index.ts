@@ -16,6 +16,7 @@ import { ls } from 'components/bin/ls';
 import { mkdir } from 'components/bin/mkdir';
 import { rmdir } from 'components/bin/rmdir';
 import { cd } from 'components/bin/cd';
+import { touch } from 'components/bin/touch';
 import { help as clearHelp } from 'components/bin/clear/help';
 import { help as helpHelp } from 'components/bin/help/help';
 import { help as neofetchHelp } from 'components/bin/neofetch/help';
@@ -28,6 +29,7 @@ import { help as pwdHelp } from 'components/bin/pwd/help';
 import { help as lsHelp } from 'components/bin/ls/help';
 import { help as cdHelp } from 'components/bin/cd/help';
 import { help as mkdirHelp } from 'components/bin/mkdir/help';
+import { help as touchHelp } from 'components/bin/touch/help';
 import { Binary } from 'interfaces/Binary';
 
 export const bins: { [key: string]: Binary } = {
@@ -47,6 +49,7 @@ export const bins: { [key: string]: Binary } = {
   mkdir: mkdir,
   rmdir: rmdir,
   cd: cd,
+  touch: touch,
 };
 
 export const helpPages: { [key: string]: CommandHelp } = {
@@ -62,6 +65,7 @@ export const helpPages: { [key: string]: CommandHelp } = {
   pwd: pwdHelp,
   ls: lsHelp,
   cd: cdHelp,
+  touch: touchHelp,
 };
 
 export function getHelpPage(name: string): CommandHelp | undefined {

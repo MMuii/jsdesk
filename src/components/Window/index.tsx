@@ -7,6 +7,7 @@ import {
   WindowBar,
 } from 'components/Window/styled';
 import { useDragControls, Variants } from 'framer-motion';
+import { FSSessionProvider } from 'utils/providers/FSSessionProvider';
 
 interface Props {
   children: React.ReactNode;
@@ -160,7 +161,7 @@ export const Window = ({
         </WindowBarButtonContainer>
         <WindowName>{name}</WindowName>
       </WindowBar>
-      {children}
+      <FSSessionProvider>{children}</FSSessionProvider>
     </WindowContainer>
   );
 };

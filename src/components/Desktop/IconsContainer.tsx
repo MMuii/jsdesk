@@ -8,6 +8,7 @@ import { DocPreview } from 'components/DocPreview';
 import { FileExplorer } from 'components/FileExplorer';
 import { getIconByFileType } from 'utils/fs/getIconByFileType';
 import { File } from 'utils/hooks/useFileSystem/File';
+import { TextEditor } from 'components/TextEditor';
 
 interface Props {
   openWindow: (window: RenderableWindow) => void;
@@ -59,6 +60,16 @@ const getOpeningWindow = (fileName: string, fileType: string): RenderableWindow 
         },
         componentProps: {
           initialPath: ['/', fileName],
+        },
+      };
+    case 'txt':
+      return {
+        id: window.crypto.randomUUID(),
+        component: <TextEditor filePath={['/', fileName]} fileName={fileName} />,
+        name: 'TextEdit',
+        windowProps: {
+          height: 500,
+          width: 700,
         },
       };
     default:

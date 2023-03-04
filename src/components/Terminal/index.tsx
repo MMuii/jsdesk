@@ -4,7 +4,6 @@ import { InputLine } from 'components/InputLine';
 import { NoRerenderedPs1 } from 'components/Ps1';
 import { HistoryContainer } from './styled';
 import { useShell } from 'utils/hooks/useShell';
-import { FSSessionProvider } from 'utils/providers/FSSessionProvider';
 
 export const Terminal = () => {
   const terminalRef = useRef<HTMLDivElement | null>(null);
@@ -58,20 +57,18 @@ export const Terminal = () => {
   };
 
   return (
-    <FSSessionProvider>
-      <HistoryContainer ref={terminalRef} onClick={handleTerminalClick}>
-        {renderableHistory}
-        {callStack.length <= 1 && (
-          <InputLine
-            handleSubmit={handleSubmit}
-            handleChange={value => handleInputChange(value)}
-            value={inputValue}
-            hint={hint}
-            isValid={isInputValid}
-            inputRef={inputRef}
-          />
-        )}
-      </HistoryContainer>
-    </FSSessionProvider>
+    <HistoryContainer ref={terminalRef} onClick={handleTerminalClick}>
+      {renderableHistory}
+      {callStack.length <= 1 && (
+        <InputLine
+          handleSubmit={handleSubmit}
+          handleChange={value => handleInputChange(value)}
+          value={inputValue}
+          hint={hint}
+          isValid={isInputValid}
+          inputRef={inputRef}
+        />
+      )}
+    </HistoryContainer>
   );
 };

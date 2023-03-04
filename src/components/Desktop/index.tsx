@@ -51,23 +51,12 @@ export const useWindowManagerContext = () =>
 export const Desktop = () => {
   const { windows, openWindow, focusWindow, closeWindow, zIndexList } = useWindowManager([
     initialTerminal,
-    // initialWindow,
   ]);
   const { listFiles } = useFileSystem();
   const dragContainerRef = useRef<HTMLDivElement | null>(null);
-  const { openContextMenu } = useContextMenu();
 
   return (
-    <DragContainer
-      ref={dragContainerRef}
-      onContextMenuCapture={e => {
-        console.log('Context menu w desktop');
-        openContextMenu(e, [dragContainerRef.current!.firstChild] as Element[], [
-          { text: 'Test', onClick: () => alert('dupa') },
-          { text: 'test 2', onClick: () => alert('cyce') },
-        ]);
-      }}
-    >
+    <DragContainer ref={dragContainerRef}>
       <IconsContainer openWindow={openWindow} desktopFiles={listFiles(['/']) as File[]} />
       <AnimatePresence>
         <WindowManagerContext.Provider value={{ openWindow, closeWindow }}>

@@ -1,5 +1,5 @@
 import weakKey from 'weak-key';
-import { Directory, Path } from 'interfaces/fs';
+import { Path } from 'interfaces/fs';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useWindowManagerContext } from 'components/Desktop';
 import { TextEditor } from 'components/TextEditor';
@@ -84,6 +84,10 @@ export const FilesTable = ({
     };
   }, [activeIndex, mouseMove, mouseUp, removeListeners]);
 
+  useEffect(() => {
+    console.log('directories changed!', directories);
+  }, [directories]);
+
   const mouseDown = (index: number) => {
     setActiveIndex(index);
   };
@@ -95,10 +99,9 @@ export const FilesTable = ({
         return;
       }
       case 'txt': {
-        console.log('location:', location);
         openWindow({
           id: window.crypto.randomUUID(),
-          component: <TextEditor filePath={[...location, file.name]} />,
+          component: <TextEditor filePath={[...location, file.name]} fileName={file.name} />,
           name: 'TextEdit',
           windowProps: {
             width: 700,

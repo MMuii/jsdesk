@@ -175,6 +175,11 @@ export const useFileSystem = () => {
     }
   };
 
+  const getFileRef = (path: string | Path): File => {
+    const fs = new FileSystem(root, location);
+    return fs.getFileByPath(path);
+  };
+
   return {
     location,
     changeDirectory,
@@ -183,5 +188,6 @@ export const useFileSystem = () => {
     listFiles,
     getCurrentDirRef,
     moveFileAbsolute,
+    getFileRef,
   };
 };

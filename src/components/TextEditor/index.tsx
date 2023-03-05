@@ -3,7 +3,6 @@ import { Path } from 'interfaces/fs';
 import { IoIosSave } from 'react-icons/io';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
-import { File } from 'utils/hooks/useFileSystem/File';
 import {
   ButtonsWrapper,
   Container,

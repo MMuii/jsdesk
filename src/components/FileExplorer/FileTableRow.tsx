@@ -62,6 +62,20 @@ export const FileTableRow = forwardRef<HTMLTableRowElement, Props>(
       );
     };
 
+    const getFileSize = () => {
+      const bytes = new Blob([...file.content]).size;
+
+      if (bytes >= 1048576) {
+        return `${(bytes / 1048576).toFixed(2)} MB`;
+      }
+
+      if (bytes >= 1024) {
+        return `${(bytes / 1024).toFixed(2)} KB`;
+      }
+
+      return `${bytes} B`;
+    };
+
     return (
       <StyledTableRow
         onDoubleClick={onDoubleClick}
@@ -80,7 +94,7 @@ export const FileTableRow = forwardRef<HTMLTableRowElement, Props>(
           <span>{new Date(file.updatedAt).toLocaleString()}</span>
         </td>
         <td tabIndex={0}>
-          <span>120 kB</span>
+          <span>{file.type === 'dir' ? '-' : getFileSize()}</span>
         </td>
         <td tabIndex={0}>
           <span>{file.type}</span>

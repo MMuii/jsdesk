@@ -4,7 +4,6 @@ import { useFsSession } from 'utils/providers/FSSessionProvider';
 import { IoFolder } from 'react-icons/io5';
 import { FiHardDrive } from 'react-icons/fi';
 import { Chevron, Container, PathContainer, UnchangeablePathWrapper } from './styled';
-import { HeaderNavigation } from './HeaderNavigation';
 import { FilesTable } from './FilesTable';
 
 interface Props {
@@ -43,19 +42,13 @@ export const FileExplorer = ({ initialPath = ['/'] }: Props) => {
 
   return (
     <Container>
-      <HeaderNavigation
-        location={location}
-        changeDirectory={changeDirectory}
-        makeDirectory={() => {
-          makeFileRelative(['New folder'], 'dir', true);
-        }}
-      />
       <FilesTable
         directories={currentDirFiles}
         changeDirectory={changeDirectory}
         moveFile={moveFileAbsolute}
         removeFile={removeDirectory}
         location={location}
+        makeFile={makeFileRelative}
       />
       <PathContainer>
         <UnchangeablePathWrapper>

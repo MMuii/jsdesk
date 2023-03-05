@@ -8,13 +8,15 @@ import { ContextMenuOption } from 'components/ContextMenu';
 import { File } from 'utils/hooks/useFileSystem/File';
 import { FileTableRow, EmptyFileTableRow } from './FileTableRow';
 import { ResizableTable, ResizeHandle, TableWrapper } from './styled';
+import { HeaderNavigation } from './HeaderNavigation';
 
 interface Props {
   location: Path;
   directories: File[];
-  changeDirectory: (pathString: string) => string | void;
+  changeDirectory: (pathString: string | Path) => string | void;
   moveFile: (path: string | Path, newPath: string | Path) => string | void;
   removeFile: (path: string | Path) => string | void;
+  makeFile: (path: string | Path, type: string, addEvenIfExists?: boolean) => string | void;
 }
 
 const headers = ['Name', 'Date modified', 'Size', 'Type'];
@@ -33,12 +35,14 @@ export const FilesTable = ({
   location,
   moveFile,
   removeFile,
+  makeFile,
 }: Props) => {
   const [tableHeight] = useState<string | number>('auto');
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [renamingTableRowIndex, setRenamingTableRowIndex] = useState<number | null>(null);
   const tableElement = useRef<HTMLTableElement | null>(null);
   const tableRowElements = useRef<Array<HTMLTableRowElement | null>>([]);
+  const tableWrapperElement = useRef<HTMLDivElement | null>(null);
   const columns = createHeaders(headers);
   const { openWindow } = useWindowManagerContext();
   const { openContextMenu } = useContextMenu();
@@ -83,10 +87,6 @@ export const FilesTable = ({
       removeListeners();
     };
   }, [activeIndex, mouseMove, mouseUp, removeListeners]);
-
-  useEffect(() => {
-    console.log('directories changed!', directories);
-  }, [directories]);
 
   const mouseDown = (index: number) => {
     setActiveIndex(index);
@@ -150,26 +150,48 @@ export const FilesTable = ({
     });
   };
 
+  const createNewFileAndFocusTableRow = (name: string, type: string) => {
+    makeFile([name], type, true);
+    setRenamingTableRowIndex(directories.length);
+  };
+
+  const tableContextMenuOptions: ContextMenuOption[] = [
+    { text: 'New file', onClick: () => createNewFileAndFocusTableRow('New file.txt', 'txt') },
+    { text: 'New directory', onClick: () => createNewFileAndFocusTableRow('New folder', 'dir') },
+  ];
+
   return (
-    <TableWrapper>
-      <ResizableTable ref={tableElement}>
-        <thead>
-          <tr>
-            {columns.map(({ text, ref }, i) => (
-              // @ts-ignore
-              <th ref={ref} key={text}>
-                <span>{text}</span>
-                <ResizeHandle
-                  style={{ height: tableHeight }}
-                  onMouseDown={() => mouseDown(i)}
-                  className={`resize-handle ${activeIndex === i ? 'active' : 'idle'}`}
-                />
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>{renderCurrentLocationFiles()}</tbody>
-      </ResizableTable>
-    </TableWrapper>
+    <>
+      <HeaderNavigation
+        location={location}
+        changeDirectory={changeDirectory}
+        makeDirectory={() => createNewFileAndFocusTableRow('New folder', 'dir')}
+      />
+      <TableWrapper
+        ref={tableWrapperElement}
+        onContextMenu={e =>
+          openContextMenu(e, [tableWrapperElement.current as Element], tableContextMenuOptions)
+        }
+      >
+        <ResizableTable ref={tableElement}>
+          <thead>
+            <tr>
+              {columns.map(({ text, ref }, i) => (
+                // @ts-ignore
+                <th ref={ref} key={text}>
+                  <span>{text}</span>
+                  <ResizeHandle
+                    style={{ height: tableHeight }}
+                    onMouseDown={() => mouseDown(i)}
+                    className={`resize-handle ${activeIndex === i ? 'active' : 'idle'}`}
+                  />
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>{renderCurrentLocationFiles()}</tbody>
+        </ResizableTable>
+      </TableWrapper>
+    </>
   );
 };

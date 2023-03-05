@@ -3,6 +3,7 @@ import { Path } from 'interfaces/fs';
 import { IoIosSave } from 'react-icons/io';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
+import { File } from 'utils/hooks/useFileSystem/File';
 import {
   ButtonsWrapper,
   Container,
@@ -63,14 +64,14 @@ export const TextEditor = ({ filePath, fileName }: Props) => {
   };
 
   const saveFile = () => {
-    fileRef.current.content = value;
+    fileRef.current!.content = value;
     setShowSavedIcon(true);
     setTimeout(() => {
       setShowSavedIcon(false);
     }, 1500);
   };
 
-  const isEdited = fileRef.current.content !== value;
+  const isEdited = fileRef.current!.content !== value;
 
   return (
     <Container>

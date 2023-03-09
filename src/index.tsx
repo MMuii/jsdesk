@@ -5,6 +5,7 @@ import { Desktop } from 'components/Desktop';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import { FSProvider } from 'utils/providers/FSProvider';
 import { ContextMenuProvider } from 'utils/providers/ContextMenuProvider';
+import 'styles/reactPdfStyles.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 

@@ -1,0 +1,9 @@
+.react-pdf__Document {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: auto;
+
+  /* for some reason needed for properly working overflow, 5.3rem is the height of window navbar*/
+  padding-bottom: 3.8rem;
+}

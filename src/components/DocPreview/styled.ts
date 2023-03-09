@@ -7,9 +7,8 @@ import { highlightDynamically } from 'utils/styles/highlightDynamically';
 export const DocContainer = styled.div`
   width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-rows: min-content 1fr;
-  place-items: center;
+  position: relative;
+  overflow: auto;
 `;
 
 export const PdfRendererControlPanel = styled.div<{ $width: number; $minWidth: number }>`
@@ -57,6 +56,7 @@ export const ScaleControlsWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  user-select: none;
 `;
 
 const iconCss = css<{ $disabled: boolean }>`

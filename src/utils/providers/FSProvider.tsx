@@ -1,9 +1,9 @@
 import { createContext, useCallback, useContext, useState } from 'react';
-import { JSONFile, File } from 'utils/hooks/useFileSystem/File';
+import { FileType, File } from 'utils/hooks/useFileSystem/File';
 import { FileSystem } from 'utils/hooks/useFileSystem/FileSystem';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 
-const documentsDir: JSONFile = {
+const documentsDir: FileType = {
   files: [],
   type: 'dir',
   updatedAt: new Date().toISOString(),
@@ -13,7 +13,7 @@ const documentsDir: JSONFile = {
   path: ['/', 'documents'],
 };
 
-const textFile: JSONFile = {
+const textFile: FileType = {
   files: [],
   type: 'txt',
   updatedAt: new Date().toISOString(),
@@ -24,7 +24,7 @@ const textFile: JSONFile = {
   path: ['/', 'poem.txt'],
 };
 
-const fileSystemRoot: JSONFile = {
+const fileSystemRoot: FileType = {
   files: [documentsDir, textFile],
   type: 'dir',
   updatedAt: new Date().toISOString(),

@@ -11,8 +11,8 @@ type CreateFileObject = {
   files?: any;
 };
 
-export interface JSONFile {
-  files: JSONFile[];
+export interface FileType {
+  files: FileType[];
   type: string;
   updatedAt: string;
   name: string;
@@ -48,7 +48,6 @@ export class File {
 
     const newFile = new File({ type, name, isDirectory, content, path: [...this.path, name] });
     this.files.push(newFile);
-    console.log('new file:', newFile);
     return newFile;
   }
 

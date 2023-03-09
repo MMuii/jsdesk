@@ -1,5 +1,5 @@
 import { immerable } from 'immer';
-import { File, JSONFile } from './File';
+import { File, FileType } from './File';
 import { FileSystemError } from './FileSystemError';
 
 export type Path = string[];
@@ -123,13 +123,13 @@ export class FileSystem {
     return '/' + path.slice(1).join('/');
   }
 
-  public static parseRoot(jsonRoot: JSONFile): File {
+  public static parseRoot(jsonRoot: FileType): File {
     const root = new File({ ...jsonRoot });
     root.files = root.files.map(jsonFile => this.parseFileFromJSONFile(jsonFile));
     return root;
   }
 
-  private static parseFileFromJSONFile(jsonFile: JSONFile): File {
+  private static parseFileFromJSONFile(jsonFile: FileType): File {
     const file = new File({ ...jsonFile });
     file.files = file.files.map(jsonFile => this.parseFileFromJSONFile(jsonFile));
     return file;

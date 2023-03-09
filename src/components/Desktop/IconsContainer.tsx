@@ -22,7 +22,7 @@ interface DesktopIcon {
   icon: React.ReactElement;
 }
 
-const initialTerminal: RenderableWindow = {
+const terminalWindow: RenderableWindow = {
   id: window.crypto.randomUUID(),
   component: <Terminal />,
   name: 'term',
@@ -32,19 +32,19 @@ const initialTerminal: RenderableWindow = {
   },
 };
 
-const initialDocPreview: RenderableWindow = {
+const docPreviewWindow: RenderableWindow = {
   id: window.crypto.randomUUID(),
   component: <DocPreview docName="resume.pdf" />,
-  name: 'DocPreview - resume.pdf',
+  name: 'DocPreview',
   windowProps: {
-    height: 842,
-    width: 597,
+    // height: 842,
+    // width: 597,
   },
 };
 
 const initialDesktopIcons: DesktopIcon[] = [
-  { openingWindow: initialTerminal, name: 'term', icon: <IoTerminal /> },
-  { openingWindow: initialDocPreview, name: 'resume.pdf', icon: <HiDocument /> },
+  { openingWindow: terminalWindow, name: 'term', icon: <IoTerminal /> },
+  { openingWindow: docPreviewWindow, name: 'resume.pdf', icon: <HiDocument /> },
 ];
 
 const getOpeningWindow = (fileName: string, fileType: string): RenderableWindow => {
@@ -73,7 +73,7 @@ const getOpeningWindow = (fileName: string, fileType: string): RenderableWindow 
         },
       };
     default:
-      return initialTerminal; // TODO
+      return terminalWindow; // TODO
   }
 };
 

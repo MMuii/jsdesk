@@ -1,22 +1,44 @@
+import { useState, useRef, useEffect, useCallback } from 'react';
 import weakKey from 'weak-key';
 import { Path } from 'interfaces/fs';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { HiArrowSmDown } from 'react-icons/hi';
 import { useWindowManagerContext } from 'components/Desktop';
 import { TextEditor } from 'components/TextEditor';
 import { useContextMenu } from 'utils/providers/ContextMenuProvider';
 import { ContextMenuOption } from 'components/ContextMenu';
-import { File } from 'utils/hooks/useFileSystem/File';
+import { File, FileType } from 'utils/hooks/useFileSystem/File';
 import { FileTableRow, EmptyFileTableRow } from './FileTableRow';
 import { ResizableTable, ResizeHandle, TableWrapper } from './styled';
 import { HeaderNavigation } from './HeaderNavigation';
+import { current } from 'immer';
 
 interface Props {
   location: Path;
-  directories: File[];
+  currentDirRef: File;
+  // directories: FileType[];
   changeDirectory: (pathString: string | Path) => string | void;
   moveFile: (path: string | Path, newPath: string | Path) => string | void;
   removeFile: (path: string | Path) => string | void;
   makeFile: (path: string | Path, type: string, addEvenIfExists?: boolean) => string | void;
+}
+
+export type FileWithSize = FileType & { size: number | null };
+
+enum SortColumn {
+  name = 0,
+  dateModified,
+  size,
+  type,
+}
+
+enum SortOrder {
+  asc = 'asc',
+  desc = 'desc',
+}
+
+interface Sort {
+  col: SortColumn;
+  order: SortOrder;
 }
 
 const headers = ['Name', 'Date modified', 'Size', 'Type'];
@@ -29,14 +51,55 @@ const createHeaders = (headers: string[]) => {
   }));
 };
 
+const calculateFileSize = (file: FileType): number | null => {
+  if (file.type === 'dir') {
+    return null;
+  }
+
+  return new Blob([...file.content]).size;
+};
+
+const getSortFn = (
+  col: SortColumn,
+  order: SortOrder,
+): ((fileA: FileWithSize, fileB: FileWithSize) => number) => {
+  switch (col) {
+    case SortColumn.name:
+      if (order === SortOrder.asc) return (a, b) => a.name.localeCompare(b.name);
+      return (a, b) => b.name.localeCompare(a.name);
+    case SortColumn.type:
+      if (order === SortOrder.asc) return (a, b) => a.type.localeCompare(b.type);
+      return (a, b) => b.type.localeCompare(a.type);
+    case SortColumn.dateModified:
+      if (order === SortOrder.asc)
+        return (a, b) => (new Date(a.updatedAt) > new Date(b.updatedAt) ? 1 : 0);
+      return (a, b) => (new Date(b.updatedAt) > new Date(a.updatedAt) ? 1 : 0);
+    case SortColumn.size:
+      if (order === SortOrder.asc)
+        return (a, b) => {
+          if (a.size === null) return -1;
+          if (b.size === null) return 1;
+          return a > b ? 1 : 0;
+        };
+      return (a, b) => {
+        if (a.size === null) return 1;
+        if (b.size === null) return -1;
+        return b > a ? 1 : 0;
+      };
+  }
+};
+
 export const FilesTable = ({
-  directories,
+  // directories,
+  currentDirRef,
   changeDirectory,
   location,
   moveFile,
   removeFile,
   makeFile,
 }: Props) => {
+  const [dirs, setDirs] = useState<FileWithSize[]>([]);
+  const [sort, setSort] = useState<Sort>({ col: SortColumn.name, order: SortOrder.asc });
   const [tableHeight] = useState<string | number>('auto');
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [renamingTableRowIndex, setRenamingTableRowIndex] = useState<number | null>(null);
@@ -88,11 +151,18 @@ export const FilesTable = ({
     };
   }, [activeIndex, mouseMove, mouseUp, removeListeners]);
 
-  const mouseDown = (index: number) => {
-    setActiveIndex(index);
-  };
+  useEffect(() => {
+    const dirsWithSize = currentDirRef.files.map(dir => ({
+      ...dir,
+      size: calculateFileSize(dir),
+    }));
 
-  const handleFileDoubleClick = (file: File) => {
+    const sortFn = getSortFn(sort.col, sort.order);
+    const sortedDirectories = dirsWithSize.sort(sortFn);
+    setDirs(sortedDirectories);
+  }, [sort, currentDirRef]);
+
+  const handleFileDoubleClick = (file: FileType) => {
     switch (file.type) {
       case 'dir': {
         changeDirectory(file.name);
@@ -112,12 +182,52 @@ export const FilesTable = ({
     }
   };
 
+  const renderTableHeaders = () => {
+    return columns.map(({ text, ref }, i) => {
+      const sortingByThisCol = sort.col === i;
+
+      const handleClick = () => {
+        const getNewSortOrder = (currentSort: Sort): Sort['order'] => {
+          if (currentSort.col === i) {
+            return currentSort.order === SortOrder.asc ? SortOrder.desc : SortOrder.asc;
+          }
+
+          return SortOrder.asc;
+        };
+
+        setSort(currentSort => ({ col: i, order: getNewSortOrder(currentSort) }));
+      };
+
+      return (
+        // @ts-ignore
+        <th ref={ref} key={text}>
+          <div
+            style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}
+            onClick={handleClick}
+          >
+            <span>{text}</span>
+            {sortingByThisCol && (
+              <HiArrowSmDown
+                style={{ transform: `rotate(${sort.order === 'desc' ? 0 : 180}deg)` }}
+              />
+            )}
+          </div>
+          <ResizeHandle
+            style={{ height: tableHeight }}
+            onMouseDown={() => setActiveIndex(i)}
+            className={`resize-handle ${activeIndex === i ? 'active' : 'idle'}`}
+          />
+        </th>
+      );
+    });
+  };
+
   const renderCurrentLocationFiles = () => {
-    if (directories.length === 0) {
+    if (dirs.length === 0) {
       return <EmptyFileTableRow />;
     }
 
-    return directories.map((file, idx) => {
+    return dirs.map((file, idx) => {
       const rowContextMenuOptions: ContextMenuOption[] = [
         { text: 'Open', onClick: () => handleFileDoubleClick(file) },
         {
@@ -152,7 +262,24 @@ export const FilesTable = ({
 
   const createNewFileAndFocusTableRow = (name: string, type: string) => {
     makeFile([name], type, true);
-    setRenamingTableRowIndex(directories.length);
+    const doesFileExist = currentDirRef.files.some(file => file.name === name);
+    const newSampleFile: FileWithSize = {
+      files: [],
+      type,
+      updatedAt: new Date().toISOString(),
+      name: doesFileExist
+        ? `${name} (${currentDirRef.getCopyNumberForNewAlreadyExistingChildFile(name)})`
+        : name,
+      size: type === 'dir' ? null : 0,
+      isDirectory: type === 'dir',
+      content: [],
+      path: [],
+    };
+    const sortFn = getSortFn(sort.col, sort.order);
+    const newFileIndex = [...dirs, newSampleFile]
+      .sort(sortFn)
+      .findIndex(file => file.name === newSampleFile.name);
+    setRenamingTableRowIndex(newFileIndex);
   };
 
   const tableContextMenuOptions: ContextMenuOption[] = [
@@ -175,19 +302,7 @@ export const FilesTable = ({
       >
         <ResizableTable ref={tableElement}>
           <thead>
-            <tr>
-              {columns.map(({ text, ref }, i) => (
-                // @ts-ignore
-                <th ref={ref} key={text}>
-                  <span>{text}</span>
-                  <ResizeHandle
-                    style={{ height: tableHeight }}
-                    onMouseDown={() => mouseDown(i)}
-                    className={`resize-handle ${activeIndex === i ? 'active' : 'idle'}`}
-                  />
-                </th>
-              ))}
-            </tr>
+            <tr>{renderTableHeaders()}</tr>
           </thead>
           <tbody>{renderCurrentLocationFiles()}</tbody>
         </ResizableTable>

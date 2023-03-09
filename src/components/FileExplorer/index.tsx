@@ -38,12 +38,10 @@ export const FileExplorer = ({ initialPath = ['/'] }: Props) => {
     return result;
   };
 
-  const currentDirFiles = getCurrentDirRef().files;
-
   return (
     <Container>
       <FilesTable
-        directories={currentDirFiles}
+        currentDirRef={getCurrentDirRef()}
         changeDirectory={changeDirectory}
         moveFile={moveFileAbsolute}
         removeFile={removeDirectory}

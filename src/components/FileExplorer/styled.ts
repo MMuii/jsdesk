@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { BsChevronLeft } from 'react-icons/bs';
 import { FaChevronRight } from 'react-icons/fa';
 import { darken, lighten } from 'polished';
+import { iconButton } from 'utils/styles/iconButton';
 
 export const Container = styled.div`
   display: grid;
@@ -47,7 +48,7 @@ export const Chevron = styled(FaChevronRight)`
 export const CurrentDirHeaderContainer = styled.div`
   width: 100%;
   font-size: 1.6rem;
-  padding: 1rem 2rem;
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -62,14 +63,7 @@ export const CurrentDirHeaderButtonsWrapper = styled.div`
   box-sizing: content-box;
 
   svg {
-    box-sizing: content-box;
-    padding: 0.5rem;
-    border-radius: 0.8rem;
-    cursor: pointer;
-
-    &:hover {
-      background: ${({ theme }) => highlightDynamically(theme, 0.1)};
-    }
+    ${({ theme }) => iconButton(theme)};
   }
 
   > span {
@@ -179,6 +173,13 @@ export const ResizableTable = styled.table`
     position: relative;
     font-size: 1.2rem;
     padding: 1rem;
+    cursor: pointer;
+
+    svg {
+      font-size: 1.4rem;
+      line-height: 0;
+      margin: -0.2rem 0;
+    }
   }
 
   th,

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Path } from 'interfaces/fs';
 import { IoIosSave } from 'react-icons/io';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
@@ -19,18 +19,18 @@ interface Props {
 }
 
 export const TextEditor = ({ filePath, fileName }: Props) => {
-  const [value, setValue] = useState('');
+  const { getFileRef, saveFile } = useFsSession();
+  const [fileRef, setFileRef] = useState(getFileRef(filePath));
+  const [value, setValue] = useState(getFileRef(filePath).content);
   const [fontSize, setFontSize] = useState(12);
   const [fontSizeInputValue, setFontSizeInputValue] = useState('12');
   const [showSavedIcon, setShowSavedIcon] = useState(false);
-  const { getFileRef } = useFsSession();
-  const fileRef = useRef(getFileRef(filePath));
 
   useEffect(() => {
-    if (fileRef.current) {
-      setValue(fileRef.current.content);
+    if (showSavedIcon) {
+      setFileRef(getFileRef(filePath));
     }
-  }, [fileRef]);
+  }, [showSavedIcon]);
 
   const increaseFontSize = () => {
     if (fontSize < 40) {
@@ -62,15 +62,15 @@ export const TextEditor = ({ filePath, fileName }: Props) => {
     setFontSizeInputValue(fontSize.toString());
   };
 
-  const saveFile = () => {
-    fileRef.current!.content = value;
+  const saveFileChanges = () => {
+    saveFile(filePath, value);
     setShowSavedIcon(true);
     setTimeout(() => {
       setShowSavedIcon(false);
     }, 1500);
   };
 
-  const isEdited = fileRef.current!.content !== value;
+  const isEdited = fileRef.content !== value;
 
   return (
     <Container>
@@ -98,7 +98,7 @@ export const TextEditor = ({ filePath, fileName }: Props) => {
           <FontIcon onClick={increaseFontSize} $disabled={fontSize >= 40} />
           <NavbarButtonsSeparator />
           <SaveIconContainer>
-            <IoIosSave onClick={saveFile} />
+            <IoIosSave onClick={saveFileChanges} />
             {showSavedIcon && <BsFillCheckCircleFill />}
           </SaveIconContainer>
         </ButtonsWrapper>

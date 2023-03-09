@@ -1,3 +1,4 @@
+import { iconButton } from './../../utils/styles/iconButton';
 import { darken } from 'polished';
 import styled from 'styled-components';
 import { FaFont } from 'react-icons/fa';
@@ -18,19 +19,11 @@ export const Navbar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* gap: 2rem; */
   background: ${({ theme }) => darken(0.04, theme.background)};
   border-bottom: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
 
   svg {
-    box-sizing: content-box;
-    padding: 0.5rem;
-    border-radius: 0.8rem;
-    cursor: pointer;
-
-    &:hover {
-      background: ${({ theme }) => highlightDynamically(theme, 0.1)};
-    }
+    ${({ theme }) => iconButton(theme)};
   }
 `;
 

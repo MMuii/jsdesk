@@ -181,6 +181,15 @@ export const useFileSystem = () => {
     return fs.getFileByPath(path);
   };
 
+  const saveFile = (path: string | Path, newContent: any): void => {
+    const newRoot = workOnDraftFs(fs => {
+      const file = fs.getFileByPath(path);
+      file.content = newContent;
+    });
+
+    setRoot(newRoot);
+  };
+
   return {
     location,
     changeDirectory,
@@ -190,5 +199,6 @@ export const useFileSystem = () => {
     getCurrentDirRef,
     moveFileAbsolute,
     getFileRef,
+    saveFile,
   };
 };

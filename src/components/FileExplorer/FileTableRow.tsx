@@ -1,11 +1,11 @@
 import { forwardRef, useEffect, useState } from 'react';
 import { getIconByFileType } from 'utils/fs/getIconByFileType';
 import { FileTableRow as StyledTableRow, FileTableRowInput } from './styled';
-import { File } from 'utils/hooks/useFileSystem/File';
+import { FileWithSize } from './FilesTable';
 
 interface Props {
   onDoubleClick: () => void;
-  file: File;
+  file: FileWithSize;
   onContextMenuCapture: (e: React.MouseEvent) => void;
   isRenaming: boolean;
   onRename: (newName: string) => void;
@@ -62,9 +62,7 @@ export const FileTableRow = forwardRef<HTMLTableRowElement, Props>(
       );
     };
 
-    const getFileSize = () => {
-      const bytes = new Blob([...file.content]).size;
-
+    const formatFileSize = (bytes: number) => {
       if (bytes >= 1048576) {
         return `${(bytes / 1048576).toFixed(2)} MB`;
       }
@@ -94,7 +92,7 @@ export const FileTableRow = forwardRef<HTMLTableRowElement, Props>(
           <span>{new Date(file.updatedAt).toLocaleString()}</span>
         </td>
         <td tabIndex={0}>
-          <span>{file.type === 'dir' ? '-' : getFileSize()}</span>
+          <span>{file.size === null ? '-' : formatFileSize(file.size)}</span>
         </td>
         <td tabIndex={0}>
           <span>{file.type}</span>

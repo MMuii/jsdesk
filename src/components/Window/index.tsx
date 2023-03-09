@@ -1,12 +1,13 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   WindowContainer,
   WindowBarButtonContainer,
   WindowBarButton,
   WindowName,
   WindowBar,
+  ResizeHandle,
 } from 'components/Window/styled';
-import { useDragControls, Variants } from 'framer-motion';
+import { useDragControls, useMotionValue, Variants } from 'framer-motion';
 import { FSSessionProvider } from 'utils/providers/FSSessionProvider';
 
 interface Props {
@@ -19,6 +20,8 @@ interface Props {
   zIndex: number;
   width?: number;
   height?: number;
+  minWidth?: number;
+  minHeight?: number;
   onWindowClick?: (e?: any) => void;
 }
 
@@ -40,6 +43,8 @@ interface WindowVariantArgs {
 
 const variants: Variants = {
   fullScreen: {
+    top: 0,
+    left: 0,
     x: 0,
     y: 0,
     height: '100vh',
@@ -50,6 +55,8 @@ const variants: Variants = {
     },
   },
   window: ({ left, top, height, width }: WindowVariantArgs) => ({
+    top: 0,
+    left: 0,
     x: left,
     y: top,
     height: height === undefined ? 'min-content' : height,
@@ -60,8 +67,8 @@ const variants: Variants = {
     },
   }),
   initial: ({ left, top, height, width }: WindowVariantArgs) => ({
-    x: left - 10,
-    y: top - 10,
+    top: top - 10,
+    left: left - 10,
     height: height === undefined ? 'min-content' : height,
     width: width === undefined ? 'min-content' : width,
     opacity: 0,
@@ -87,6 +94,8 @@ export const Window = ({
   children,
   width,
   height,
+  minWidth = 300,
+  minHeight = 300,
 }: Props) => {
   const [fullScreenState, setFullScreenState] = useState<FullScreenState>(() => {
     const h = height ?? 300;
@@ -107,6 +116,8 @@ export const Window = ({
   });
   const windowContainerRef = useRef<HTMLDivElement | null>(null);
   const dragControls = useDragControls();
+  const mHeight = useMotionValue(200);
+  const mWidth = useMotionValue(200);
 
   const setFullScreen = () => {
     const { top, left } = windowContainerRef.current!.getBoundingClientRect();
@@ -119,6 +130,18 @@ export const Window = ({
       beforeFullScreenPosition: { ...prev.beforeFullScreenPosition },
     }));
   };
+
+  const handleDrag = useCallback((_: any, info: any) => {
+    const newHeight = mHeight.get() + info.delta.y;
+    const newWidth = mWidth.get() + info.delta.x;
+
+    if (newHeight >= minHeight) {
+      mHeight.set(newHeight);
+    }
+    if (newWidth >= minWidth) {
+      mWidth.set(newWidth);
+    }
+  }, []);
 
   return (
     <WindowContainer
@@ -134,6 +157,7 @@ export const Window = ({
       initial="initial"
       animate={fullScreenState.isFullScreen ? 'fullScreen' : 'window'}
       exit="exit"
+      style={{ height: mHeight, width: mWidth }}
       custom={{
         top: fullScreenState.beforeFullScreenPosition.top,
         left: fullScreenState.beforeFullScreenPosition.left,
@@ -162,6 +186,14 @@ export const Window = ({
         <WindowName>{name}</WindowName>
       </WindowBar>
       <FSSessionProvider>{children}</FSSessionProvider>
+
+      <ResizeHandle
+        drag
+        dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+        dragElastic={0}
+        dragMomentum={false}
+        onDrag={(e, info) => handleDrag(e, info)}
+      />
     </WindowContainer>
   );
 };

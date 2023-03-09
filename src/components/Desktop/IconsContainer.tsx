@@ -37,8 +37,8 @@ const docPreviewWindow: RenderableWindow = {
   component: <DocPreview docName="resume.pdf" />,
   name: 'DocPreview',
   windowProps: {
-    // height: 842,
-    // width: 597,
+    height: 842,
+    width: 597,
   },
 };
 

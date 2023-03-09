@@ -185,3 +185,14 @@ export const WindowName = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
 `;
+
+export const ResizeHandle = styled(motion.div)`
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: red;
+  cursor: nwse-resize;
+  opacity: 0;
+`;

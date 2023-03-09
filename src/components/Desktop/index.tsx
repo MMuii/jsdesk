@@ -3,14 +3,9 @@ import { Terminal } from 'components/Terminal';
 import { Window } from 'components/Window';
 import { DragContainer } from './styled';
 import { RenderableWindow, useWindowManager } from 'utils/hooks/useWindowManager';
-import { PicturePreview } from 'components/PicturePreview';
 import { IconsContainer } from './IconsContainer';
 import { AnimatePresence } from 'framer-motion';
-import { DocPreview } from 'components/DocPreview';
-import { useFsSession } from 'utils/providers/FSSessionProvider';
 import { useFileSystem } from 'utils/hooks/useFileSystem';
-import { ContextMenu } from 'components/ContextMenu';
-import { useContextMenu } from 'utils/providers/ContextMenuProvider';
 import { File } from 'utils/hooks/useFileSystem/File';
 
 interface WindowManagerContextValue {
@@ -28,22 +23,6 @@ const initialTerminal: RenderableWindow = {
   },
 };
 
-// const initialWindow: RenderableWindow = {
-//   id: window.crypto.randomUUID(),
-//   component: <PicturePreview imgName="floppa.jpeg" />,
-//   name: 'ImgViewer',
-// };
-
-// const initialDocPreview: RenderableWindow = {
-//   id: window.crypto.randomUUID(),
-//   component: <DocPreview docName="resume.pdf" />,
-//   name: 'DocPreview - resume.pdf',
-//   windowProps: {
-//     height: 842,
-//     width: 597,
-//   },
-// };
-
 const WindowManagerContext = createContext({} as WindowManagerContextValue);
 export const useWindowManagerContext = () =>
   useContext<WindowManagerContextValue>(WindowManagerContext);
@@ -58,8 +37,8 @@ export const Desktop = () => {
   return (
     <DragContainer ref={dragContainerRef}>
       <IconsContainer openWindow={openWindow} desktopFiles={listFiles(['/']) as File[]} />
-      <AnimatePresence>
-        <WindowManagerContext.Provider value={{ openWindow, closeWindow }}>
+      <WindowManagerContext.Provider value={{ openWindow, closeWindow }}>
+        <AnimatePresence>
           {windows.map(({ id, component, name, windowProps, componentProps }) => {
             const componentWithCustomProps = React.cloneElement(component, {
               ...component.props,
@@ -81,8 +60,8 @@ export const Desktop = () => {
               </Window>
             );
           })}
-        </WindowManagerContext.Provider>
-      </AnimatePresence>
+        </AnimatePresence>
+      </WindowManagerContext.Provider>
     </DragContainer>
   );
 };

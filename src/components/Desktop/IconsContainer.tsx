@@ -1,8 +1,10 @@
 import { DesktopIcon } from 'components/DesktopIcon';
 import { Terminal } from 'components/Terminal';
+import { Painter } from 'components/Painter';
 import { RenderableWindow } from 'utils/hooks/useWindowManager';
 import { IoTerminal } from 'react-icons/io5';
 import { HiDocument } from 'react-icons/hi';
+import { HiPaintBrush } from 'react-icons/hi2';
 import { DesktopIconsContainer } from './styled';
 import { DocPreview } from 'components/DocPreview';
 import { getIconByFileType } from 'utils/fs/getIconByFileType';
@@ -41,9 +43,20 @@ const docPreviewWindow: RenderableWindow = {
   },
 };
 
+const painterWindow: RenderableWindow = {
+  id: window.crypto.randomUUID(),
+  component: <Painter />,
+  name: 'Painter',
+  windowProps: {
+    height: 500,
+    width: 800,
+  },
+};
+
 const initialDesktopIcons: DesktopIcon[] = [
   { openingWindow: terminalWindow, name: 'term', icon: <IoTerminal /> },
   { openingWindow: docPreviewWindow, name: 'resume.pdf', icon: <HiDocument /> },
+  { openingWindow: painterWindow, name: 'Painter', icon: <HiPaintBrush /> },
 ];
 
 export const IconsContainer = ({ openWindow, desktopFiles }: Props) => {

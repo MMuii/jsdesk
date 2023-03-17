@@ -9,6 +9,7 @@ import {
 } from 'components/Window/styled';
 import { useDragControls, useMotionValue, Variants } from 'framer-motion';
 import { FSSessionProvider } from 'utils/providers/FSSessionProvider';
+import { WindowPopupProvider } from 'utils/providers/WindowPopupProvider';
 
 interface Props {
   children: React.ReactNode;
@@ -185,7 +186,10 @@ export const Window = ({
         </WindowBarButtonContainer>
         <WindowName>{name}</WindowName>
       </WindowBar>
-      <FSSessionProvider>{children}</FSSessionProvider>
+
+      <FSSessionProvider>
+        <WindowPopupProvider>{children}</WindowPopupProvider>
+      </FSSessionProvider>
 
       <ResizeHandle
         drag

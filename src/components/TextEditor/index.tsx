@@ -12,6 +12,7 @@ import {
   FontIcon,
   SaveIconContainer,
 } from './styled';
+import { useNumberInputValue } from 'utils/hooks/useNumberInputValue';
 
 interface Props {
   filePath: Path;
@@ -22,8 +23,11 @@ export const TextEditor = ({ filePath, fileName }: Props) => {
   const { getFileRef, saveFile } = useFsSession();
   const [fileRef, setFileRef] = useState(getFileRef(filePath));
   const [value, setValue] = useState(getFileRef(filePath).content);
-  const [fontSize, setFontSize] = useState(12);
-  const [fontSizeInputValue, setFontSizeInputValue] = useState('12');
+  const {
+    value: fontSize,
+    setValue: setFontSize,
+    inputProps,
+  } = useNumberInputValue(12, { min: 5, max: 40 });
   const [showSavedIcon, setShowSavedIcon] = useState(false);
 
   useEffect(() => {
@@ -36,7 +40,6 @@ export const TextEditor = ({ filePath, fileName }: Props) => {
     if (fontSize < 40) {
       const newSize = fontSize + 1;
       setFontSize(newSize);
-      setFontSizeInputValue(newSize.toString());
     }
   };
 
@@ -44,22 +47,7 @@ export const TextEditor = ({ filePath, fileName }: Props) => {
     if (fontSize > 5) {
       const newSize = fontSize - 1;
       setFontSize(newSize);
-      setFontSizeInputValue(newSize.toString());
     }
-  };
-
-  const changeFontSizeByInputValue = () => {
-    const size = parseInt(fontSizeInputValue);
-    if (isNaN(size)) {
-      return;
-    }
-
-    if (size >= 5 && size <= 40) {
-      setFontSize(size);
-      return;
-    }
-
-    setFontSizeInputValue(fontSize.toString());
   };
 
   const saveFileChanges = () => {
@@ -86,15 +74,7 @@ export const TextEditor = ({ filePath, fileName }: Props) => {
             onClick={decreaseFontSize}
             $disabled={fontSize <= 5}
           />
-          <input
-            type="number"
-            min={5}
-            max={40}
-            value={fontSizeInputValue}
-            onChange={e => setFontSizeInputValue(e.target.value)}
-            onBlur={changeFontSizeByInputValue}
-            onKeyDown={e => e.key === 'Enter' && changeFontSizeByInputValue()}
-          />
+          <input {...inputProps} />
           <FontIcon onClick={increaseFontSize} $disabled={fontSize >= 40} />
           <NavbarButtonsSeparator />
           <SaveIconContainer>

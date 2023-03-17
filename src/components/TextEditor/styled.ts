@@ -1,9 +1,8 @@
-import { iconButton } from './../../utils/styles/iconButton';
-import { darken } from 'polished';
 import styled from 'styled-components';
 import { FaFont } from 'react-icons/fa';
 import { highlightDynamically } from 'utils/styles/highlightDynamically';
 import { styledScrollbar } from 'utils/styles/styledScrollbar';
+import { windowNavbar } from 'utils/styles/windowNavbar';
 
 export const Container = styled.div`
   width: 100%;
@@ -13,18 +12,7 @@ export const Container = styled.div`
 `;
 
 export const Navbar = styled.div`
-  width: 100%;
-  font-size: 1.6rem;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: ${({ theme }) => darken(0.04, theme.background)};
-  border-bottom: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
-
-  svg {
-    ${({ theme }) => iconButton(theme)};
-  }
+  ${({ theme }) => windowNavbar(theme)};
 `;
 
 export const FontIcon = styled(FaFont)<{ $disabled: boolean }>`

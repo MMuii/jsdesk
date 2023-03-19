@@ -181,10 +181,10 @@ export const useFileSystem = () => {
     return fs.getFileByPath(path);
   };
 
-  const saveFile = (path: string | Path, newContent: any): void => {
+  const saveFile = (path: string | Path, content: any): void => {
     const newRoot = workOnDraftFs(fs => {
       const file = fs.getFileByPath(path);
-      file.content = newContent;
+      file.content = content;
     });
 
     setRoot(newRoot);

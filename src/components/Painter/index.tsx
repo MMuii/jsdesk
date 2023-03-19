@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Layer, Stage, Line, Rect } from 'react-konva';
+import Konva from 'konva';
+import { Layer, Stage, Line, Rect, Image } from 'react-konva';
 import { IoIosSave } from 'react-icons/io';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { FaTrashAlt } from 'react-icons/fa';
@@ -15,6 +16,13 @@ import {
 import { Toolbox, Tools } from './Toolbox';
 import { useNumberInputValue } from 'utils/hooks/useNumberInputValue';
 import { useWindowPopup } from 'utils/providers/WindowPopupProvider';
+import { useFileSystem } from 'utils/hooks/useFileSystem';
+import { Path } from 'utils/hooks/useFileSystem/FileSystem';
+import { File } from 'utils/hooks/useFileSystem/File';
+
+interface Props {
+  workingFileRef?: File;
+}
 
 interface LineProps {
   tool: Tools;
@@ -23,7 +31,7 @@ interface LineProps {
   points: number[];
 }
 
-export const Painter = () => {
+export const Painter = ({ workingFileRef }: Props) => {
   const [[width, height], setDimensions] = useState([600, 350]);
   const [tool, setTool] = useState(Tools.pencil);
   const [brushColor, setBrushColor] = useState('#df4b26');
@@ -33,15 +41,21 @@ export const Painter = () => {
     inputProps: brushSizeInputProps,
   } = useNumberInputValue(5, { min: 1, max: 50 });
   const [lines, setLines] = useState<LineProps[]>([]);
+  const [loadedImage, setLoadedImage] = useState<HTMLImageElement | null>(null);
+
   const [showSavedIcon, setShowSavedIcon] = useState(false);
   const { openPopup } = useWindowPopup();
+  const { makeFileRelative, saveFile } = useFileSystem();
   const isDrawing = useRef(false);
-  const canvasContainerRef = useRef<HTMLDivElement | null>(null);
+  const stageRef = useRef<Konva.Stage | null>(null);
 
   useEffect(() => {
-    // console.log('tool:', tool);
-    console.log('lines:', lines);
-  }, [lines]);
+    if (!workingFileRef) return;
+
+    const img = new window.Image();
+    img.src = workingFileRef.content;
+    setLoadedImage(img);
+  }, []);
 
   const handleMouseDown = useCallback(
     (e: KonvaPointerEvent) => {
@@ -78,6 +92,22 @@ export const Painter = () => {
     setLines(lines.concat());
   };
 
+  const saveImage = useCallback(() => {
+    if (!stageRef.current) {
+      return;
+    }
+
+    const dataURL = stageRef.current.toDataURL();
+    console.log('dataURL', dataURL);
+
+    if (workingFileRef) {
+      saveFile(workingFileRef.path, dataURL);
+    } else {
+      // TODO - add path picker
+      makeFileRelative('/image.jpg', 'jpg', true, dataURL);
+    }
+  }, [stageRef, makeFileRelative]);
+
   const clearCanvas = useCallback(() => {
     openPopup({
       title: 'Clear canvas',
@@ -89,16 +119,16 @@ export const Painter = () => {
   return (
     <Container>
       <Navbar>
-        <div>dupa cyce wadowice</div>
+        <div>{workingFileRef ? workingFileRef.name : 'New image'}</div>
         <NavbarButtonsWrapper>
           <FaTrashAlt onClick={clearCanvas} />
           <SaveIconContainer>
-            <IoIosSave onClick={() => openPopup({ title: 'Test title' })} />
+            <IoIosSave onClick={saveImage} />
             {showSavedIcon && <BsFillCheckCircleFill />}
           </SaveIconContainer>
         </NavbarButtonsWrapper>
       </Navbar>
-      <CanvasContainer ref={canvasContainerRef}>
+      <CanvasContainer>
         <Toolbox
           selectedTool={tool}
           setSelectedTool={setTool}
@@ -115,11 +145,14 @@ export const Painter = () => {
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseup={handleMouseUp}
+            ref={stageRef}
           >
             <Layer>
               <Rect fill="#fff" width={width} height={height} />
             </Layer>
+
             <Layer>
+              {loadedImage && <Image image={loadedImage} />}
               {lines.map((line, i) => (
                 <Line
                   key={i}

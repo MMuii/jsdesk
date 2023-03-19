@@ -79,10 +79,10 @@ export const Toolbox = ({
   return (
     <ToolboxContainer>
       <div>
-        <BrushSizeButton $size={mapRange(brushSize, 1, 50, 5, 36)} />
+        <BrushSizeButton $size={mapRange(brushSize, 1, 50, 1, 36)} />
         <BrushSizeSlider
           type="range"
-          min={5}
+          min={1}
           max={50}
           value={brushSize}
           onChange={e => setBrushSize(parseInt(e.target.value))}

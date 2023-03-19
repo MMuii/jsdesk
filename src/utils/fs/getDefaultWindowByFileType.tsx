@@ -1,4 +1,5 @@
 import { FileExplorer } from 'components/FileExplorer';
+import { Painter } from 'components/Painter';
 import { TextEditor } from 'components/TextEditor';
 import { File } from 'utils/hooks/useFileSystem/File';
 import { RenderableWindow } from 'utils/hooks/useWindowManager';
@@ -35,7 +36,21 @@ export const getDefaultWindowByFileType = (
           ...componentProps,
         },
       };
+    case 'jpg':
+      return {
+        id: window.crypto.randomUUID(),
+        component: <Painter />,
+        name: 'Painter',
+        windowProps: {
+          ...windowProps,
+          width: 800,
+        },
+        componentProps: {
+          workingFileRef: file,
+          ...componentProps,
+        },
+      };
     default:
-      throw new Error(`Could not open file: ${file.name}`); // TODO
+      throw new Error(`Could not open file: ${file.name} // TODO`); // TODO
   }
 };

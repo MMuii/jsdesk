@@ -10,7 +10,7 @@ import {
   ColorPickerInput,
   ToolboxContainer,
   ToolIconWrapper,
-} from './styled';
+} from 'components/apps/Painter/styled';
 
 interface Props {
   selectedTool: Tools;

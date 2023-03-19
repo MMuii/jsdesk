@@ -3,19 +3,17 @@ import weakKey from 'weak-key';
 import { Path } from 'interfaces/fs';
 import { HiArrowSmDown } from 'react-icons/hi';
 import { useWindowManagerContext } from 'components/Desktop';
-import { TextEditor } from 'components/TextEditor';
+import { TextEditor } from 'components/apps/TextEditor';
 import { useContextMenu } from 'utils/providers/ContextMenuProvider';
 import { ContextMenuOption } from 'components/ContextMenu';
 import { File, FileType } from 'utils/hooks/useFileSystem/File';
-import { FileTableRow, EmptyFileTableRow } from './FileTableRow';
-import { ResizableTable, ResizeHandle, TableWrapper } from './styled';
-import { HeaderNavigation } from './HeaderNavigation';
-import { current } from 'immer';
+import { FileTableRow, EmptyFileTableRow } from 'components/apps/FileExplorer/FileTableRow';
+import { ResizableTable, ResizeHandle, TableWrapper } from 'components/apps/FileExplorer/styled';
+import { HeaderNavigation } from 'components/apps/FileExplorer/HeaderNavigation';
 
 interface Props {
   location: Path;
   currentDirRef: File;
-  // directories: FileType[];
   changeDirectory: (pathString: string | Path) => string | void;
   moveFile: (path: string | Path, newPath: string | Path) => string | void;
   removeFile: (path: string | Path) => string | void;
@@ -90,7 +88,6 @@ const getSortFn = (
 };
 
 export const FilesTable = ({
-  // directories,
   currentDirRef,
   changeDirectory,
   location,

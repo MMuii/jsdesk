@@ -3,8 +3,13 @@ import { Path } from 'interfaces/fs';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
 import { IoFolder } from 'react-icons/io5';
 import { FiHardDrive } from 'react-icons/fi';
-import { Chevron, Container, PathContainer, UnchangeablePathWrapper } from './styled';
-import { FilesTable } from './FilesTable';
+import {
+  Chevron,
+  Container,
+  PathContainer,
+  UnchangeablePathWrapper,
+} from 'components/apps/FileExplorer/styled';
+import { FilesTable } from 'components/apps/FileExplorer/FilesTable';
 
 interface Props {
   initialPath?: Path;

@@ -1,7 +1,10 @@
 import { forwardRef, useEffect, useState } from 'react';
 import { getIconByFileType } from 'utils/fs/getIconByFileType';
-import { FileTableRow as StyledTableRow, FileTableRowInput } from './styled';
-import { FileWithSize } from './FilesTable';
+import {
+  FileTableRow as StyledTableRow,
+  FileTableRowInput,
+} from 'components/apps/FileExplorer/styled';
+import { FileWithSize } from 'components/apps/FileExplorer/FilesTable';
 
 interface Props {
   onDoubleClick: () => void;

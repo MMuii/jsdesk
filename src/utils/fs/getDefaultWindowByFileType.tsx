@@ -1,6 +1,6 @@
-import { FileExplorer } from 'components/FileExplorer';
-import { Painter } from 'components/Painter';
-import { TextEditor } from 'components/TextEditor';
+import { FileExplorer } from 'components/apps/FileExplorer';
+import { Painter } from 'components/apps/Painter';
+import { TextEditor } from 'components/apps/TextEditor';
 import { File } from 'utils/hooks/useFileSystem/File';
 import { RenderableWindow } from 'utils/hooks/useWindowManager';
 

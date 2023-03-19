@@ -1,12 +1,12 @@
 import { DesktopIcon } from 'components/DesktopIcon';
-import { Terminal } from 'components/Terminal';
-import { Painter } from 'components/Painter';
+import { Terminal } from 'components/apps/Terminal';
+import { Painter } from 'components/apps/Painter';
 import { RenderableWindow } from 'utils/hooks/useWindowManager';
 import { IoTerminal } from 'react-icons/io5';
 import { HiDocument } from 'react-icons/hi';
 import { HiPaintBrush } from 'react-icons/hi2';
 import { DesktopIconsContainer } from './styled';
-import { DocPreview } from 'components/DocPreview';
+import { DocPreview } from 'components/apps/DocPreview';
 import { getIconByFileType } from 'utils/fs/getIconByFileType';
 import { File } from 'utils/hooks/useFileSystem/File';
 import { getDefaultWindowByFileType } from 'utils/fs/getDefaultWindowByFileType';

@@ -11,7 +11,7 @@ import {
   Textarea,
   FontIcon,
   SaveIconContainer,
-} from './styled';
+} from 'components/apps/TextEditor/styled';
 import { useNumberInputValue } from 'utils/hooks/useNumberInputValue';
 
 interface Props {

@@ -2,7 +2,11 @@ import { useEffect } from 'react';
 import { Path } from 'interfaces/fs';
 import useUndo from 'use-undo';
 import { HiFolderPlus } from 'react-icons/hi2';
-import { CurrentDirHeaderButtonsWrapper, CurrentDirHeaderContainer, NavArrow } from './styled';
+import {
+  CurrentDirHeaderButtonsWrapper,
+  CurrentDirHeaderContainer,
+  NavArrow,
+} from 'components/apps/FileExplorer/styled';
 
 interface Props {
   location: Path;

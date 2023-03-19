@@ -1,4 +1,4 @@
-import { iconButton } from './../../utils/styles/iconButton';
+import { iconButton } from 'utils/styles/iconButton';
 import { darken } from 'polished';
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineDownload } from 'react-icons/ai';
 import styled, { css } from 'styled-components';

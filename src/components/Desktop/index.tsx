@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useRef } from 'react';
-import { Terminal } from 'components/Terminal';
+import { Terminal } from 'components/apps/Terminal';
 import { Window } from 'components/Window';
 import { DragContainer } from './styled';
 import { RenderableWindow, useWindowManager } from 'utils/hooks/useWindowManager';

@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useMemo } from 'react';
 import { useInputLine } from 'utils/hooks/useInputLine';
 import { InputLine } from 'components/InputLine';
 import { NoRerenderedPs1 } from 'components/Ps1';
-import { HistoryContainer } from './styled';
+import { HistoryContainer } from 'components/apps/Terminal/styled';
 import { useShell } from 'utils/hooks/useShell';
 
 export const Terminal = () => {

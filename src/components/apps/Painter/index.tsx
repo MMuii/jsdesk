@@ -12,8 +12,8 @@ import {
   Navbar,
   NavbarButtonsWrapper,
   SaveIconContainer,
-} from './styled';
-import { Toolbox, Tools } from './Toolbox';
+} from 'components/apps/Painter/styled';
+import { Toolbox, Tools } from 'components/apps/Painter/Toolbox';
 import { useNumberInputValue } from 'utils/hooks/useNumberInputValue';
 import { useWindowPopup } from 'utils/providers/WindowPopupProvider';
 import { useFileSystem } from 'utils/hooks/useFileSystem';

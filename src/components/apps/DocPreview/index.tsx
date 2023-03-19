@@ -12,7 +12,7 @@ import {
   PlusIcon,
   ScaleControlsWrapper,
   DownloadIcon,
-} from './styled';
+} from 'components/apps/DocPreview/styled';
 
 interface Props {
   docName: string;

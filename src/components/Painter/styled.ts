@@ -3,11 +3,12 @@ import { darken } from 'polished';
 import { iconButton } from 'utils/styles/iconButton';
 import { windowNavbar } from 'utils/styles/windowNavbar';
 import { highlightDynamically } from 'utils/styles/highlightDynamically';
+import { styledScrollbar } from 'utils/styles/styledScrollbar';
 
 export const Container = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: min-content 1fr;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 `;
 
 export const Navbar = styled.div`
@@ -37,6 +38,8 @@ export const SaveIconContainer = styled.div`
 export const ToolboxContainer = styled.div`
   height: calc(100% - 4rem);
   width: 7rem;
+  min-width: 7rem;
+  max-width: 100%;
   padding: 2rem 0;
   margin: 2rem;
   background: ${({ theme }) => darken(0.03, theme.background)};
@@ -200,23 +203,32 @@ export const ColorPickerInput = styled.input`
 
 export const CanvasContainer = styled.div`
   width: 100%;
-  height: 100%;
-
+  height: calc(100% - 4.7rem);
   display: flex;
-  justify-content: space-between;
-  place-items: center;
+  align-items: center;
+  justify-content: center;
+`;
 
-  /* display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: 11rem 1fr; */
-  /* place-items: center; */
+export const CanvasWrapper = styled.div`
+  height: 100%;
+  max-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+  box-shadow: none;
+
+  display: grid;
+  place-items: center;
 
   > div {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    margin: 2rem 2rem 2rem 0;
   }
 
-  > div:nth-child(2) {
-    margin-right: 2rem;
-    overflow: scroll;
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 4px;
   }
+
+  ${({ theme }) => styledScrollbar(theme)};
 `;

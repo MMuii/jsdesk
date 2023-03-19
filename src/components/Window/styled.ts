@@ -15,9 +15,11 @@ export const WindowContainer = styled(motion.div)<{ $isFocused: boolean; $zIndex
 
   border-radius: 7px;
   overflow: hidden;
+
   display: grid;
   grid-template-rows: min-content 1fr;
-  grid-template-columns: 1fr;
+  grid-template-columns: 100%;
+
   z-index: ${({ $zIndex }) => $zIndex};
   transition: box-shadow 0.15s;
   max-height: 100vh;

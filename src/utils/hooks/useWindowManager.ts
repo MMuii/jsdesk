@@ -7,6 +7,8 @@ export interface RenderableWindow {
   windowProps?: {
     width?: number;
     height?: number;
+    minWidth?: number;
+    minHeight?: number;
   };
   componentProps?: object;
 }

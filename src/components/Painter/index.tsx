@@ -6,6 +6,7 @@ import { FaTrashAlt } from 'react-icons/fa';
 import { KonvaPointerEvent } from 'konva/lib/PointerEvents';
 import {
   CanvasContainer,
+  CanvasWrapper,
   Container,
   Navbar,
   NavbarButtonsWrapper,
@@ -107,33 +108,35 @@ export const Painter = () => {
           setBrushSize={setBrushSize}
           brushSizeInputProps={brushSizeInputProps}
         />
-        <Stage
-          width={width}
-          height={height}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseup={handleMouseUp}
-        >
-          <Layer>
-            <Rect fill="#fff" width={width} height={height} />
-          </Layer>
-          <Layer>
-            {lines.map((line, i) => (
-              <Line
-                key={i}
-                points={line.points}
-                stroke={line.brushColor}
-                strokeWidth={line.brushSize}
-                tension={0.5}
-                lineCap="round"
-                lineJoin="round"
-                globalCompositeOperation={
-                  line.tool === Tools.eraser ? 'destination-out' : 'source-over'
-                }
-              />
-            ))}
-          </Layer>
-        </Stage>
+        <CanvasWrapper id="canvas-wrapper">
+          <Stage
+            width={width}
+            height={height}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseup={handleMouseUp}
+          >
+            <Layer>
+              <Rect fill="#fff" width={width} height={height} />
+            </Layer>
+            <Layer>
+              {lines.map((line, i) => (
+                <Line
+                  key={i}
+                  points={line.points}
+                  stroke={line.brushColor}
+                  strokeWidth={line.brushSize}
+                  tension={0.5}
+                  lineCap="round"
+                  lineJoin="round"
+                  globalCompositeOperation={
+                    line.tool === Tools.eraser ? 'destination-out' : 'source-over'
+                  }
+                />
+              ))}
+            </Layer>
+          </Stage>
+        </CanvasWrapper>
       </CanvasContainer>
     </Container>
   );

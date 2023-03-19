@@ -50,6 +50,8 @@ const painterWindow: RenderableWindow = {
   windowProps: {
     height: 500,
     width: 800,
+    minHeight: 400,
+    minWidth: 500,
   },
 };
 

@@ -2,31 +2,32 @@ import { AnimatePresence } from 'framer-motion';
 import { useCallback, useEffect } from 'react';
 import { DimLayer, PopupContainer, Popup } from './styled';
 
-export interface WindowPopupProps {
-  title: string;
+export interface WindowPopupProps<T = any> {
   isOpen: boolean;
   onClose: () => void;
-  popupText?: string;
-  acceptText?: string;
-  cancelText?: string;
-  acceptCallback?: () => void;
+  ContentComponent: React.ComponentType<{ onAccept: () => void; onCancel: () => void }>;
+  acceptCallback?: (value?: any) => void;
   cancelCallback?: () => void;
+  fullWidth?: boolean;
+  contentComponentProps?: T;
 }
 
 export const WindowPopup = ({
-  title,
   isOpen,
   onClose,
-  popupText,
-  acceptText = 'Ok',
-  cancelText = 'Cancel',
+  ContentComponent,
   acceptCallback,
   cancelCallback,
+  fullWidth = false,
+  contentComponentProps,
 }: WindowPopupProps) => {
-  const onAccept = useCallback(() => {
-    if (acceptCallback) acceptCallback();
-    onClose();
-  }, [acceptCallback, onClose]);
+  const onAccept = useCallback(
+    (value?: any) => {
+      if (acceptCallback) acceptCallback(value);
+      onClose();
+    },
+    [acceptCallback, onClose],
+  );
 
   const onCancel = useCallback(() => {
     if (cancelCallback) cancelCallback();
@@ -62,19 +63,15 @@ export const WindowPopup = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
           />
-          <PopupContainer id="popup-container">
+          <PopupContainer>
             <Popup
               initial={{ y: -8, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -8, opacity: 0 }}
               transition={{ type: 'tween', duration: 0.15 }}
+              $fullWidth={fullWidth}
             >
-              <h2>{title}</h2>
-              {popupText && <p>{popupText}</p>}
-              <div>
-                <button onClick={onAccept}>{acceptText}</button>
-                <button onClick={onCancel}>{cancelText}</button>
-              </div>
+              <ContentComponent onAccept={onAccept} onCancel={onClose} {...contentComponentProps} />
             </Popup>
           </PopupContainer>
         </>

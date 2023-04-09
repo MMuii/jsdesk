@@ -7,7 +7,7 @@ import { iconButton } from 'utils/styles/iconButton';
 
 export const Container = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 100%;
   grid-template-rows: min-content 1fr min-content;
 `;
 
@@ -25,6 +25,14 @@ export const PathContainer = styled.div`
     color: ${({ theme }) => theme.green};
   }
 
+  div:nth-child(1),
+  div:nth-child(2),
+  div:nth-child(3) {
+    display: flex;
+    opacity: 0.5;
+    cursor: default;
+  }
+
   > div:not(:first-child) {
     display: flex;
     cursor: pointer;
@@ -35,6 +43,17 @@ export const UnchangeablePathWrapper = styled.div`
   display: flex;
   opacity: 0.5;
   cursor: default;
+
+  > div {
+    display: flex;
+  }
+
+  > div > div {
+    /* max-width: 4rem; */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 `;
 
 export const Chevron = styled(FaChevronRight)`
@@ -83,6 +102,7 @@ export const NavArrow = styled(BsChevronLeft)<{ $enabled: boolean }>`
 export const TableWrapper = styled.div`
   overflow: auto; /* Clips any scrollbars that appear */
   position: relative;
+  min-height: 15rem;
 
   ${({ theme }) => {
     const slightlyLightened = lighten(0.08, theme.background);

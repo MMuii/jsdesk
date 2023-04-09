@@ -83,6 +83,7 @@ export const useFileSystem = () => {
     type: string,
     addEvenIfExists: boolean = false,
     content: any = [],
+    isDirectory: boolean = true,
   ): string | void => {
     try {
       const newRoot = workOnDraftFs(fs => {
@@ -102,7 +103,7 @@ export const useFileSystem = () => {
           newDirName += ` (${copyNumber})`;
         }
 
-        newDirParent.addFile({ type, name: newDirName, content, isDirectory: true });
+        newDirParent.addFile({ type, name: newDirName, content, isDirectory });
       });
 
       setRoot(newRoot);

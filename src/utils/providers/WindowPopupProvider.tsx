@@ -5,20 +5,20 @@ interface Props {
   children: React.ReactNode;
 }
 
+type PopupProps<T> = Omit<WindowPopupProps<T>, 'isOpen' | 'onClose'>;
+
 interface WindowPopupContextValue {
-  openPopup: (props: PopupProps) => void;
+  openPopup: <T = {}>(props: PopupProps<T>) => void;
 }
 
 const WindowPopupContext = createContext({} as WindowPopupContextValue);
 export const useWindowPopup = () => useContext(WindowPopupContext);
 
-type PopupProps = Omit<WindowPopupProps, 'isOpen' | 'onClose'>;
-
 export const WindowPopupProvider = ({ children }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [popupProps, setPopupProps] = useState<PopupProps>({ title: 'Popup' });
+  const [popupProps, setPopupProps] = useState<PopupProps<any>>({} as PopupProps<{}>);
 
-  const openPopup = useCallback((props: PopupProps) => {
+  const openPopup = useCallback(<T,>(props: PopupProps<T>) => {
     setPopupProps(props);
     setIsOpen(true);
   }, []);

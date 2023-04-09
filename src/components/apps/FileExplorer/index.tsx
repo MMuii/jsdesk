@@ -1,15 +1,9 @@
 import { useEffect } from 'react';
 import { Path } from 'interfaces/fs';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
-import { IoFolder } from 'react-icons/io5';
-import { FiHardDrive } from 'react-icons/fi';
-import {
-  Chevron,
-  Container,
-  PathContainer,
-  UnchangeablePathWrapper,
-} from 'components/apps/FileExplorer/styled';
+import { Container, PathContainer } from 'components/apps/FileExplorer/styled';
 import { FilesTable } from 'components/apps/FileExplorer/FilesTable';
+import { BottomNavigation } from './BottomNavigation';
 
 interface Props {
   initialPath?: Path;
@@ -29,20 +23,6 @@ export const FileExplorer = ({ initialPath = ['/'] }: Props) => {
     changeDirectory(initialPath);
   }, []);
 
-  const renderBottomNavigation = () => {
-    const directories = location.map((dir, idx) => (
-      <div key={`${dir}${idx}`} onClick={() => changeDirectory(location.slice(0, idx + 1))}>
-        <IoFolder />
-        <div>{dir === '/' ? 'desktop' : dir}</div>
-      </div>
-    ));
-
-    // @ts-ignore
-    const result = directories.flatMap((dir, idx) => [dir, <Chevron key={idx} />]);
-    result.pop();
-    return result;
-  };
-
   return (
     <Container>
       <FilesTable
@@ -54,18 +34,7 @@ export const FileExplorer = ({ initialPath = ['/'] }: Props) => {
         makeFile={makeFileRelative}
       />
       <PathContainer>
-        <UnchangeablePathWrapper>
-          <FiHardDrive />
-          <div>LocalStorage HD</div>
-          <Chevron />
-          <IoFolder />
-          <div>users</div>
-          <Chevron />
-          <IoFolder />
-          <div>guest</div>
-          <Chevron />
-        </UnchangeablePathWrapper>
-        {renderBottomNavigation()}
+        <BottomNavigation location={location} changeDirectory={changeDirectory} />
       </PathContainer>
     </Container>
   );

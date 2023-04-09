@@ -4,12 +4,12 @@ import {
   FileTableRow as StyledTableRow,
   FileTableRowInput,
 } from 'components/apps/FileExplorer/styled';
-import { FileWithSize } from 'components/apps/FileExplorer/FilesTable';
+import { FileWithSize } from 'utils/hooks/useFilesTable';
 
 interface Props {
   onDoubleClick: () => void;
   file: FileWithSize;
-  onContextMenuCapture: (e: React.MouseEvent) => void;
+  onContextMenuCapture?: (e: React.MouseEvent) => void;
   isRenaming: boolean;
   onRename: (newName: string) => void;
   onRenameCancel: () => void;

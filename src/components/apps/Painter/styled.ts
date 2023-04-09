@@ -26,7 +26,7 @@ export const NavbarButtonsSeparator = styled.div`
   width: 1px;
   background: ${({ theme }) => theme.foreground};
   opacity: 0.2;
-  margin: 0rem 1rem;
+  margin: 0rem 0.5rem;
 `;
 
 export const ToolboxContainer = styled.div`

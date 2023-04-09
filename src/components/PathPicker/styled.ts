@@ -5,14 +5,11 @@ import { highlightDynamically } from 'utils/styles/highlightDynamically';
 export const BottomBarContainer = styled.div`
   width: 100%;
   max-width: 100%;
-  /* gap: 1rem; */
   display: grid;
   justify-content: space-between;
   align-items: center;
   grid-template-rows: 1fr 1fr 1fr;
   grid-template-columns: 1fr;
-  /* grid-template-columns: 1fr auto; */
-  /* grid-auto-flow: row; */
 
   border-top: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
   background: ${({ theme }) => darken(0.04, theme.background)};

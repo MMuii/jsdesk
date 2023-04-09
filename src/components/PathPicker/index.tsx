@@ -20,6 +20,7 @@ interface Props extends PathPickerProps {
 }
 
 export interface PathPickerProps {
+  acceptButtonText?: string;
   displayedFileTypes?: string[];
   initialFilename?: string;
   initialPath?: Path;
@@ -27,6 +28,7 @@ export interface PathPickerProps {
 
 export const PathPicker = ({
   displayedFileTypes,
+  acceptButtonText = 'Open',
   initialPath = ['/'],
   initialFilename = 'New image.jpg',
   onAccept,
@@ -51,18 +53,18 @@ export const PathPicker = ({
         makeFile={makeFileRelative}
         onDirectorySelect={onAccept}
       />
-      <BottomBarContainer id="bottom-bar-container">
+      <BottomBarContainer>
         <FilenameContainer>
           <div style={{ whiteSpace: 'nowrap' }}>File name:</div>
           <FilenameInput value={filename} onChange={e => setFilename(e.target.value)} />
         </FilenameContainer>
         <Separator />
         <PathContainer style={{ display: 'flex' }}>
-          <PathWrapper id="path-wrapper">
+          <PathWrapper>
             <BottomNavigation location={location} changeDirectory={changeDirectory} />
           </PathWrapper>
           <ButtonsContainer>
-            <button onClick={() => onAccept([...location, filename])}>Save</button>
+            <button onClick={() => onAccept([...location, filename])}>{acceptButtonText}</button>
             <button onClick={onCancel}>Cancel</button>
           </ButtonsContainer>
         </PathContainer>

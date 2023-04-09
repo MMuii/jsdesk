@@ -1,6 +1,6 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Konva from 'konva';
-import { Layer, Rect, Line, Stage, Image } from 'react-konva';
+import { Layer, Rect, Line, Stage, Image, Circle } from 'react-konva';
 import { KonvaPointerEvent } from 'konva/lib/PointerEvents';
 import { LineProps } from '.';
 import { Tools } from './Toolbox';
@@ -29,6 +29,7 @@ export const Canvas = ({
   stageRef,
   loadedImage,
 }: Props) => {
+  const [[cursorX, cursorY], setCursorPosition] = useState([0, 0]);
   const isDrawing = useRef(false);
 
   const handleMouseDown = useCallback(
@@ -37,7 +38,7 @@ export const Canvas = ({
       // @ts-ignore
       const pos = e.target.getStage().getPointerPosition();
       // @ts-ignore
-      setLines([...lines, { tool, brushSize, brushColor, points: [pos.x, pos.y] }]);
+      setLines([...lines, { tool, brushSize, brushColor, points: [pos.x, pos.y] }], true);
     },
     [brushColor, brushSize, lines, setLines, tool],
   );
@@ -48,20 +49,20 @@ export const Canvas = ({
 
   const handleMouseMove = useCallback(
     (e: KonvaPointerEvent) => {
-      if (!isDrawing.current) {
-        return;
-      }
+      if (!stageRef.current) return;
+      const point = stageRef.current.getPointerPosition();
+      if (!point) return;
+      setCursorPosition([point.x, point.y]);
+      if (!isDrawing.current) return;
 
       const stage = e.target.getStage();
       if (!stage) return;
-      const point = stage.getPointerPosition();
-      if (!point) return;
 
       const lastLine = lines[lines.length - 1];
       lastLine.points = lastLine.points.concat([point.x, point.y]);
 
       lines.splice(lines.length - 1, 1, lastLine);
-      setLines(lines.concat());
+      setLines(lines.concat(), false);
     },
     [lines, setLines],
   );
@@ -75,6 +76,7 @@ export const Canvas = ({
         onMouseMove={handleMouseMove}
         onMouseup={handleMouseUp}
         ref={stageRef}
+        style={{ position: 'relative' }}
       >
         <Layer>
           <Rect fill="#fff" width={canvasWidth} height={canvasHeight} />
@@ -96,6 +98,16 @@ export const Canvas = ({
               }
             />
           ))}
+        </Layer>
+
+        <Layer>
+          <Circle
+            fill={tool === Tools.eraser ? '#000' : brushColor}
+            radius={brushSize / 2}
+            opacity={0.15}
+            x={cursorX}
+            y={cursorY}
+          />
         </Layer>
       </Stage>
     </CanvasWrapper>

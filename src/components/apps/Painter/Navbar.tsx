@@ -2,6 +2,7 @@ import { Actions } from 'use-undo';
 import { FaTrashAlt } from 'react-icons/fa';
 import { MdSave, MdSaveAs } from 'react-icons/md';
 import { GrUndo, GrRedo } from 'react-icons/gr';
+import { AiOutlineFolderOpen } from 'react-icons/ai';
 import { NavbarButtonsWrapper, Navbar as NavbarContainer, NavbarButtonsSeparator } from './styled';
 import { IconButton } from 'components/IconButton';
 import { LineProps } from '.';
@@ -11,6 +12,7 @@ interface Props {
   clearCanvas: () => void;
   save: () => void;
   saveAs: () => void;
+  openFile: () => void;
   isSaveDisabled: boolean;
   linesActions: Actions<LineProps[]>;
 }
@@ -20,6 +22,7 @@ export const Navbar = ({
   clearCanvas,
   save,
   saveAs,
+  openFile,
   isSaveDisabled,
   linesActions,
 }: Props) => {
@@ -27,6 +30,8 @@ export const Navbar = ({
     <NavbarContainer>
       <NavbarButtonsWrapper>
         <div style={{ marginRight: '.5rem' }}>{filename}</div>
+        <NavbarButtonsSeparator />
+        <IconButton icon={<AiOutlineFolderOpen />} onClick={openFile} />
         <NavbarButtonsSeparator />
         <IconButton
           icon={<MdSave />}

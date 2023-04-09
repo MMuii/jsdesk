@@ -33,17 +33,13 @@ export const Painter = ({ initialWorkingPath }: Props) => {
     setValue: setBrushSize,
     inputProps: brushSizeInputProps,
   } = useNumberInputValue(5, { min: 1, max: 50 });
-  const [lines, linesActions] = useUndo<LineProps[]>([]);
+  const [lines, linesActions] = useUndo<LineProps[]>([], { useCheckpoints: true });
   const [loadedImage, setLoadedImage] = useState<HTMLImageElement | null>(null);
   const { openPopup } = useWindowPopup();
   const { makeFileRelative, saveFile } = useFileSystem();
   const stageRef = useRef<Konva.Stage | null>(null);
 
   const filename = workingFile ? workingFile.name : 'New image.jpg';
-
-  useEffect(() => {
-    console.log('lines:', lines);
-  }, [lines]);
 
   useEffect(() => {
     if (!workingFile) return;
@@ -74,6 +70,7 @@ export const Painter = ({ initialWorkingPath }: Props) => {
       fullWidth: true,
       ContentComponent: PathPicker,
       contentComponentProps: {
+        acceptButtonText: 'Save',
         initialFilename: filename,
         displayedFileTypes: ['dir', 'jpg'],
       },
@@ -87,6 +84,20 @@ export const Painter = ({ initialWorkingPath }: Props) => {
     });
   }, [openPopup]);
 
+  const openFile = useCallback(() => {
+    openPopup<PathPickerProps>({
+      acceptCallback: (selectedPath: Path) => {
+        setWorkingFilePath(selectedPath);
+      },
+      fullWidth: true,
+      ContentComponent: PathPicker,
+      contentComponentProps: {
+        initialFilename: filename,
+        displayedFileTypes: ['dir', 'jpg'],
+      },
+    });
+  }, [filename, openPopup, setWorkingFilePath]);
+
   return (
     <Container>
       <Navbar
@@ -94,6 +105,7 @@ export const Painter = ({ initialWorkingPath }: Props) => {
         clearCanvas={clearCanvas}
         save={save}
         saveAs={saveAs}
+        openFile={openFile}
         isSaveDisabled={workingFile === null}
         linesActions={linesActions}
       />

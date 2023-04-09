@@ -5,10 +5,11 @@ import { KonvaPointerEvent } from 'konva/lib/PointerEvents';
 import { LineProps } from '.';
 import { Tools } from './Toolbox';
 import { CanvasWrapper } from './styled';
+import { Actions } from 'use-undo';
 
 interface Props {
   lines: LineProps[];
-  setLines: React.Dispatch<React.SetStateAction<LineProps[]>>;
+  setLines: Actions<LineProps[]>['set'];
   brushColor: string;
   brushSize: number;
   tool: Tools;

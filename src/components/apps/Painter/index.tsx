@@ -11,6 +11,7 @@ import { ClearCanvasPopup } from './ClearCanvasPopup';
 import { useWorkingFile } from 'utils/hooks/useWorkingFile';
 import { Canvas } from './Canvas';
 import { Navbar } from './Navbar';
+import useUndo from 'use-undo';
 
 interface Props {
   initialWorkingPath?: Path;
@@ -32,15 +33,17 @@ export const Painter = ({ initialWorkingPath }: Props) => {
     setValue: setBrushSize,
     inputProps: brushSizeInputProps,
   } = useNumberInputValue(5, { min: 1, max: 50 });
-  const [lines, setLines] = useState<LineProps[]>([]);
+  const [lines, linesActions] = useUndo<LineProps[]>([]);
   const [loadedImage, setLoadedImage] = useState<HTMLImageElement | null>(null);
-
-  const [showSavedIcon, setShowSavedIcon] = useState(false);
   const { openPopup } = useWindowPopup();
   const { makeFileRelative, saveFile } = useFileSystem();
   const stageRef = useRef<Konva.Stage | null>(null);
 
   const filename = workingFile ? workingFile.name : 'New image.jpg';
+
+  useEffect(() => {
+    console.log('lines:', lines);
+  }, [lines]);
 
   useEffect(() => {
     if (!workingFile) return;
@@ -50,32 +53,36 @@ export const Painter = ({ initialWorkingPath }: Props) => {
     setLoadedImage(img);
   }, [workingFile]);
 
-  const saveImage = useCallback(() => {
+  const save = useCallback(() => {
     if (!stageRef.current) return;
-
     const dataURL = stageRef.current.toDataURL();
 
     if (workingFile) {
       saveFile(workingFile.path, dataURL);
-    } else {
-      openPopup<PathPickerProps>({
-        acceptCallback: (selectedPath: Path) => {
-          makeFileRelative(selectedPath, 'jpg', true, dataURL, false);
-          setWorkingFilePath(selectedPath);
-        },
-        fullWidth: true,
-        ContentComponent: PathPicker,
-        contentComponentProps: {
-          initialFilename: filename,
-          displayedFileTypes: ['dir', 'jpg'],
-        },
-      });
     }
-  }, [stageRef, makeFileRelative, filename, saveFile, workingFile]);
+  }, [saveFile, workingFile]);
+
+  const saveAs = useCallback(() => {
+    if (!stageRef.current) return;
+    const dataURL = stageRef.current.toDataURL();
+
+    openPopup<PathPickerProps>({
+      acceptCallback: (selectedPath: Path) => {
+        makeFileRelative(selectedPath, 'jpg', true, dataURL, false);
+        setWorkingFilePath(selectedPath);
+      },
+      fullWidth: true,
+      ContentComponent: PathPicker,
+      contentComponentProps: {
+        initialFilename: filename,
+        displayedFileTypes: ['dir', 'jpg'],
+      },
+    });
+  }, [filename, makeFileRelative, openPopup, setWorkingFilePath]);
 
   const clearCanvas = useCallback(() => {
     openPopup({
-      acceptCallback: () => setLines([]),
+      acceptCallback: () => linesActions.set([]),
       ContentComponent: ClearCanvasPopup,
     });
   }, [openPopup]);
@@ -85,8 +92,10 @@ export const Painter = ({ initialWorkingPath }: Props) => {
       <Navbar
         filename={filename}
         clearCanvas={clearCanvas}
-        saveImage={saveImage}
-        showSavedIcon={showSavedIcon}
+        save={save}
+        saveAs={saveAs}
+        isSaveDisabled={workingFile === null}
+        linesActions={linesActions}
       />
       <CanvasContainer>
         <Toolbox
@@ -99,8 +108,8 @@ export const Painter = ({ initialWorkingPath }: Props) => {
           brushSizeInputProps={brushSizeInputProps}
         />
         <Canvas
-          lines={lines}
-          setLines={setLines}
+          lines={lines.present}
+          setLines={linesActions.set}
           brushColor={brushColor}
           brushSize={brushSize}
           tool={tool}

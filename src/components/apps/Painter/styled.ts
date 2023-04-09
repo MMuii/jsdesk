@@ -21,18 +21,12 @@ export const NavbarButtonsWrapper = styled.div`
   gap: 0.6rem;
 `;
 
-export const SaveIconContainer = styled.div`
-  position: relative;
-  height: 2.6rem;
-
-  svg:nth-child(2) {
-    color: ${({ theme }) => theme.green};
-    position: absolute;
-    bottom: -0.3rem;
-    right: -0.3rem;
-    font-size: 1rem;
-    pointer-events: none;
-  }
+export const NavbarButtonsSeparator = styled.div`
+  height: 1.6rem;
+  width: 1px;
+  background: ${({ theme }) => theme.foreground};
+  opacity: 0.2;
+  margin: 0rem 1rem;
 `;
 
 export const ToolboxContainer = styled.div`

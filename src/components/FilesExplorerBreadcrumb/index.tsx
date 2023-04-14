@@ -1,14 +1,14 @@
 import { Path } from 'interfaces/fs';
 import { FiHardDrive } from 'react-icons/fi';
 import { IoFolder } from 'react-icons/io5';
-import { Chevron } from './styled';
+import { Chevron, PathContainer } from './styled';
 
 interface Props {
   location: Path;
   changeDirectory: (path: Path) => void;
 }
 
-export const BottomNavigation = ({ location, changeDirectory }: Props) => {
+export const FilesExplorerBreadcrumb = ({ location, changeDirectory }: Props) => {
   const renderBottomNavigation = () => {
     return location.map((dir, idx) => (
       <div key={`${dir}${idx}`} onClick={() => changeDirectory(location.slice(0, idx + 1))}>
@@ -20,7 +20,7 @@ export const BottomNavigation = ({ location, changeDirectory }: Props) => {
   };
 
   return (
-    <>
+    <PathContainer>
       <div>
         <FiHardDrive />
         <div>LocalStorage HD</div>
@@ -37,6 +37,6 @@ export const BottomNavigation = ({ location, changeDirectory }: Props) => {
         <Chevron />
       </div>
       {renderBottomNavigation()}
-    </>
+    </PathContainer>
   );
 };

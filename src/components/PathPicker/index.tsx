@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
-import { BottomNavigation } from 'components/apps/FileExplorer/BottomNavigation';
+import { FilesExplorerBreadcrumb } from 'components/FilesExplorerBreadcrumb';
 import { Container } from 'components/apps/FileExplorer/styled';
 import { Path } from 'interfaces/fs';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
-import { FilesTable } from './FilesTable';
+import { Table } from './Table';
 import {
   BottomBarContainer,
   ButtonsContainer,
   FilenameContainer,
   FilenameInput,
   PathContainer,
-  PathWrapper,
   Separator,
 } from './styled';
 
@@ -34,8 +33,8 @@ export const PathPicker = ({
   onAccept,
   onCancel,
 }: Props) => {
-  const { location, getCurrentDirRef, changeDirectory, makeFileRelative, moveFileAbsolute } =
-    useFsSession();
+  const fsSession = useFsSession();
+  const { changeDirectory, location } = fsSession;
   const [filename, setFilename] = useState<string>(initialFilename);
 
   useEffect(() => {
@@ -44,14 +43,10 @@ export const PathPicker = ({
 
   return (
     <Container>
-      <FilesTable
-        displayedFileTypes={displayedFileTypes}
-        currentDirRef={getCurrentDirRef()}
-        changeDirectory={changeDirectory}
-        moveFile={moveFileAbsolute}
-        location={location}
-        makeFile={makeFileRelative}
+      <Table
+        fsSession={fsSession}
         onDirectorySelect={onAccept}
+        displayedFileTypes={displayedFileTypes}
       />
       <BottomBarContainer>
         <FilenameContainer>
@@ -60,9 +55,7 @@ export const PathPicker = ({
         </FilenameContainer>
         <Separator />
         <PathContainer style={{ display: 'flex' }}>
-          <PathWrapper>
-            <BottomNavigation location={location} changeDirectory={changeDirectory} />
-          </PathWrapper>
+          <FilesExplorerBreadcrumb location={location} changeDirectory={changeDirectory} />
           <ButtonsContainer>
             <button onClick={() => onAccept([...location, filename])}>{acceptButtonText}</button>
             <button onClick={onCancel}>Cancel</button>

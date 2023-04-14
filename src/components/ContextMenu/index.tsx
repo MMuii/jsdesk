@@ -8,9 +8,9 @@ interface Props {
   options: ContextMenuOption[];
 }
 
-export interface ContextMenuOption {
+export interface ContextMenuOption<T = any> {
   text: string;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
+  onClick: (e: React.MouseEvent, args?: T) => void;
   icon?: React.ReactNode;
 }
 

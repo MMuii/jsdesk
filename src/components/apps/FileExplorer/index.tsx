@@ -1,23 +1,17 @@
 import { useEffect } from 'react';
 import { Path } from 'interfaces/fs';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
-import { Container, PathContainer } from 'components/apps/FileExplorer/styled';
-import { FilesTable } from 'components/apps/FileExplorer/FilesTable';
-import { BottomNavigation } from './BottomNavigation';
+import { Container } from 'components/apps/FileExplorer/styled';
+import { FilesExplorerBreadcrumb } from 'components/FilesExplorerBreadcrumb';
+import { Table } from './Table';
 
 interface Props {
   initialPath?: Path;
 }
 
 export const FileExplorer = ({ initialPath = ['/'] }: Props) => {
-  const {
-    location,
-    getCurrentDirRef,
-    changeDirectory,
-    makeFileRelative,
-    moveFileAbsolute,
-    removeDirectory,
-  } = useFsSession();
+  const fsSession = useFsSession();
+  const { location, changeDirectory } = fsSession;
 
   useEffect(() => {
     changeDirectory(initialPath);
@@ -25,17 +19,8 @@ export const FileExplorer = ({ initialPath = ['/'] }: Props) => {
 
   return (
     <Container>
-      <FilesTable
-        currentDirRef={getCurrentDirRef()}
-        changeDirectory={changeDirectory}
-        moveFile={moveFileAbsolute}
-        removeFile={removeDirectory}
-        location={location}
-        makeFile={makeFileRelative}
-      />
-      <PathContainer>
-        <BottomNavigation location={location} changeDirectory={changeDirectory} />
-      </PathContainer>
+      <Table fsSession={fsSession} />
+      <FilesExplorerBreadcrumb location={location} changeDirectory={changeDirectory} />
     </Container>
   );
 };

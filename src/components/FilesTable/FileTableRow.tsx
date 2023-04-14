@@ -1,9 +1,6 @@
 import { forwardRef, useEffect, useState } from 'react';
 import { getIconByFileType } from 'utils/fs/getIconByFileType';
-import {
-  FileTableRow as StyledTableRow,
-  FileTableRowInput,
-} from 'components/apps/FileExplorer/styled';
+import { FileTableRow as StyledTableRow, FileTableRowInput } from './styled';
 import { FileWithSize } from 'utils/hooks/useFilesTable';
 
 interface Props {

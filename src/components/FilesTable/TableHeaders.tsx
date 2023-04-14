@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { HiArrowSmDown } from 'react-icons/hi';
 import { Sort, SortOrder } from 'utils/hooks/useFilesTable';
 import { ResizeHandle } from './styled';

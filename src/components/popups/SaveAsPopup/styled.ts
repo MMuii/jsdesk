@@ -2,6 +2,12 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 import { highlightDynamically } from 'utils/styles/highlightDynamically';
 
+export const Container = styled.div`
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: min-content 1fr min-content;
+`;
+
 export const BottomBarContainer = styled.div`
   width: 100%;
   max-width: 100%;

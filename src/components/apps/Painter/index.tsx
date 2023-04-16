@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Konva from 'konva';
+import useUndo from 'use-undo';
 import { CanvasContainer, Container } from 'components/apps/Painter/styled';
 import { Toolbox, Tools } from 'components/apps/Painter/Toolbox';
 import { useNumberInputValue } from 'utils/hooks/useNumberInputValue';
 import { useWindowPopup } from 'utils/providers/WindowPopupProvider';
 import { useFileSystem } from 'utils/hooks/useFileSystem';
 import { Path } from 'utils/hooks/useFileSystem/FileSystem';
-import { PathPicker, PathPickerProps } from 'components/PathPicker';
-import { ClearCanvasPopup } from './ClearCanvasPopup';
+import { SaveAsPopup, PathPickerProps } from 'components/popups/SaveAsPopup';
 import { useWorkingFile } from 'utils/hooks/useWorkingFile';
+import { OpenFilePopup } from 'components/popups/OpenFilePopup';
+import { ClearCanvasPopup } from './ClearCanvasPopup';
 import { Canvas } from './Canvas';
 import { Navbar } from './Navbar';
-import useUndo from 'use-undo';
-
 interface Props {
   initialWorkingPath?: Path;
 }
@@ -47,6 +47,7 @@ export const Painter = ({ initialWorkingPath }: Props) => {
     const img = new window.Image();
     img.src = workingFile.content;
     setLoadedImage(img);
+    linesActions.reset([]);
   }, [workingFile]);
 
   const save = useCallback(() => {
@@ -68,9 +69,8 @@ export const Painter = ({ initialWorkingPath }: Props) => {
         setWorkingFilePath(selectedPath);
       },
       fullWidth: true,
-      ContentComponent: PathPicker,
+      ContentComponent: SaveAsPopup,
       contentComponentProps: {
-        acceptButtonText: 'Save',
         initialFilename: filename,
         displayedFileTypes: ['dir', 'jpg'],
       },
@@ -90,7 +90,7 @@ export const Painter = ({ initialWorkingPath }: Props) => {
         setWorkingFilePath(selectedPath);
       },
       fullWidth: true,
-      ContentComponent: PathPicker,
+      ContentComponent: OpenFilePopup,
       contentComponentProps: {
         initialFilename: filename,
         displayedFileTypes: ['dir', 'jpg'],

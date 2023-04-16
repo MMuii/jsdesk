@@ -22,6 +22,7 @@ export interface FilesTableProps {
   displayedFileTypes?: string[];
   tableContextMenuOptions?: ContextMenuOption[];
   tableRowContextMenuOptions?: ContextMenuOption[];
+  disableMakingFiles?: boolean;
 }
 
 export const FilesTable = ({
@@ -30,6 +31,7 @@ export const FilesTable = ({
   displayedFileTypes,
   tableContextMenuOptions,
   tableRowContextMenuOptions,
+  disableMakingFiles = false,
 }: FilesTableProps) => {
   const {
     location,
@@ -119,10 +121,15 @@ export const FilesTable = ({
   };
 
   const getContextMenuOptions = (): ContextMenuOption[] => {
-    const defaultContextMenuOptions = [
-      { text: 'New file', onClick: () => createNewFileAndFocusTableRow('New file.txt', 'txt') },
-      { text: 'New directory', onClick: () => createNewFileAndFocusTableRow('New folder', 'dir') },
-    ];
+    const defaultContextMenuOptions = disableMakingFiles
+      ? []
+      : [
+          { text: 'New file', onClick: () => createNewFileAndFocusTableRow('New file.txt', 'txt') },
+          {
+            text: 'New directory',
+            onClick: () => createNewFileAndFocusTableRow('New folder', 'dir'),
+          },
+        ];
 
     return tableContextMenuOptions
       ? [...defaultContextMenuOptions, ...tableContextMenuOptions]
@@ -135,6 +142,7 @@ export const FilesTable = ({
         location={location}
         changeDirectory={changeDirectory}
         makeDirectory={() => createNewFileAndFocusTableRow('New folder', 'dir')}
+        noMakeDirectoryButton={disableMakingFiles}
       />
       <TableWrapper
         ref={tableWrapperElement}

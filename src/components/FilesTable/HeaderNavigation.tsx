@@ -8,9 +8,15 @@ interface Props {
   location: Path;
   changeDirectory: (pathString: string | Path) => string | void;
   makeDirectory: () => void;
+  noMakeDirectoryButton?: boolean;
 }
 
-export const HeaderNavigation = ({ location, changeDirectory, makeDirectory }: Props) => {
+export const HeaderNavigation = ({
+  location,
+  changeDirectory,
+  makeDirectory,
+  noMakeDirectoryButton = false,
+}: Props) => {
   const [currentLocation, { set, undo, redo, canRedo, canUndo }] = useUndo(location);
 
   useEffect(() => {
@@ -42,12 +48,14 @@ export const HeaderNavigation = ({ location, changeDirectory, makeDirectory }: P
         </div>
         <span>{displayedLocation}</span>
       </CurrentDirHeaderButtonsWrapper>
-      <CurrentDirHeaderButtonsWrapper>
-        <HiFolderPlus
-          style={{ fontSize: '2.2rem', padding: '0.3rem 0.5rem' }}
-          onClick={makeDirectory}
-        />
-      </CurrentDirHeaderButtonsWrapper>
+      {!noMakeDirectoryButton && (
+        <CurrentDirHeaderButtonsWrapper>
+          <HiFolderPlus
+            style={{ fontSize: '2.2rem', padding: '0.3rem 0.5rem' }}
+            onClick={makeDirectory}
+          />
+        </CurrentDirHeaderButtonsWrapper>
+      )}
     </CurrentDirHeaderContainer>
   );
 };

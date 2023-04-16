@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { FilesExplorerBreadcrumb } from 'components/FilesExplorerBreadcrumb';
-import { Container } from 'components/apps/FileExplorer/styled';
 import { Path } from 'interfaces/fs';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
-import { Table } from './Table';
+import { Table } from 'components/popups/SaveAsPopup/Table';
 import {
   BottomBarContainer,
   ButtonsContainer,
+  Container,
   FilenameContainer,
   FilenameInput,
   PathContainer,
-} from './styled';
+} from 'components/popups/SaveAsPopup/styled';
 
 interface Props extends PathPickerProps {
   onAccept: (path: Path) => void;
@@ -18,15 +18,13 @@ interface Props extends PathPickerProps {
 }
 
 export interface PathPickerProps {
-  acceptButtonText?: string;
   displayedFileTypes?: string[];
   initialFilename?: string;
   initialPath?: Path;
 }
 
-export const PathPicker = ({
+export const SaveAsPopup = ({
   displayedFileTypes,
-  acceptButtonText = 'Open',
   initialPath = ['/'],
   initialFilename = 'New image.jpg',
   onAccept,
@@ -55,7 +53,7 @@ export const PathPicker = ({
         <PathContainer>
           <FilesExplorerBreadcrumb location={location} changeDirectory={changeDirectory} />
           <ButtonsContainer>
-            <button onClick={() => onAccept([...location, filename])}>{acceptButtonText}</button>
+            <button onClick={() => onAccept([...location, filename])}>Save</button>
             <button onClick={onCancel}>Cancel</button>
           </ButtonsContainer>
         </PathContainer>

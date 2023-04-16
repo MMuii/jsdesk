@@ -31,7 +31,10 @@ export const ContextMenuProvider = ({ children }: Props) => {
     triggerRefs: Element[],
     options: ContextMenuOption[],
   ) => {
-    if (!triggerRefs.some(triggerRef => triggerRef.contains(e.target as Element))) {
+    if (
+      options.length === 0 ||
+      !triggerRefs.some(triggerRef => triggerRef.contains(e.target as Element))
+    ) {
       return;
     }
 

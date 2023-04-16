@@ -10,11 +10,12 @@ import { Path } from 'utils/hooks/useFileSystem/FileSystem';
 import { SaveAsPopup, PathPickerProps } from 'components/popups/SaveAsPopup';
 import { useWorkingFile } from 'utils/hooks/useWorkingFile';
 import { OpenFilePopup } from 'components/popups/OpenFilePopup';
+import { File } from 'utils/hooks/useFileSystem/File';
 import { ClearCanvasPopup } from './ClearCanvasPopup';
 import { Canvas } from './Canvas';
 import { Navbar } from './Navbar';
 interface Props {
-  initialWorkingPath?: Path;
+  initialFileRef?: File;
 }
 
 export interface LineProps {
@@ -24,8 +25,8 @@ export interface LineProps {
   points: number[];
 }
 
-export const Painter = ({ initialWorkingPath }: Props) => {
-  const { workingFile, setWorkingFilePath } = useWorkingFile(initialWorkingPath);
+export const Painter = ({ initialFileRef }: Props) => {
+  const { workingFile, setWorkingFile } = useWorkingFile(initialFileRef);
   const [tool, setTool] = useState(Tools.brush);
   const [brushColor, setBrushColor] = useState('#df4b26');
   const {
@@ -66,7 +67,7 @@ export const Painter = ({ initialWorkingPath }: Props) => {
     openPopup<PathPickerProps>({
       acceptCallback: (selectedPath: Path) => {
         makeFileRelative(selectedPath, 'jpg', true, dataURL, false);
-        setWorkingFilePath(selectedPath);
+        setWorkingFile(selectedPath);
       },
       fullWidth: true,
       ContentComponent: SaveAsPopup,
@@ -75,7 +76,7 @@ export const Painter = ({ initialWorkingPath }: Props) => {
         displayedFileTypes: ['dir', 'jpg'],
       },
     });
-  }, [filename, makeFileRelative, openPopup, setWorkingFilePath]);
+  }, [filename, makeFileRelative, openPopup, setWorkingFile]);
 
   const clearCanvas = useCallback(() => {
     openPopup({
@@ -87,7 +88,7 @@ export const Painter = ({ initialWorkingPath }: Props) => {
   const openFile = useCallback(() => {
     openPopup<PathPickerProps>({
       acceptCallback: (selectedPath: Path) => {
-        setWorkingFilePath(selectedPath);
+        setWorkingFile(selectedPath);
       },
       fullWidth: true,
       ContentComponent: OpenFilePopup,
@@ -96,7 +97,7 @@ export const Painter = ({ initialWorkingPath }: Props) => {
         displayedFileTypes: ['dir', 'jpg'],
       },
     });
-  }, [filename, openPopup, setWorkingFilePath]);
+  }, [filename, openPopup, setWorkingFile]);
 
   return (
     <Container>

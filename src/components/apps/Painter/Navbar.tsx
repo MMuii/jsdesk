@@ -9,6 +9,7 @@ import { HoverPopupPosition } from 'components/HoverPopup';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { NavbarButtonsWrapper } from './styled';
 import { LineProps } from '.';
+import { useState, useEffect } from 'react';
 
 interface Props {
   filename: string;
@@ -39,18 +40,12 @@ export const Navbar = ({
   return (
     <WindowNavbarContainer>
       <LayoutGroup>
-        <NavbarButtonsWrapper>
-          <motion.div style={{ marginRight: '.5rem' }} layout>
-            {filename}
-          </motion.div>
+        <NavbarButtonsWrapper id="buttons-wrapper">
+          <div style={{ marginRight: '0.5rem' }}>{filename}</div>
           <AnimatePresence mode="popLayout">
-            {linesActions.canUndo && (
-              <motion.span {...animateProps} layout>
-                {' '}
-                - edited
-              </motion.span>
-            )}
+            {linesActions.canUndo && <motion.div {...animateProps}> - edited</motion.div>}
           </AnimatePresence>
+
           <NavbarButtonsSeparator layout />
           <IconButton
             icon={<AiOutlineFolderOpen />}

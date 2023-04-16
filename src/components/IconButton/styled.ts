@@ -5,6 +5,7 @@ import styled from 'styled-components';
 export const IconContainer = styled(motion.div)<{ $disabled: boolean }>`
   position: relative;
   height: 2.6rem;
+  width: 2.6rem;
   display: grid;
   place-items: center;
 

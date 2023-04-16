@@ -1,21 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Path } from 'utils/hooks/useFileSystem/FileSystem';
 import { File } from 'utils/hooks/useFileSystem/File';
 import { useFileSystem } from 'utils/hooks/useFileSystem';
 
-export const useWorkingFile = (initialFilePath?: Path) => {
-  const [workingFilePath, setWorkingFilePath] = useState(initialFilePath);
-  const [workingFileRef, setWorkingFileRef] = useState<File | null>(null);
+export const useWorkingFile = (initialFileRef?: File) => {
+  const [workingFileRef, setWorkingFileRef] = useState<File | null>(initialFileRef ?? null);
   const { getFileRef } = useFileSystem();
 
-  useEffect(() => {
-    if (!workingFilePath) {
-      return;
-    }
-
-    const ref = getFileRef(workingFilePath);
+  const setWorkingFile = (path: Path) => {
+    const ref = getFileRef(path);
     setWorkingFileRef(ref);
-  }, [workingFilePath, getFileRef]);
+  };
 
-  return { setWorkingFilePath, workingFile: workingFileRef };
+  return { setWorkingFile, workingFile: workingFileRef };
 };

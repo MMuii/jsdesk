@@ -17,14 +17,6 @@ export const NavbarButtonsWrapper = styled(motion.div)`
   gap: 0.6rem;
 `;
 
-export const NavbarButtonsSeparator = styled(motion.div)`
-  height: 1.6rem;
-  width: 1px;
-  background: ${({ theme }) => theme.foreground};
-  opacity: 0.2;
-  margin: 0rem 0.5rem;
-`;
-
 export const ToolboxContainer = styled.div`
   height: calc(100% - 4rem);
   width: 7rem;

@@ -2,17 +2,12 @@ import styled from 'styled-components';
 import { FaFont } from 'react-icons/fa';
 import { highlightDynamically } from 'utils/styles/highlightDynamically';
 import { styledScrollbar } from 'utils/styles/styledScrollbar';
-import { windowNavbar } from 'utils/styles/windowNavbar';
 
 export const Container = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-`;
-
-export const Navbar = styled.div`
-  ${({ theme }) => windowNavbar(theme)};
 `;
 
 export const FontIcon = styled(FaFont)<{ $disabled: boolean }>`
@@ -36,6 +31,7 @@ export const ButtonsWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  height: 100%;
 
   input {
     background: ${({ theme }) => theme.background};
@@ -60,13 +56,6 @@ export const ButtonsWrapper = styled.div`
   }
 `;
 
-export const NavbarButtonsSeparator = styled.div`
-  height: 2rem;
-  width: 1px;
-  margin: 0 0.8rem 0 1rem;
-  background: ${({ theme }) => highlightDynamically(theme, 0.2)};
-`;
-
 export const Textarea = styled.textarea<{ $fontSize: number }>`
   width: 100%;
   height: 100%;
@@ -82,19 +71,5 @@ export const Textarea = styled.textarea<{ $fontSize: number }>`
 
   &:focus {
     outline: none;
-  }
-`;
-
-export const SaveIconContainer = styled.div`
-  position: relative;
-  height: 2.6rem;
-
-  svg:nth-child(2) {
-    color: ${({ theme }) => theme.green};
-    position: absolute;
-    bottom: -0.3rem;
-    right: -0.3rem;
-    font-size: 1rem;
-    pointer-events: none;
   }
 `;

@@ -3,11 +3,12 @@ import { FaTrashAlt } from 'react-icons/fa';
 import { MdSave, MdSaveAs } from 'react-icons/md';
 import { GrUndo, GrRedo } from 'react-icons/gr';
 import { AiOutlineFolderOpen } from 'react-icons/ai';
-import { NavbarButtonsWrapper, Navbar as NavbarContainer, NavbarButtonsSeparator } from './styled';
+import { WindowNavbarContainer, NavbarButtonsSeparator } from 'components/styled/WindowNavbar';
 import { IconButton } from 'components/IconButton';
-import { LineProps } from '.';
 import { HoverPopupPosition } from 'components/HoverPopup';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
+import { NavbarButtonsWrapper } from './styled';
+import { LineProps } from '.';
 
 interface Props {
   filename: string;
@@ -36,7 +37,7 @@ export const Navbar = ({
   linesActions,
 }: Props) => {
   return (
-    <NavbarContainer>
+    <WindowNavbarContainer>
       <LayoutGroup>
         <NavbarButtonsWrapper>
           <motion.div style={{ marginRight: '.5rem' }} layout>
@@ -89,6 +90,6 @@ export const Navbar = ({
           hoverPopupPosition={HoverPopupPosition.right}
         />
       </NavbarButtonsWrapper>
-    </NavbarContainer>
+    </WindowNavbarContainer>
   );
 };

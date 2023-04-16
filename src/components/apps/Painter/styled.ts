@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
 import { iconButton } from 'utils/styles/iconButton';
-import { windowNavbar } from 'utils/styles/windowNavbar';
 import { highlightDynamically } from 'utils/styles/highlightDynamically';
 import { styledScrollbar } from 'utils/styles/styledScrollbar';
 import { motion } from 'framer-motion';
@@ -10,10 +9,6 @@ export const Container = styled.div`
   height: 100%;
   position: relative;
   overflow: hidden;
-`;
-
-export const Navbar = styled.div`
-  ${({ theme }) => windowNavbar(theme)};
 `;
 
 export const NavbarButtonsWrapper = styled(motion.div)`

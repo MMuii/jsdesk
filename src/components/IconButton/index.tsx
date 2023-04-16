@@ -10,6 +10,7 @@ interface Props {
   hoverPopupPosition?: HoverPopupPosition;
   showChevronOnclickCallback?: boolean;
   disabled?: boolean;
+  style?: React.CSSProperties;
 }
 
 export const IconButton = ({
@@ -19,6 +20,7 @@ export const IconButton = ({
   hoverPopupPosition,
   showChevronOnclickCallback = false,
   disabled = false,
+  style,
 }: Props) => {
   const [showChevronCallback, setShowChevronCallback] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -58,6 +60,7 @@ export const IconButton = ({
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      style={style}
     >
       {icon}
       {showChevronCallback && <BsFillCheckCircleFill />}

@@ -1,18 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Path } from 'interfaces/fs';
-import { IoIosSave } from 'react-icons/io';
-import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
-import {
-  ButtonsWrapper,
-  Container,
-  Navbar,
-  NavbarButtonsSeparator,
-  Textarea,
-  FontIcon,
-  SaveIconContainer,
-} from 'components/apps/TextEditor/styled';
 import { useNumberInputValue } from 'utils/hooks/useNumberInputValue';
+import { Navbar } from './Navbar';
+import { Container, Textarea } from './styled';
 
 interface Props {
   filePath: Path;
@@ -62,27 +53,15 @@ export const TextEditor = ({ filePath, fileName }: Props) => {
 
   return (
     <Container>
-      <Navbar>
-        <div>
-          {fileName}
-          {isEdited && ' - edited'}
-        </div>
-        <ButtonsWrapper>
-          <FontIcon
-            fontSize="1rem"
-            style={{ padding: '0.8rem' }}
-            onClick={decreaseFontSize}
-            $disabled={fontSize <= 5}
-          />
-          <input {...inputProps} />
-          <FontIcon onClick={increaseFontSize} $disabled={fontSize >= 40} />
-          <NavbarButtonsSeparator />
-          <SaveIconContainer>
-            <IoIosSave onClick={saveFileChanges} />
-            {showSavedIcon && <BsFillCheckCircleFill />}
-          </SaveIconContainer>
-        </ButtonsWrapper>
-      </Navbar>
+      <Navbar
+        fileName={fileName}
+        isEdited={isEdited}
+        fontSize={fontSize}
+        decreaseFontSize={decreaseFontSize}
+        increaseFontSize={increaseFontSize}
+        saveFileChanges={saveFileChanges}
+        inputProps={inputProps}
+      />
       <Textarea $fontSize={fontSize} value={value} onChange={e => setValue(e.target.value)} />
     </Container>
   );

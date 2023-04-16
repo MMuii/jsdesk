@@ -6,6 +6,7 @@ import { AiOutlineFolderOpen } from 'react-icons/ai';
 import { NavbarButtonsWrapper, Navbar as NavbarContainer, NavbarButtonsSeparator } from './styled';
 import { IconButton } from 'components/IconButton';
 import { LineProps } from '.';
+import { HoverPopup, HoverPopupPosition } from 'components/HoverPopup';
 
 interface Props {
   filename: string;
@@ -31,15 +32,21 @@ export const Navbar = ({
       <NavbarButtonsWrapper>
         <div style={{ marginRight: '.5rem' }}>{filename}</div>
         <NavbarButtonsSeparator />
-        <IconButton icon={<AiOutlineFolderOpen />} onClick={openFile} />
+        <IconButton
+          icon={<AiOutlineFolderOpen />}
+          onClick={openFile}
+          hoverPopupContent="Open file"
+          hoverPopupPosition={HoverPopupPosition.left}
+        />
         <NavbarButtonsSeparator />
         <IconButton
           icon={<MdSave />}
           onClick={save}
           showChevronOnclickCallback
           disabled={isSaveDisabled}
+          hoverPopupContent="Save"
         />
-        <IconButton icon={<MdSaveAs />} onClick={saveAs} />
+        <IconButton icon={<MdSaveAs />} onClick={saveAs} hoverPopupContent="Save as" />
         <NavbarButtonsSeparator />
         <IconButton
           icon={<GrUndo />}
@@ -48,15 +55,22 @@ export const Navbar = ({
             linesActions.undo();
           }}
           disabled={!linesActions.canUndo}
+          hoverPopupContent="Undo"
         />
         <IconButton
           icon={<GrRedo />}
           onClick={linesActions.redo}
           disabled={!linesActions.canRedo}
+          hoverPopupContent="Redo"
         />
       </NavbarButtonsWrapper>
       <NavbarButtonsWrapper>
-        <FaTrashAlt onClick={clearCanvas} />
+        <IconButton
+          icon={<FaTrashAlt />}
+          onClick={clearCanvas}
+          hoverPopupContent="Clear canvas"
+          hoverPopupPosition={HoverPopupPosition.right}
+        />
       </NavbarButtonsWrapper>
     </NavbarContainer>
   );

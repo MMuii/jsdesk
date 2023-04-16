@@ -1,10 +1,13 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { IconContainer } from './styled';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
+import { HoverPopup, HoverPopupPosition } from 'components/HoverPopup';
 
 interface Props {
   icon: JSX.Element;
   onClick: () => void;
+  hoverPopupContent?: React.ReactNode;
+  hoverPopupPosition?: HoverPopupPosition;
   showChevronOnclickCallback?: boolean;
   disabled?: boolean;
 }
@@ -12,10 +15,14 @@ interface Props {
 export const IconButton = ({
   icon,
   onClick,
+  hoverPopupContent,
+  hoverPopupPosition,
   showChevronOnclickCallback = false,
   disabled = false,
 }: Props) => {
   const [showChevronCallback, setShowChevronCallback] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleClick = useCallback(() => {
     if (disabled) return;
@@ -25,14 +32,39 @@ export const IconButton = ({
       setShowChevronCallback(true);
       setTimeout(() => {
         setShowChevronCallback(false);
-      }, 1500);
+      }, 750);
     }
   }, [onClick, disabled]);
 
+  const handleMouseEnter = useCallback(() => {
+    timerRef.current = setTimeout(() => {
+      setShowPopup(true);
+    }, 750);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+
+    setShowPopup(false);
+  }, []);
+
   return (
-    <IconContainer $disabled={disabled} onClick={handleClick}>
+    <IconContainer
+      $disabled={disabled}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {icon}
       {showChevronCallback && <BsFillCheckCircleFill />}
+      {hoverPopupContent && (
+        <HoverPopup show={showPopup} position={hoverPopupPosition}>
+          {hoverPopupContent}
+        </HoverPopup>
+      )}
     </IconContainer>
   );
 };

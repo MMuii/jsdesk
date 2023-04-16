@@ -10,7 +10,6 @@ import {
   FilenameContainer,
   FilenameInput,
   PathContainer,
-  Separator,
 } from './styled';
 
 interface Props extends PathPickerProps {
@@ -53,8 +52,7 @@ export const PathPicker = ({
           <div style={{ whiteSpace: 'nowrap' }}>File name:</div>
           <FilenameInput value={filename} onChange={e => setFilename(e.target.value)} />
         </FilenameContainer>
-        <Separator />
-        <PathContainer style={{ display: 'flex' }}>
+        <PathContainer>
           <FilesExplorerBreadcrumb location={location} changeDirectory={changeDirectory} />
           <ButtonsContainer>
             <button onClick={() => onAccept([...location, filename])}>{acceptButtonText}</button>

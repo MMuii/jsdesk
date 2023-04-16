@@ -8,12 +8,11 @@ export const BottomBarContainer = styled.div`
   display: grid;
   justify-content: space-between;
   align-items: center;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   grid-template-columns: 1fr;
 
   border-top: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
   background: ${({ theme }) => darken(0.04, theme.background)};
-  padding: 1rem;
 `;
 
 export const FilenameContainer = styled.div`
@@ -21,6 +20,7 @@ export const FilenameContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  padding: 1rem;
 `;
 
 export const Filename = styled.div`
@@ -42,12 +42,6 @@ export const FilenameInput = styled.input`
   &:focus {
     outline: none;
   }
-`;
-
-export const Separator = styled.div`
-  width: 100%;
-  height: 1px;
-  background: ${({ theme }) => highlightDynamically(theme, 0.02)};
 `;
 
 export const PathContainer = styled.div`
@@ -94,6 +88,8 @@ export const ButtonsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  padding: 0.5rem 1rem 0.3rem 0;
+  border-top: 1px solid ${({ theme }) => highlightDynamically(theme, 0.2)};
 
   > button {
     width: 8rem;

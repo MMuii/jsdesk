@@ -18,6 +18,10 @@ export const IconContainer = styled.div`
     font-size: 1.2rem;
     padding: 0.3rem;
     border-radius: 0.3rem;
+    max-width: 8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
   }
 
   &:focus {

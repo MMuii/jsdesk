@@ -25,17 +25,12 @@ interface Props {
 export enum Tools {
   brush = 'brush',
   eraser = 'eraser',
-  pencil = 'pencil',
 }
 
 const tools = [
   {
     type: Tools.brush,
     icon: <HiOutlinePaintBrush />,
-  },
-  {
-    type: Tools.pencil,
-    icon: <BiPencil />,
   },
   {
     type: Tools.eraser,

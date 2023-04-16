@@ -4,6 +4,7 @@ import { iconButton } from 'utils/styles/iconButton';
 import { windowNavbar } from 'utils/styles/windowNavbar';
 import { highlightDynamically } from 'utils/styles/highlightDynamically';
 import { styledScrollbar } from 'utils/styles/styledScrollbar';
+import { motion } from 'framer-motion';
 
 export const Container = styled.div`
   height: 100%;
@@ -15,13 +16,13 @@ export const Navbar = styled.div`
   ${({ theme }) => windowNavbar(theme)};
 `;
 
-export const NavbarButtonsWrapper = styled.div`
+export const NavbarButtonsWrapper = styled(motion.div)`
   display: flex;
   align-items: center;
   gap: 0.6rem;
 `;
 
-export const NavbarButtonsSeparator = styled.div`
+export const NavbarButtonsSeparator = styled(motion.div)`
   height: 1.6rem;
   width: 1px;
   background: ${({ theme }) => theme.foreground};

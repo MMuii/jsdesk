@@ -1,6 +1,7 @@
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-export const IconContainer = styled.div<{ $disabled: boolean }>`
+export const IconContainer = styled(motion.div)<{ $disabled: boolean }>`
   position: relative;
   height: 2.6rem;
 

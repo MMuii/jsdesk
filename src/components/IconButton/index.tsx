@@ -53,6 +53,7 @@ export const IconButton = ({
 
   return (
     <IconContainer
+      layout
       $disabled={disabled}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}

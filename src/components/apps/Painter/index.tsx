@@ -26,7 +26,7 @@ export interface LineProps {
 
 export const Painter = ({ initialWorkingPath }: Props) => {
   const { workingFile, setWorkingFilePath } = useWorkingFile(initialWorkingPath);
-  const [tool, setTool] = useState(Tools.pencil);
+  const [tool, setTool] = useState(Tools.brush);
   const [brushColor, setBrushColor] = useState('#df4b26');
   const {
     value: brushSize,

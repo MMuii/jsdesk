@@ -1,15 +1,17 @@
+import { IoTerminal } from 'react-icons/io5';
+import { IoMdSettings } from 'react-icons/io';
+import { HiDocument } from 'react-icons/hi';
+import { HiPaintBrush } from 'react-icons/hi2';
+import { RenderableWindow } from 'utils/hooks/useWindowManager';
+import { getDefaultWindowByFileType } from 'utils/fs/getDefaultWindowByFileType';
+import { File } from 'utils/hooks/useFileSystem/File';
+import { getIconByFileType } from 'utils/fs/getIconByFileType';
 import { DesktopIcon } from 'components/DesktopIcon';
 import { Terminal } from 'components/apps/Terminal';
 import { Painter } from 'components/apps/Painter';
-import { RenderableWindow } from 'utils/hooks/useWindowManager';
-import { IoTerminal } from 'react-icons/io5';
-import { HiDocument } from 'react-icons/hi';
-import { HiPaintBrush } from 'react-icons/hi2';
-import { DesktopIconsContainer } from './styled';
 import { DocPreview } from 'components/apps/DocPreview';
-import { getIconByFileType } from 'utils/fs/getIconByFileType';
-import { File } from 'utils/hooks/useFileSystem/File';
-import { getDefaultWindowByFileType } from 'utils/fs/getDefaultWindowByFileType';
+import { Settings } from 'components/apps/Settings';
+import { DesktopIconsContainer } from './styled';
 
 interface Props {
   openWindow: (window: RenderableWindow) => void;
@@ -55,10 +57,23 @@ const painterWindow: RenderableWindow = {
   },
 };
 
+const settingsWindow: RenderableWindow = {
+  id: window.crypto.randomUUID(),
+  component: <Settings />,
+  name: 'Settings',
+  windowProps: {
+    height: 400,
+    width: 600,
+    minHeight: 300,
+    minWidth: 500,
+  },
+};
+
 const initialDesktopIcons: DesktopIcon[] = [
   { openingWindow: terminalWindow, name: 'term', icon: <IoTerminal /> },
   { openingWindow: docPreviewWindow, name: 'resume.pdf', icon: <HiDocument /> },
   { openingWindow: painterWindow, name: 'Painter', icon: <HiPaintBrush /> },
+  { openingWindow: settingsWindow, name: 'Settings', icon: <IoMdSettings /> },
 ];
 
 export const IconsContainer = ({ openWindow, desktopFiles }: Props) => {

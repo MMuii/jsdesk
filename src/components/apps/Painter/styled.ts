@@ -26,12 +26,13 @@ export const ToolboxContainer = styled.div`
   margin: 2rem;
   background: ${({ theme }) => darken(0.03, theme.background)};
   border-radius: 0.8rem;
-  border: 1px solid ${({ theme }) => highlightDynamically(theme, 0.05)};
+  border: 1px solid ${({ theme }) => highlightDynamically(theme, 0.03)};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   font-size: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
   > div {
     display: flex;

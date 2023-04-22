@@ -6,6 +6,8 @@ import { highlightDynamically } from 'utils/styles/highlightDynamically';
 export const Container = styled.div`
   display: grid;
   grid-template-columns: minmax(20rem, 1fr) 3fr;
+  grid-template-rows: 100%;
+  max-height: 100%;
   padding: 2rem;
   gap: 2rem;
 `;
@@ -50,7 +52,9 @@ export const TabContentWrapper = styled(motion.div)`
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  /* gap: 1rem; */
+  width: 100%;
+  height: 100%;
+  position: relative;
 
   > h2 {
     font-size: 2rem;
@@ -64,5 +68,4 @@ export const Separator = styled.div`
   background: ${({ theme }) => theme.foreground};
   opacity: 0.2;
   margin: 1rem 0;
-  /* margin: 0.5rem 0rem; */
 `;

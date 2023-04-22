@@ -191,6 +191,14 @@ export const useFileSystem = () => {
     setRoot(newRoot);
   };
 
+  const resetFs = () => {
+    const newRoot = workOnDraftFs(fs => {
+      fs.root.files = [];
+    });
+
+    setRoot(newRoot);
+  };
+
   return {
     location,
     changeDirectory,
@@ -201,5 +209,6 @@ export const useFileSystem = () => {
     moveFileAbsolute,
     getFileRef,
     saveFile,
+    resetFs,
   };
 };

@@ -17,7 +17,7 @@ export const WindowContainer = styled(motion.div)<{ $isFocused: boolean; $zIndex
   overflow: hidden;
 
   display: grid;
-  grid-template-rows: min-content 1fr;
+  grid-template-rows: min-content calc(100% - 3rem);
   grid-template-columns: 100%;
 
   z-index: ${({ $zIndex }) => $zIndex};

@@ -62,8 +62,8 @@ const settingsWindow: RenderableWindow = {
   component: <Settings />,
   name: 'Settings',
   windowProps: {
-    height: 400,
-    width: 600,
+    height: 807,
+    width: 808,
     minHeight: 300,
     minWidth: 500,
   },

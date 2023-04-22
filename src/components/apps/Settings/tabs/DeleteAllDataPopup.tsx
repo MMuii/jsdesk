@@ -5,11 +5,11 @@ interface Props {
   onCancel: () => void;
 }
 
-export const ClearCanvasPopup = ({ onAccept, onCancel }: Props) => {
+export const DeleteAllDataPopup = ({ onAccept, onCancel }: Props) => {
   return (
     <WarningPopupContainer>
-      <h2>Clear canvas</h2>
-      <p>Are you sure to clear the canvas? All unsaved changes will be lost</p>
+      <h2>Delete all data</h2>
+      <p>Are you sure to delete all data? All files will be lost</p>
       <div>
         <button onClick={onAccept}>Ok</button>
         <button onClick={onCancel}>Cancel</button>

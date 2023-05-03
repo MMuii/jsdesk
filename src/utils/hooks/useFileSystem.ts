@@ -1,5 +1,5 @@
 import { useFsContext } from 'utils/providers/FSProvider';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import produce from 'immer';
 import { Path } from 'interfaces/fs';
 import { FileSystem } from './useFileSystem/FileSystem';
@@ -9,14 +9,6 @@ import { File } from './useFileSystem/File';
 export const useFileSystem = () => {
   const { root, setRoot } = useFsContext();
   const [location, setLocation] = useState<Path>(['/']);
-
-  useEffect(() => {
-    console.log('root:', root);
-  }, [root]);
-
-  useEffect(() => {
-    console.log('location:', location);
-  }, [location]);
 
   const workOnDraftFs = (fn: (fs: FileSystem) => void): File => {
     const draft = produce<File | FileSystemError>(root, draftRoot => {

@@ -10,10 +10,6 @@ export const useTheme = (): [Theme, (name: string) => boolean] => {
   const [theme, setTermTheme] = useState<Theme>(themes[0]);
 
   useEffect(() => {
-    console.log('theme:', theme);
-  }, [theme]);
-
-  useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
 
     setTheme(savedTheme || defaultTheme);
@@ -23,7 +19,7 @@ export const useTheme = (): [Theme, (name: string) => boolean] => {
     const theme = themes.find(theme => kebabCase(theme.name) === kebabCase(name));
 
     if (!theme) {
-      console.log(`No theme ${name} found`);
+      console.warn(`No theme ${name} found`);
       return false;
     }
 

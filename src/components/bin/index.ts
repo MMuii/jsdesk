@@ -18,6 +18,7 @@ import { rmdir } from 'components/bin/rmdir';
 import { cd } from 'components/bin/cd';
 import { touch } from 'components/bin/touch';
 import { open } from 'components/bin/open';
+import { repl } from 'components/bin/repl';
 import { help as clearHelp } from 'components/bin/clear/help';
 import { help as helpHelp } from 'components/bin/help/help';
 import { help as neofetchHelp } from 'components/bin/neofetch/help';
@@ -52,6 +53,7 @@ export const bins: { [key: string]: Binary } = {
   cd: cd,
   touch: touch,
   open: open, // TODO - add help
+  repl: repl, // TODO - add help
 };
 
 export const helpPages: { [key: string]: CommandHelp } = {

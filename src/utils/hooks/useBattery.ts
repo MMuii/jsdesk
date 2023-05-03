@@ -14,7 +14,7 @@ export const useBattery = () => {
       window.navigator.getBattery().then(battery => hookBattery(battery));
     } else {
       setBatteryState(null);
-      console.log('Battery API unsupported');
+      console.warn('Battery API unsupported');
     }
 
     return () => {

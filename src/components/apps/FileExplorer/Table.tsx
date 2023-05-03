@@ -11,7 +11,6 @@ export const Table = (props: Omit<FilesTableProps, 'handleFileDoubleClick'>) => 
   const handleFileDoubleClick = (file: FileType) => {
     switch (file.type) {
       case 'dir': {
-        console.log('changing directory to:', file);
         changeDirectory(file.name);
         return;
       }

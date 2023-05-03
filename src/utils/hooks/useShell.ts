@@ -1,5 +1,5 @@
 import { useAppTheme } from './../providers/ThemeProvider';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { BinProps } from 'interfaces/BinProps';
 import { parseCommand } from 'utils/parseCommand';
 import getBin from 'components/bin';
@@ -12,13 +12,6 @@ export const useShell = () => {
   const [history, setHistory] = useState<Command[]>([]);
   const [renderHistory, setRenderHistory] = useState<Renderable[]>([]);
   const pid = useRef<number>(1);
-
-  // useEffect(() => {
-  //   console.log('history:', history);
-  //   console.log('renderHistory:', renderHistory);
-  //   console.log('callStack:', callStack);
-  //   console.log('________________________________');
-  // }, [history, renderHistory, callStack]);
 
   const clearHistory = useCallback(() => setRenderHistory([]), []);
 

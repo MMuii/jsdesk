@@ -3,14 +3,22 @@ import { Output, REPLScope } from './types';
 import { getScopeMutations } from './getScopeMutations';
 import { evalScript, getScopeInjectionScript, updateScope } from './utils';
 
+interface Config {
+  displayInitialOutput: boolean;
+}
+
+const initialConfig: Config = {
+  displayInitialOutput: true,
+};
+
 const initialOutput: Output[] = [
   { text: '// To leave REPL, press CTRL+C', type: 'log' },
   { text: '// Scope is preserved between evaluations by evaluating', type: 'log' },
   { text: '// all the variable declarations and assignments every new input.', type: 'log' },
 ];
 
-export const useREPL = () => {
-  const [output, setOutput] = useState<Output[]>(initialOutput);
+export const useREPL = (config: Config = initialConfig) => {
+  const [output, setOutput] = useState<Output[]>(config.displayInitialOutput ? initialOutput : []);
   const scopeRef = useRef<REPLScope>({});
 
   useEffect(() => {
@@ -30,8 +38,8 @@ export const useREPL = () => {
 
     try {
       const scopeInjectionScript = getScopeInjectionScript(scopeRef.current);
-
       const scriptWithInjectedScope = `${scopeInjectionScript} ${script}`;
+
       const evaluatedScript = evalScript(scriptWithInjectedScope);
       setOutput(prev => [...prev, { text: evaluatedScript, type: 'output' }]);
 

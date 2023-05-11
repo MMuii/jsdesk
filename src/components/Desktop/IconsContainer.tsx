@@ -2,6 +2,7 @@ import { IoTerminal } from 'react-icons/io5';
 import { IoMdSettings } from 'react-icons/io';
 import { HiDocument } from 'react-icons/hi';
 import { HiPaintBrush } from 'react-icons/hi2';
+import { HiCodeBracketSquare } from 'react-icons/hi2';
 import { RenderableWindow } from 'utils/hooks/useWindowManager';
 import { getDefaultWindowByFileType } from 'utils/fs/getDefaultWindowByFileType';
 import { File } from 'utils/hooks/useFileSystem/File';
@@ -12,6 +13,7 @@ import { Painter } from 'components/apps/Painter';
 import { DocPreview } from 'components/apps/DocPreview';
 import { Settings } from 'components/apps/Settings';
 import { DesktopIconsContainer } from './styled';
+import { CodeEditor } from 'components/apps/CodeEditor';
 
 interface Props {
   openWindow: (window: RenderableWindow) => void;
@@ -69,11 +71,24 @@ const settingsWindow: RenderableWindow = {
   },
 };
 
+const codeEditorWindow: RenderableWindow = {
+  id: window.crypto.randomUUID(),
+  component: <CodeEditor />,
+  name: 'Code editor',
+  windowProps: {
+    height: 1000,
+    width: 1000,
+    minHeight: 300,
+    minWidth: 500,
+  },
+};
+
 const initialDesktopIcons: DesktopIcon[] = [
   { openingWindow: terminalWindow, name: 'term', icon: <IoTerminal /> },
   { openingWindow: docPreviewWindow, name: 'resume.pdf', icon: <HiDocument /> },
   { openingWindow: painterWindow, name: 'Painter', icon: <HiPaintBrush /> },
   { openingWindow: settingsWindow, name: 'Settings', icon: <IoMdSettings /> },
+  { openingWindow: codeEditorWindow, name: 'Code editor', icon: <HiCodeBracketSquare /> },
 ];
 
 export const IconsContainer = ({ openWindow, desktopFiles }: Props) => {

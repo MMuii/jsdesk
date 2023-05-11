@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@monaco-editor/react": "^4.5.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -18,10 +19,12 @@
     "json5": "^2.2.3",
     "konva": "^8.4.2",
     "lodash": "^4.17.21",
+    "minimist": "^1.2.8",
     "polished": "^4.2.2",
     "prismjs": "^1.29.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-folder-tree": "^5.1.1",
     "react-icons": "4.8.0",
     "react-is": "^18.2.0",
     "react-konva": "^18.2.5",
@@ -61,6 +64,7 @@
   "devDependencies": {
     "@types/js-levenshtein": "^1.1.1",
     "@types/lodash": "^4.14.182",
+    "@types/minimist": "^1.2.2",
     "@types/prismjs": "^1.26.0",
     "@types/react-is": "^17.0.3",
     "@types/react-pdf": "5.7.2",

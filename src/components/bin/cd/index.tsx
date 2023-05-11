@@ -10,7 +10,9 @@ export const cd: Binary = ({ terminate, args }) => {
     const [result, setResult] = useState<null | string>(null);
 
     useEffect(() => {
-      setResult(changeDirectory(args[0]) ?? null);
+      if (args.length > 0) {
+        setResult(changeDirectory(args[0]) ?? null);
+      }
     }, []);
 
     if (typeof result === 'string') {

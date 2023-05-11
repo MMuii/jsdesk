@@ -1,11 +1,19 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
 import { useInputLine } from 'utils/hooks/useInputLine';
 import { InputLine } from 'components/InputLine';
 import { NoRerenderedPs1 } from 'components/Ps1';
 import { HistoryContainer } from 'components/apps/Terminal/styled';
 import { useShell } from 'utils/hooks/useShell';
 
-export const Terminal = () => {
+export interface TerminalRef {
+  run: (
+    command: string,
+    renderedCommandName?: string | undefined,
+    renderOnlyComponent?: boolean,
+  ) => void;
+}
+
+export const Terminal = forwardRef<TerminalRef, {}>((_, ref) => {
   const terminalRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { renderHistory, processCommand, callStack, history } = useShell();
@@ -13,6 +21,12 @@ export const Terminal = () => {
     history,
     inputRef,
   );
+
+  useImperativeHandle(ref, () => ({
+    run(command: string, renderedCommandName?: string) {
+      processCommand(command, renderedCommandName);
+    },
+  }));
 
   useEffect(() => {
     if (terminalRef.current) {
@@ -71,4 +85,4 @@ export const Terminal = () => {
       )}
     </HistoryContainer>
   );
-};
+});

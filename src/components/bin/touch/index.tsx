@@ -15,7 +15,7 @@ export const touch: Binary = ({ terminate, args, processCommandAsync }) => {
     const [result, setResult] = useState<null | string>(null);
 
     useEffect(() => {
-      setResult(makeFileRelative(args[0], 'txt') ?? null);
+      setResult(makeFileRelative(args[0], 'txt', true, '', false) ?? null);
     }, []);
 
     if (typeof result === 'string') {

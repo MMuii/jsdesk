@@ -39,6 +39,7 @@ const getPosition = (position: HoverPopupPosition) => {
 export const PopupContainer = styled(motion.div)<{ $position: HoverPopupPosition }>`
   position: absolute;
   ${({ $position }) => getPosition($position)};
+  top: 100%;
 
   background: red;
   font-size: 1.2rem;

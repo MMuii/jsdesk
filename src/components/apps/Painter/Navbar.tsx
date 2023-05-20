@@ -9,7 +9,6 @@ import { HoverPopupPosition } from 'components/HoverPopup';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { NavbarButtonsWrapper } from './styled';
 import { LineProps } from '.';
-import { useState, useEffect } from 'react';
 
 interface Props {
   filename: string;

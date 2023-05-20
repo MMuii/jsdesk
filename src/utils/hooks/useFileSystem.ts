@@ -191,6 +191,20 @@ export const useFileSystem = () => {
     setRoot(newRoot);
   };
 
+  const getChildFileNameWithCopyNumber = (
+    parentPath: string | Path,
+    childFileName: string,
+  ): string => {
+    const fs = new FileSystem(root, location);
+    const parent = fs.getFileByPath(parentPath);
+
+    const doesFileExist = parent.files.some(file => file.name === childFileName);
+    if (!doesFileExist) return childFileName;
+
+    const copyNumber = parent.getCopyNumberForNewAlreadyExistingChildFile(childFileName);
+    return `${childFileName} (${copyNumber})`;
+  };
+
   return {
     location,
     changeDirectory,
@@ -202,5 +216,6 @@ export const useFileSystem = () => {
     getFileRef,
     saveFile,
     resetFs,
+    getChildFileNameWithCopyNumber,
   };
 };

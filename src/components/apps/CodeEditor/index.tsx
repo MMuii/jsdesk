@@ -16,6 +16,7 @@ import {
 } from './styled';
 import { useCodeEditor } from './useCodeEditor';
 import { IconButton } from 'components/IconButton';
+import { MdSave } from 'react-icons/md';
 
 export const CodeEditor = () => {
   const [isTerminalOpened, setIsTerminalOpened] = useState(false);
@@ -29,6 +30,7 @@ export const CodeEditor = () => {
     selectedFile,
     setOpenedFiles,
     setSelectedFile,
+    saveSelectedFile,
     fs,
   } = useCodeEditor();
   const terminalRef = useRef<TerminalRef>(null);
@@ -77,7 +79,7 @@ export const CodeEditor = () => {
       );
     }
 
-    return <FileTree root={fs.getFileRef(projectRoot)} openFile={openFile} />;
+    return <FileTree root={fs.getFileRef(projectRoot)} fs={fs} openFile={openFile} />;
   };
 
   const renderTerminalIcon = useCallback(() => {
@@ -102,11 +104,18 @@ export const CodeEditor = () => {
       </FileTreeContainer>
       <EditorContainer id="editor-container">
         <WindowNavbarContainer style={{ padding: '0.5rem' }}>
-          <IconButton
-            icon={<FiTriangle />}
-            onClick={runFile}
-            style={{ transform: 'rotate(90deg)' }}
-          />
+          <div style={{ display: 'flex', gap: '.5rem' }}>
+            <IconButton
+              icon={<FiTriangle />}
+              onClick={runFile}
+              style={{ transform: 'rotate(90deg)' }}
+            />
+            <IconButton
+              icon={<MdSave />}
+              onClick={saveSelectedFile}
+              disabled={selectedFile.content === selectedFile.currentContent}
+            />
+          </div>
           {renderTerminalIcon()}
         </WindowNavbarContainer>
         {openedFiles.length > 0 && (

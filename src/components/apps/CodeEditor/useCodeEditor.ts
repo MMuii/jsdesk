@@ -88,6 +88,17 @@ export const useCodeEditor = () => {
     );
   };
 
+  const saveSelectedFile = () => {
+    const openedFile = openedFiles[selectedFileIdx as number];
+    fs.saveFile(openedFile.path, openedFile.currentContent);
+
+    setOpenedFiles(
+      produce(draftFiles => {
+        draftFiles[selectedFileIdx as number].content = openedFile.currentContent;
+      }),
+    );
+  };
+
   return {
     modifySelectedFile,
     projectRoot,
@@ -100,6 +111,7 @@ export const useCodeEditor = () => {
     openFile,
     openProjectRoot,
     closeFile,
+    saveSelectedFile,
     fs,
   };
 };

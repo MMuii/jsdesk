@@ -32,9 +32,7 @@ export const FileTableRow = forwardRef<HTMLTableRowElement, Props>(
       };
 
       document.addEventListener('keydown', escHandler);
-      return () => {
-        document.removeEventListener('keydown', escHandler);
-      };
+      return () => document.removeEventListener('keydown', escHandler);
     }, [isRenaming, onRenameCancel, onRename, renamedName]);
 
     const renderFileName = () => {

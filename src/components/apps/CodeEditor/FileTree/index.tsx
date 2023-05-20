@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import produce from 'immer';
-import { AiFillFolder, AiFillFolderOpen, AiFillFile } from 'react-icons/ai';
 import { Path } from 'interfaces/fs';
 import { FileType } from 'utils/hooks/useFileSystem/File';
 import { useContextMenu } from 'utils/providers/ContextMenuProvider';
-import { TreeRow } from './styled';
+import { useFsSession } from 'utils/providers/FSSessionProvider';
+import { TreeRow } from './TreeRow';
+import { ContextMenuOption } from 'components/ContextMenu';
 
 interface Props {
   root: FileType;
   openFile: (file: FileType) => void;
+  fs: ReturnType<typeof useFsSession>;
 }
 
 const createInitialState = (rootPath: Path): { [key: string]: any } => {
@@ -66,15 +68,12 @@ const isOpened = (state: any, path: Path): boolean => {
   return isOpened(state[path[0]], path.slice(1));
 };
 
-export const FileTree = ({ root, openFile }: Props) => {
+export const FileTree = ({ root, fs, openFile }: Props) => {
   const [openedFolders, setOpenedFolders] = useState<{ [key: string]: any }>(
     createInitialState(root.path),
   );
+  const [renamingFilePath, setRenamingFilePath] = useState<string | null>(null);
   const { openContextMenu } = useContextMenu();
-
-  useEffect(() => {
-    console.log('opened folders:', openedFolders);
-  }, [openedFolders]);
 
   const open = (path: Path) => {
     setOpenedFolders(state => openFolder(state, path));
@@ -93,35 +92,74 @@ export const FileTree = ({ root, openFile }: Props) => {
     else open(path);
   };
 
-  const getFileIcon = (isDirectory: boolean, isOpened: boolean) => {
-    if (isDirectory) {
-      return isOpened ? <AiFillFolderOpen /> : <AiFillFolder />;
-    }
+  const getContextMenuOptions = (file: FileType, isOpened: boolean): ContextMenuOption[] => {
+    const defaultOptions = [
+      {
+        text: 'Rename',
+        onClick: () => {
+          setRenamingFilePath(file.path.join(''));
+        },
+      },
+      {
+        text: 'Delete',
+        onClick: () => {
+          fs.removeDirectory(file.path);
+        },
+      },
+    ];
 
-    return <AiFillFile />;
+    if (!file.isDirectory) return defaultOptions;
+
+    return [
+      {
+        text: 'New file',
+        onClick: () => {
+          const newFileName = fs.getChildFileNameWithCopyNumber(file.path, 'New file');
+          const newFilePath = [...file.path, newFileName];
+
+          fs.makeFileRelative(newFilePath, 'txt', true, '', false);
+          setRenamingFilePath(newFilePath.join(''));
+
+          if (!isOpened) {
+            open(file.path);
+          }
+        },
+      },
+      {
+        text: 'New directory',
+        onClick: () => {
+          fs.makeFileRelative(file.path, 'txt', true, '', false);
+        },
+      },
+      ...defaultOptions,
+    ];
   };
 
   const renderFileTree = () => {
     const renderFile = (file: FileType, depthLevel: number) => {
-      const filePath = file.path.join('');
       const isOpened = isFolderOpened(file.path);
+      const filePath = file.path.join('');
 
       return (
         <TreeRow
           key={filePath}
-          style={{ paddingLeft: `${depthLevel}rem` }}
-          onClick={e => {
-            e.stopPropagation();
+          file={file}
+          depthLevel={depthLevel}
+          isOpened={isOpened}
+          isRenaming={renamingFilePath === filePath}
+          openContextMenu={openContextMenu}
+          renderFile={renderFile}
+          contextMenuOptions={getContextMenuOptions(file, isOpened)}
+          onRename={newName => {
+            setRenamingFilePath(null);
+            fs.moveFileAbsolute(file.path, [...file.path.slice(0, -1), newName]);
+          }}
+          onRenameCancel={() => setRenamingFilePath(null)}
+          onClick={() => {
             if (file.isDirectory) toggleFolder(file.path, isOpened);
             else openFile(file);
           }}
-        >
-          <div>
-            <span>{getFileIcon(file.isDirectory, isOpened)}</span>
-            <span>{file.name}</span>
-          </div>
-          {isOpened && file.files.map(f => renderFile(f, depthLevel + 1))}
-        </TreeRow>
+        />
       );
     };
 

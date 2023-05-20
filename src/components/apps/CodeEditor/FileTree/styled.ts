@@ -18,3 +18,18 @@ export const TreeRow = styled.div`
     }
   }
 `;
+
+export const TreeRowInput = styled.input`
+  background: ${({ theme }) => highlightDynamically(theme, 0.1, 0.5, 'foreground')};
+  font-size: 1.2rem;
+  padding: 0rem;
+  margin: 0rem;
+  max-width: 100%;
+  border: none;
+  font-family: 'Fira Code', monospace;
+  border-radius: 0.4rem;
+
+  &:focus {
+    outline: none;
+  }
+`;

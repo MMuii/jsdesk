@@ -25,6 +25,8 @@ export const OpenedFileContainer = styled(Reorder.Item)<{ $selected: boolean }>`
   border-right: 1px solid ${({ theme }) => highlightDynamically(theme, 0.05)};
   transition: background 0.1s;
   font-size: 1.3rem;
+  white-space: nowrap;
+  cursor: pointer;
 
   &:hover {
     background: ${({ theme, $selected }) =>

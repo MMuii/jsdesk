@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
+import produce from 'immer';
 import { Path } from 'interfaces/fs';
 import { FileType } from 'utils/hooks/useFileSystem/File';
 import { useWindowPopup } from 'utils/providers/WindowPopupProvider';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
 import { OpenFilePopup } from 'components/popups/OpenFilePopup';
-import produce from 'immer';
 
 export interface OpenedFile extends FileType {
   currentContent: string;
@@ -55,7 +55,9 @@ export const useCodeEditor = () => {
       }
 
       setOpenedFiles(prev => [...prev, newlyOpenedFile]);
-      // TODO - select newly opened file
+      // at this point selectedFiles arr has not yet updated
+      // but it is fine to update selected file index to last one
+      setSelectedFileIdx(openedFiles.length);
     },
     [openedFiles],
   );

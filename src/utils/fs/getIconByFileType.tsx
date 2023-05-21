@@ -1,4 +1,11 @@
-import { IoDocumentText, IoImage, IoFolder } from 'react-icons/io5';
+import {
+  IoDocumentText,
+  IoImage,
+  IoFolder,
+  IoLogoJavascript,
+  IoLogoCss3,
+  IoLogoHtml5,
+} from 'react-icons/io5';
 
 export const getIconByFileType = (fileType: string): React.ReactElement => {
   switch (fileType) {
@@ -9,6 +16,12 @@ export const getIconByFileType = (fileType: string): React.ReactElement => {
     case 'jpg':
     case 'png':
       return <IoImage />;
+    case 'js':
+      return <IoLogoJavascript />;
+    case 'html':
+      return <IoLogoHtml5 />;
+    case 'css':
+      return <IoLogoCss3 />;
     default:
       return <IoFolder />;
   }

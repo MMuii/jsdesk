@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Binary } from 'interfaces/Binary';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
+import { getFileTypeByName } from 'utils/fs/getFileTypeByName';
 
 export const touch: Binary = ({ terminate, args, processCommandAsync }) => {
   terminate();
@@ -14,8 +15,11 @@ export const touch: Binary = ({ terminate, args, processCommandAsync }) => {
     const { makeFileRelative } = useFsSession();
     const [result, setResult] = useState<null | string>(null);
 
+    const filename = args[0];
+    const fileType = getFileTypeByName(filename);
+
     useEffect(() => {
-      setResult(makeFileRelative(args[0], 'txt', true, '', false) ?? null);
+      setResult(makeFileRelative(filename, fileType, true, '', false) ?? null);
     }, []);
 
     if (typeof result === 'string') {

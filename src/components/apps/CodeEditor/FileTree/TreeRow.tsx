@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { AiFillFolder, AiFillFolderOpen, AiFillFile } from 'react-icons/ai';
+import { IoFolder, IoFolderOpen } from 'react-icons/io5';
 import { FileType } from 'utils/hooks/useFileSystem/File';
 import { useContextMenu } from 'utils/providers/ContextMenuProvider';
 import { ContextMenuOption } from 'components/ContextMenu';
 import { TreeRow as StyledTreeRow, TreeRowInput } from './styled';
+import { getIconByFileType } from 'utils/fs/getIconByFileType';
 
 interface Props {
   file: FileType;
@@ -16,19 +17,14 @@ interface Props {
   onRename: (newName: string) => void;
   onRenameCancel: () => void;
   contextMenuOptions: ContextMenuOption[];
-  // TODO - receive fs methods like makeFile, deleteFile
-  // TODO - change makeFile in useFsSession to automatically detect file type
-  // and default to text
-
-  // TODO - handle onRename and onRenameCancel
 }
 
-const getFileIcon = (isDirectory: boolean, isOpened: boolean) => {
+const getFileIcon = (type: string, isDirectory: boolean, isOpened: boolean) => {
   if (isDirectory) {
-    return isOpened ? <AiFillFolderOpen /> : <AiFillFolder />;
+    return isOpened ? <IoFolderOpen /> : <IoFolder />;
   }
 
-  return <AiFillFile />;
+  return getIconByFileType(type);
 };
 
 export const TreeRow = ({
@@ -102,7 +98,7 @@ export const TreeRow = ({
         ref={ref}
         onContextMenu={e => openContextMenu(e, [ref.current as Element], contextMenuOptions)}
       >
-        <span>{getFileIcon(file.isDirectory, isOpened)}</span>
+        <span>{getFileIcon(file.type, file.isDirectory, isOpened)}</span>
         {renderFileName()}
       </div>
       {isOpened && file.files.map(f => renderFile(f, depthLevel + 1))}

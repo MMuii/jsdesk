@@ -128,7 +128,7 @@ export const FileTree = ({ root, fs, openFile }: Props) => {
       {
         text: 'New directory',
         onClick: () => {
-          fs.makeFileRelative(file.path, 'txt', true, '', false);
+          fs.makeFileRelative(file.path, 'dir', true, '', true);
         },
       },
       ...defaultOptions,

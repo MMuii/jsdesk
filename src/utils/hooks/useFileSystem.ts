@@ -5,6 +5,7 @@ import { Path } from 'interfaces/fs';
 import { FileSystem } from './useFileSystem/FileSystem';
 import { FileSystemError } from './useFileSystem/FileSystemError';
 import { File } from './useFileSystem/File';
+import { getFileTypeByName } from 'utils/fs/getFileTypeByName';
 
 export const useFileSystem = () => {
   const { root, setRoot } = useFsContext();
@@ -153,7 +154,7 @@ export const useFileSystem = () => {
           throw new FileSystemError(`File ${newFileName} already exists`);
         }
 
-        destParent.addFile({ ...curFile, name: newFileName });
+        destParent.addFile({ ...curFile, name: newFileName, type: getFileTypeByName(newFileName) });
         const curFileParent = fs.getParent(curFile);
         curFileParent.files = curFileParent.files.filter(file => file.name !== curFile.name);
       });

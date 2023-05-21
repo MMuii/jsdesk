@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FiTriangle } from 'react-icons/fi';
+import { VscPlay } from 'react-icons/vsc';
 import { BsTerminal, BsTerminalFill } from 'react-icons/bs';
+import { MdSave } from 'react-icons/md';
 import { WindowNavbarContainer } from 'components/styled/WindowNavbar';
 import { Terminal, TerminalRef } from 'components/apps/Terminal';
 import { Button } from 'components/styled/Button';
+import { HoverPopupPosition } from 'components/HoverPopup';
+import { IconButton } from 'components/IconButton';
+
 import { OpenedFilesPanel } from './OpenedFilesPanel';
 import { FileTree } from './FileTree';
 import { FileEditor } from './FileEditor';
@@ -15,8 +20,6 @@ import {
   TerminalContainer,
 } from './styled';
 import { useCodeEditor } from './useCodeEditor';
-import { IconButton } from 'components/IconButton';
-import { MdSave } from 'react-icons/md';
 
 export const CodeEditor = () => {
   const [isTerminalOpened, setIsTerminalOpened] = useState(false);
@@ -93,7 +96,10 @@ export const CodeEditor = () => {
       setIsTerminalOpened(true);
     }
 
-    terminalRef.current.run(`run "${selectedFile.content}"`, `run ${selectedFile.path.join('')}`);
+    terminalRef.current.run(
+      `run "${selectedFile.currentContent}"`,
+      `run ${selectedFile.path.join('')}`,
+    );
   };
 
   return (
@@ -106,14 +112,16 @@ export const CodeEditor = () => {
         <WindowNavbarContainer style={{ padding: '0.5rem' }}>
           <div style={{ display: 'flex', gap: '.5rem' }}>
             <IconButton
-              icon={<FiTriangle />}
+              icon={<VscPlay />}
               onClick={runFile}
-              style={{ transform: 'rotate(90deg)' }}
+              hoverPopupContent="Run"
+              hoverPopupPosition={HoverPopupPosition.left}
             />
             <IconButton
               icon={<MdSave />}
               onClick={saveSelectedFile}
-              disabled={selectedFile.content === selectedFile.currentContent}
+              disabled={selectedFile && selectedFile.content === selectedFile.currentContent}
+              hoverPopupContent="Save"
             />
           </div>
           {renderTerminalIcon()}

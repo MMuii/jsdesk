@@ -1,3 +1,4 @@
+import { CodeEditor } from 'components/apps/CodeEditor';
 import { FileExplorer } from 'components/apps/FileExplorer';
 import { Painter } from 'components/apps/Painter';
 import { TextEditor } from 'components/apps/TextEditor';
@@ -48,6 +49,23 @@ export const getDefaultWindowByFileType = (
         componentProps: {
           initialFileRef: file,
           ...componentProps,
+        },
+      };
+    case 'js':
+    case 'css':
+    case 'html':
+      return {
+        id: window.crypto.randomUUID(),
+        component: <CodeEditor />,
+        name: 'CodeEditor',
+        windowProps: {
+          height: 1000,
+          width: 1000,
+          minHeight: 300,
+          minWidth: 500,
+        },
+        componentProps: {
+          initialOpenedFilePath: file.path,
         },
       };
     default:

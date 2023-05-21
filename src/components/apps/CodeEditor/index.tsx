@@ -20,8 +20,14 @@ import {
   TerminalContainer,
 } from './styled';
 import { useCodeEditor } from './useCodeEditor';
+import { Path } from 'interfaces/fs';
 
-export const CodeEditor = () => {
+interface Props {
+  // initialPath?: string;
+  initialOpenedFilePath?: Path;
+}
+
+export const CodeEditor = ({ initialOpenedFilePath }: Props) => {
   const [isTerminalOpened, setIsTerminalOpened] = useState(false);
   const {
     modifySelectedFile,
@@ -37,6 +43,13 @@ export const CodeEditor = () => {
     fs,
   } = useCodeEditor();
   const terminalRef = useRef<TerminalRef>(null);
+
+  useEffect(() => {
+    if (initialOpenedFilePath) {
+      const file = fs.getFileRef(initialOpenedFilePath);
+      openFile(file);
+    }
+  }, []);
 
   useEffect(() => {
     console.log('openedFiles', openedFiles);

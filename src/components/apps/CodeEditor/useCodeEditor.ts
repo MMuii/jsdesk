@@ -54,6 +54,7 @@ export const useCodeEditor = () => {
         setSelectedFileIdx(0);
       }
 
+      console.log('newly opened file:', newlyOpenedFile);
       setOpenedFiles(prev => [...prev, newlyOpenedFile]);
       // at this point selectedFiles arr has not yet updated
       // but it is fine to update selected file index to last one

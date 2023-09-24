@@ -47,7 +47,7 @@ export const getDefaultWindowByFileType = (
           width: 800,
         },
         componentProps: {
-          initialFileRef: file,
+          initialPath: file.path,
           ...componentProps,
         },
       };

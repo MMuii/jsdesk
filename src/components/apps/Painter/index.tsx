@@ -5,17 +5,16 @@ import { CanvasContainer, Container } from 'components/apps/Painter/styled';
 import { Toolbox, Tools } from 'components/apps/Painter/Toolbox';
 import { useNumberInputValue } from 'utils/hooks/useNumberInputValue';
 import { useWindowPopup } from 'utils/providers/WindowPopupProvider';
-import { useFileSystem } from 'utils/hooks/useFileSystem';
 import { Path } from 'utils/hooks/useFileSystem/FileSystem';
 import { SaveAsPopup, PathPickerProps } from 'components/popups/SaveAsPopup';
 import { useWorkingFile } from 'utils/hooks/useWorkingFile';
 import { OpenFilePopup } from 'components/popups/OpenFilePopup';
-import { File } from 'utils/hooks/useFileSystem/File';
+import { useFsSession } from 'utils/providers/FSSessionProvider';
 import { ClearCanvasPopup } from './ClearCanvasPopup';
 import { Canvas } from './Canvas';
 import { Navbar } from './Navbar';
 interface Props {
-  initialFileRef?: File;
+  initialPath?: Path;
 }
 
 export interface LineProps {
@@ -25,8 +24,11 @@ export interface LineProps {
   points: number[];
 }
 
-export const Painter = ({ initialFileRef }: Props) => {
-  const { workingFile, setWorkingFile } = useWorkingFile(initialFileRef);
+export const Painter = ({ initialPath }: Props) => {
+  const { makeFileRelative, saveFile, getFileRef } = useFsSession();
+  const { workingFile, setWorkingFile } = useWorkingFile(
+    initialPath ? getFileRef(initialPath) : undefined,
+  );
   const [tool, setTool] = useState(Tools.brush);
   const [brushColor, setBrushColor] = useState('#df4b26');
   const {
@@ -37,7 +39,6 @@ export const Painter = ({ initialFileRef }: Props) => {
   const [lines, linesActions] = useUndo<LineProps[]>([], { useCheckpoints: true });
   const [loadedImage, setLoadedImage] = useState<HTMLImageElement | null>(null);
   const { openPopup } = useWindowPopup();
-  const { makeFileRelative, saveFile } = useFileSystem();
   const stageRef = useRef<Konva.Stage | null>(null);
 
   const filename = workingFile ? workingFile.name : 'New image.jpg';

@@ -3,6 +3,7 @@ import { FilesTable, FilesTableProps, TableRowContextMenuOnClickArgs } from 'com
 import { FileType } from 'utils/hooks/useFileSystem/File';
 import { TextEditor } from '../TextEditor';
 import { ContextMenuOption } from 'components/ContextMenu';
+import { Painter } from '../Painter';
 
 export const Table = (props: Omit<FilesTableProps, 'handleFileDoubleClick'>) => {
   const { openWindow } = useWindowManagerContext();
@@ -24,6 +25,19 @@ export const Table = (props: Omit<FilesTableProps, 'handleFileDoubleClick'>) => 
             height: 700,
           },
         });
+        break;
+      }
+      case 'jpg': {
+        openWindow({
+          id: window.crypto.randomUUID(),
+          component: <Painter initialPath={[...location, file.name]} />,
+          name: 'Painter',
+          windowProps: {
+            width: 700,
+            height: 700,
+          },
+        });
+        break;
       }
     }
   };

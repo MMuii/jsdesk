@@ -150,11 +150,17 @@ export const useFileSystem = () => {
         const destParentPathAbs = fs.getParentPathByPath(destPath);
         const destParent = fs.getFileByPath(destParentPathAbs);
         const newFileName = destPath[destPath.length - 1];
+        const newFileType = curFile.isDirectory ? 'dir' : getFileTypeByName(newFileName);
         if (destParent.files.some(file => file.name === newFileName)) {
           throw new FileSystemError(`File ${newFileName} already exists`);
         }
 
-        destParent.addFile({ ...curFile, name: newFileName, type: getFileTypeByName(newFileName) });
+        destParent.addFile({
+          ...curFile,
+          name: newFileName,
+          type: newFileType,
+        });
+
         const curFileParent = fs.getParent(curFile);
         curFileParent.files = curFileParent.files.filter(file => file.name !== curFile.name);
       });

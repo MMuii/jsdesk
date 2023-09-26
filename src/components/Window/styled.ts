@@ -171,10 +171,16 @@ export const WindowBarButtonContainer = styled.div<{ $isFocused: boolean }>`
   }
 `;
 
-export const WindowBarButton = styled.div`
+export const WindowBarButton = styled.div<{ $isDisabled?: boolean }>`
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 100%;
+  ${({ $isDisabled }) =>
+    $isDisabled &&
+    css`
+      filter: grayscale(1);
+      cursor: not-allowed !important;
+    `};
 `;
 
 export const WindowName = styled.div`

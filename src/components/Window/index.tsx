@@ -121,11 +121,19 @@ export const Window = ({
   const mWidth = useMotionValue(200);
 
   const setFullScreen = () => {
+    if (fullScreenState.isFullScreen) {
+      return;
+    }
+
     const { top, left } = windowContainerRef.current!.getBoundingClientRect();
     setFullScreenState({ isFullScreen: true, beforeFullScreenPosition: { top, left } });
   };
 
   const minimizeWindow = () => {
+    if (!fullScreenState.isFullScreen) {
+      return;
+    }
+
     setFullScreenState(prev => ({
       isFullScreen: false,
       beforeFullScreenPosition: { ...prev.beforeFullScreenPosition },
@@ -181,8 +189,8 @@ export const Window = ({
       >
         <WindowBarButtonContainer $isFocused={isFocused}>
           <WindowBarButton onClick={onWindowClose} />
-          <WindowBarButton onClick={minimizeWindow} />
-          <WindowBarButton onClick={setFullScreen} />
+          <WindowBarButton onClick={minimizeWindow} $isDisabled={!fullScreenState.isFullScreen} />
+          <WindowBarButton onClick={setFullScreen} $isDisabled={fullScreenState.isFullScreen} />
         </WindowBarButtonContainer>
         <WindowName>{name}</WindowName>
       </WindowBar>

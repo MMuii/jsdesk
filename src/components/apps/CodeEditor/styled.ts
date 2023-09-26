@@ -23,6 +23,7 @@ export const NoFilesOpenedContainer = styled.div`
   display: grid;
   place-items: center;
   font-size: 1.6rem;
+  text-align: center;
 
   > div {
     display: grid;

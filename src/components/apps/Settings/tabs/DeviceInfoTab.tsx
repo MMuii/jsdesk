@@ -38,7 +38,12 @@ const resolution = `${window.screen.availWidth}x${window.screen.availHeight}`;
 
 const getRamAmount = () => {
   // @ts-ignore
-  return `${navigator.deviceMemory}GB or more`;
+  const { deviceMemory } = navigator;
+  if (deviceMemory === undefined) {
+    return 'unknown - API not supported';
+  }
+
+  return `${deviceMemory} GB or more`;
 };
 
 const getBrowser = () => {
@@ -65,7 +70,7 @@ export const DeviceInfoTab = () => {
   const battery = useBattery();
 
   const getBatteryInfo = useCallback(() => {
-    if (battery === null) return 'unknown';
+    if (battery === null) return 'unknown - API not supported';
 
     return `${battery.level * 100}%, ${battery.charging ? 'charging' : 'not charging'}`;
   }, [battery]);

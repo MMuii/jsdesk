@@ -22,8 +22,8 @@ export const DesktopIconsContainer = styled.div`
   left: 0;
 
   display: grid;
-  gap: 1rem;
-  grid-auto-columns: 5rem;
-  grid-auto-rows: 7rem;
-  grid-auto-flow: 'row';
+  grid-template-rows: repeat(auto-fill, 7rem);
+  grid-template-columns: repeat(auto-fill, 7rem);
+  gap: 10px;
+  grid-auto-flow: column;
 `;

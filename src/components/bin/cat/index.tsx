@@ -1,31 +1,36 @@
-import { Flags } from 'interfaces/BinProps';
+import { createRef, useEffect, useState } from 'react';
 import { Binary } from 'interfaces/Binary';
+import { useFsSession } from 'utils/providers/FSSessionProvider';
+import { Textarea } from './styled';
+import { FileSystemError } from 'utils/hooks/useFileSystem/FileSystemError';
 
-const getCatImageUrl = (flags: Flags, timestamp: number): string => {
-  let url = 'https://cataas.com/cat';
-
-  const say = flags['say'];
-  if (say !== undefined) {
-    url += `/says/${say}`;
-  }
-
-  url += `?timestamp=${timestamp}`;
-
-  const height = flags['h'] ?? flags['height'];
-  if (height !== undefined) {
-    url += `&height=${height}`;
-  }
-
-  return url;
-};
-
-export const cat: Binary = ({ terminate, flags }) => {
+export const cat: Binary = ({ terminate, args }) => {
   terminate();
 
-  const timestamp = new Date().getTime();
-  const imageSrc = getCatImageUrl(flags, timestamp);
-
   return () => {
-    return <img src={imageSrc} alt="Some nice cat" />;
+    const { getFileRef } = useFsSession();
+    const [result, setResult] = useState<string>();
+    const textareaRef = createRef<HTMLTextAreaElement>();
+
+    useEffect(() => {
+      if (textareaRef.current) {
+        textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+      }
+    }, [textareaRef]);
+
+    // TODO - this needs refactor badly
+    useEffect(() => {
+      try {
+        const path = args?.join(' ')?.replace('\\ ', ' ');
+        const file = getFileRef(path);
+        setResult(file.content);
+      } catch (err) {
+        if (err instanceof FileSystemError) {
+          setResult(err.message);
+        }
+      }
+    }, []);
+
+    return <Textarea value={result} readOnly ref={textareaRef} />;
   };
 };

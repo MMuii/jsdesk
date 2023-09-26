@@ -1,5 +1,5 @@
-import { useAppTheme } from './../providers/ThemeProvider';
 import { useCallback, useRef, useState } from 'react';
+import { useAppTheme } from 'utils/providers/ThemeProvider';
 import { BinProps } from 'interfaces/BinProps';
 import { parseCommand } from 'utils/parseCommand';
 import getBin from 'components/bin';

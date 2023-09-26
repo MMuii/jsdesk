@@ -1,11 +1,11 @@
-import { useFsContext } from 'utils/providers/FSProvider';
 import { useState } from 'react';
 import produce from 'immer';
 import { Path } from 'interfaces/fs';
+import { useFsContext } from 'utils/providers/FSProvider';
+import { getFileTypeByName } from 'utils/fs/getFileTypeByName';
 import { FileSystem } from './useFileSystem/FileSystem';
 import { FileSystemError } from './useFileSystem/FileSystemError';
 import { File } from './useFileSystem/File';
-import { getFileTypeByName } from 'utils/fs/getFileTypeByName';
 
 export const useFileSystem = () => {
   const { root, setRoot } = useFsContext();
@@ -56,6 +56,10 @@ export const useFileSystem = () => {
     try {
       const newRoot = workOnDraftFs(fs => {
         const fileToDelete = fs.getFileByPath(path);
+        if (!fileToDelete.isDirectory) {
+          throw new FileSystemError(`${fileToDelete.name} is not a directory`);
+        }
+
         const parentFile = fs.getParent(fileToDelete);
         parentFile.deleteFile(fileToDelete.name);
       });
@@ -64,7 +68,30 @@ export const useFileSystem = () => {
     } catch (err) {
       if (err instanceof FileSystemError) {
         console.error(err);
-        return `cd: ${err.message}`;
+        return `rmdir: ${err.message}`;
+      }
+
+      throw err;
+    }
+  };
+
+  const removeFile = (path: string | Path): string | void => {
+    try {
+      const newRoot = workOnDraftFs(fs => {
+        const fileToDelete = fs.getFileByPath(path);
+        if (fileToDelete.isDirectory) {
+          throw new FileSystemError(`${fileToDelete.name} is a directory`);
+        }
+
+        const parentFile = fs.getParent(fileToDelete);
+        parentFile.deleteFile(fileToDelete.name);
+      });
+
+      setRoot(newRoot);
+    } catch (err) {
+      if (err instanceof FileSystemError) {
+        console.error(err);
+        return `rm: ${err.message}`;
       }
 
       throw err;
@@ -206,7 +233,9 @@ export const useFileSystem = () => {
     const parent = fs.getFileByPath(parentPath);
 
     const doesFileExist = parent.files.some(file => file.name === childFileName);
-    if (!doesFileExist) return childFileName;
+    if (!doesFileExist) {
+      return childFileName;
+    }
 
     const copyNumber = parent.getCopyNumberForNewAlreadyExistingChildFile(childFileName);
     return `${childFileName} (${copyNumber})`;
@@ -216,6 +245,7 @@ export const useFileSystem = () => {
     location,
     changeDirectory,
     removeDirectory,
+    removeFile,
     makeFileRelative,
     listFiles,
     getCurrentDirRef,

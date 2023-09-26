@@ -51,14 +51,6 @@ export const CodeEditor = ({ initialOpenedFilePath }: Props) => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log('openedFiles', openedFiles);
-  }, [openedFiles]);
-
-  useEffect(() => {
-    console.log('NEW SELECTED FILE:', selectedFile);
-  }, [selectedFile]);
-
   const renderEditor = () => {
     if ((projectRoot === null && openedFiles.length === 0) || selectedFile === null) {
       return (

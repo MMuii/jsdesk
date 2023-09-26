@@ -11,7 +11,8 @@ export const cd: Binary = ({ terminate, args }) => {
 
     useEffect(() => {
       if (args.length > 0) {
-        setResult(changeDirectory(args[0]) ?? null);
+        const path = args?.join(' ')?.replace('\\ ', ' ');
+        setResult(changeDirectory(path) ?? null);
       }
     }, []);
 

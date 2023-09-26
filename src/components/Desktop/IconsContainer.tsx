@@ -1,8 +1,7 @@
 import { IoTerminal } from 'react-icons/io5';
 import { IoMdSettings } from 'react-icons/io';
-import { HiDocument } from 'react-icons/hi';
-import { HiPaintBrush } from 'react-icons/hi2';
-import { HiCodeBracketSquare } from 'react-icons/hi2';
+import { HiCodeBracketSquare, HiPaintBrush } from 'react-icons/hi2';
+import { AiFillGithub, AiFillLinkedin } from 'react-icons/ai';
 import { RenderableWindow } from 'utils/hooks/useWindowManager';
 import { getDefaultWindowByFileType } from 'utils/fs/getDefaultWindowByFileType';
 import { File } from 'utils/hooks/useFileSystem/File';
@@ -10,7 +9,6 @@ import { getIconByFileType } from 'utils/fs/getIconByFileType';
 import { DesktopIcon } from 'components/DesktopIcon';
 import { Terminal } from 'components/apps/Terminal';
 import { Painter } from 'components/apps/Painter';
-import { DocPreview } from 'components/apps/DocPreview';
 import { Settings } from 'components/apps/Settings';
 import { DesktopIconsContainer } from './styled';
 import { CodeEditor } from 'components/apps/CodeEditor';
@@ -33,17 +31,7 @@ const terminalWindow: RenderableWindow = {
   name: 'term',
   windowProps: {
     width: 700,
-    height: 500,
-  },
-};
-
-const docPreviewWindow: RenderableWindow = {
-  id: window.crypto.randomUUID(),
-  component: <DocPreview docName="resume.pdf" />,
-  name: 'DocPreview',
-  windowProps: {
-    height: 842,
-    width: 597,
+    height: 600,
   },
 };
 
@@ -76,8 +64,8 @@ const codeEditorWindow: RenderableWindow = {
   component: <CodeEditor />,
   name: 'Code editor',
   windowProps: {
-    height: 1000,
-    width: 1000,
+    height: 600,
+    width: 800,
     minHeight: 300,
     minWidth: 500,
   },
@@ -85,10 +73,18 @@ const codeEditorWindow: RenderableWindow = {
 
 const initialDesktopIcons: DesktopIcon[] = [
   { openingWindow: terminalWindow, name: 'term', icon: <IoTerminal /> },
-  { openingWindow: docPreviewWindow, name: 'resume.pdf', icon: <HiDocument /> },
   { openingWindow: painterWindow, name: 'Painter', icon: <HiPaintBrush /> },
   { openingWindow: settingsWindow, name: 'Settings', icon: <IoMdSettings /> },
   { openingWindow: codeEditorWindow, name: 'Code editor', icon: <HiCodeBracketSquare /> },
+];
+
+const links = [
+  { icon: <AiFillGithub />, url: 'https://github.com/mmuii', name: 'GitHub' },
+  {
+    icon: <AiFillLinkedin />,
+    url: 'https://www.linkedin.com/in/marcin-swiderek2/',
+    name: 'LinkedIn',
+  },
 ];
 
 export const IconsContainer = ({ openWindow, desktopFiles }: Props) => {
@@ -106,11 +102,28 @@ export const IconsContainer = ({ openWindow, desktopFiles }: Props) => {
           tabIndex={0}
           name={name}
           icon={icon}
-          key={idx} // TODO - replace this after implementing icons reorder
+          key={idx}
         />
       ),
     );
   };
 
-  return <DesktopIconsContainer>{renderIcons()}</DesktopIconsContainer>;
+  const renderLinks = () => {
+    return links.map(({ icon, url, name }, idx) => (
+      <DesktopIcon
+        onDoubleClick={() => window.open(url, '_blank')}
+        tabIndex={0}
+        name={name}
+        icon={icon}
+        key={idx}
+      />
+    ));
+  };
+
+  return (
+    <DesktopIconsContainer id="desktop-icons-container">
+      {renderIcons()}
+      {renderLinks()}
+    </DesktopIconsContainer>
+  );
 };

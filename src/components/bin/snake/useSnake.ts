@@ -1,5 +1,5 @@
 import { HighScore } from './types';
-import { useLocalStorage } from './../../../utils/hooks/useLocalStorage';
+import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 import { INTERVAL_TICK } from './utils';
 import { useEffect, useRef, useState } from 'react';
 import {

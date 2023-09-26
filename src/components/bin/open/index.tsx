@@ -20,7 +20,8 @@ export const open: Binary = ({ terminate, args, processCommandAsync }) => {
 
     useEffect(() => {
       try {
-        const fileRef = getFileRef(args[0]);
+        const path = args?.join(' ')?.replace('\\ ', ' ');
+        const fileRef = getFileRef(path);
         const window = getDefaultWindowByFileType(fileRef);
         openWindow(window);
       } catch (err) {

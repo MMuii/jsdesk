@@ -2,21 +2,21 @@ import { useEffect, useState } from 'react';
 import { Binary } from 'interfaces/Binary';
 import { useFsSession } from 'utils/providers/FSSessionProvider';
 
-export const rmdir: Binary = ({ terminate, args, processCommandAsync }) => {
+export const rm: Binary = ({ terminate, args, processCommandAsync }) => {
   terminate();
 
   if (args.length === 0) {
-    processCommandAsync('help rmdir', 'rmdir');
+    processCommandAsync('help rm', 'rm');
     return null;
   }
 
   return () => {
-    const { removeDirectory } = useFsSession();
+    const { removeFile } = useFsSession();
     const [result, setResult] = useState<null | string>(null);
 
     useEffect(() => {
       const path = args?.join(' ')?.replace('\\ ', ' ');
-      setResult(removeDirectory(path) ?? null);
+      setResult(removeFile(path) ?? null);
     }, []);
 
     if (typeof result === 'string') {

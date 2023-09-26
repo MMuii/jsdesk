@@ -15,11 +15,11 @@ export const touch: Binary = ({ terminate, args, processCommandAsync }) => {
     const { makeFileRelative } = useFsSession();
     const [result, setResult] = useState<null | string>(null);
 
-    const filename = args[0];
-    const fileType = getFileTypeByName(filename);
+    const path = args?.join(' ')?.replace('\\ ', ' ');
+    const fileType = getFileTypeByName(path);
 
     useEffect(() => {
-      setResult(makeFileRelative(filename, fileType, true, '', false) ?? null);
+      setResult(makeFileRelative(path, fileType, true, '', false) ?? null);
     }, []);
 
     if (typeof result === 'string') {

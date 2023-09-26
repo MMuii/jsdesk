@@ -13,7 +13,6 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 localStorage.setItem('uptimeTimestamp', new Date().getTime().toString());
 
 root.render(
-  // <React.StrictMode>
   <FSProvider>
     <ThemeProvider>
       <ContextMenuProvider>
@@ -22,5 +21,4 @@ root.render(
       </ContextMenuProvider>
     </ThemeProvider>
   </FSProvider>,
-  // </React.StrictMode>,
 );

@@ -10,7 +10,6 @@ import { catto } from 'components/bin/catto';
 import { cat } from 'components/bin/cat';
 import { about } from 'components/bin/about';
 import { history } from 'components/bin/history';
-import { pickerTest } from 'components/picker-test';
 import { snake } from 'components/bin/snake';
 import { pwd } from 'components/bin/pwd';
 import { ls } from 'components/bin/ls';
@@ -29,6 +28,7 @@ import { help as themeHelp } from 'components/bin/theme/help';
 import { help as whoamiHelp } from 'components/bin/whoami/help';
 import { help as dateHelp } from 'components/bin/date/help';
 import { help as cattoHelp } from 'components/bin/catto/help';
+import { help as catHelp } from 'components/bin/cat/help';
 import { help as rmdirHelp } from 'components/bin/rmdir/help';
 import { help as pwdHelp } from 'components/bin/pwd/help';
 import { help as lsHelp } from 'components/bin/ls/help';
@@ -36,6 +36,10 @@ import { help as cdHelp } from 'components/bin/cd/help';
 import { help as mkdirHelp } from 'components/bin/mkdir/help';
 import { help as touchHelp } from 'components/bin/touch/help';
 import { help as rmHelp } from 'components/bin/rm/help';
+import { help as historyHelp } from 'components/bin/history/help';
+import { help as snakeHelp } from 'components/bin/snake/help';
+import { help as replHelp } from 'components/bin/repl/help';
+import { help as runHelp } from 'components/bin/run/help';
 import { Binary } from 'interfaces/Binary';
 
 export const bins: { [key: string]: Binary } = {
@@ -46,11 +50,10 @@ export const bins: { [key: string]: Binary } = {
   help: help,
   date: date,
   catto: catto,
-  cat: cat, // TODO - add help
+  cat: cat,
   about: about,
-  history: history, // TODO - add help
-  pickerTest: pickerTest, // TODO - do wywalenia
-  snake: snake, // TODO - add help
+  history: history,
+  snake: snake,
   pwd: pwd,
   ls: ls,
   mkdir: mkdir,
@@ -58,9 +61,9 @@ export const bins: { [key: string]: Binary } = {
   rm: rm,
   cd: cd,
   touch: touch,
-  open: open, // TODO - add help
-  repl: repl, // TODO - add help
-  run: run, // TODO - add help
+  open: open,
+  repl: repl,
+  run: run,
 };
 
 export const helpPages: { [key: string]: CommandHelp } = {
@@ -70,7 +73,8 @@ export const helpPages: { [key: string]: CommandHelp } = {
   theme: themeHelp,
   whoami: whoamiHelp,
   date: dateHelp,
-  cat: cattoHelp,
+  cat: catHelp,
+  catto: cattoHelp,
   rmdir: rmdirHelp,
   rm: rmHelp,
   mkdir: mkdirHelp,
@@ -78,6 +82,10 @@ export const helpPages: { [key: string]: CommandHelp } = {
   ls: lsHelp,
   cd: cdHelp,
   touch: touchHelp,
+  history: historyHelp,
+  snake: snakeHelp,
+  repl: replHelp,
+  run: runHelp,
 };
 
 export function getHelpPage(name: string): CommandHelp | undefined {

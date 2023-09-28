@@ -34,6 +34,13 @@ export const Terminal = forwardRef<TerminalRef, {}>((_, ref) => {
     }
   }, [renderHistory]);
 
+  useEffect(() => {
+    if (localStorage.getItem('isFirstRun') === null) {
+      processCommand('cat README.txt');
+      localStorage.setItem('isFirstRun', 'false');
+    }
+  }, []);
+
   const renderableHistory = useMemo(() => {
     return renderHistory.map(h => {
       const isFocused = callStack.at(-1) === h.pid;

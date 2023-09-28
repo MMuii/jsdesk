@@ -1,46 +1,19 @@
-# Getting Started with Create React App
+# JSDesk
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Yeah, it's yet another JavaScript desktop. But with some cool features. 😎
 
-## Available Scripts
+## Why?
 
-In the project directory, you can run:
+I've made it simply for fun and for experimenting with some React mechanics. At the beggining I wanted to create only a terminal-like app, but then I thought it would be cool to be able to drag the terminal throughout the screen, and... it evolved to _yet another JavaScript desktop_ 🎉
 
-### `yarn start`
+For the whole development it was only my spare-time project, so it took me a while to build it and I still don't think it's finished, but I don't have enough time anymore to work on it, so I decided to publish it as it is.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Anyway, let's talk about these ✨ _cool features_ ✨
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Cool features
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **Terminal programs rendered as components** - terminal apps are functions that return components which are rendered in the terminal window. It results in a little bit cursed looking code, but this way you can render pretty much anything as a terminal app. Check `snake` or `cat` commands for example.
+- **JSON-based filesystem backed by LocalStorage** - Whole system data is stored inside a JSON that works like a filesystem. It's backed by LocalStorage, so it's persistent. There is 4MB of user's space, limited by maximum size of LocalStorage.
+- **Filesystem sessions** - Each window that uses filesystem has its own session. It means that you can have multiple windows with different working directories. It's also possible to have multiple windows with the same working directory.
+- **JavaScript REPL with consts and lets** - That's a tricky one. I've made a JavaScript REPL that supports `consts` and `lets`. It works by analysing code input, storing all the variable declarations and assignments and re-evaluating them every input. It's for sure not production ready, but it's fun to play with.
+- **Code editor** - There's a code editor supported by Monaco editor, integrated with the filesystem and capable of running JS files. Nothing special, but somewhat cool.

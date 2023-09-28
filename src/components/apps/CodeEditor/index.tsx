@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FiTriangle } from 'react-icons/fi';
 import { VscPlay } from 'react-icons/vsc';
 import { BsTerminal, BsTerminalFill } from 'react-icons/bs';
 import { MdSave } from 'react-icons/md';
@@ -8,6 +7,7 @@ import { Terminal, TerminalRef } from 'components/apps/Terminal';
 import { Button } from 'components/styled/Button';
 import { HoverPopupPosition } from 'components/HoverPopup';
 import { IconButton } from 'components/IconButton';
+import { Path } from 'interfaces/fs';
 
 import { OpenedFilesPanel } from './OpenedFilesPanel';
 import { FileTree } from './FileTree';
@@ -20,10 +20,8 @@ import {
   TerminalContainer,
 } from './styled';
 import { useCodeEditor } from './useCodeEditor';
-import { Path } from 'interfaces/fs';
 
 interface Props {
-  // initialPath?: string;
   initialOpenedFilePath?: Path;
 }
 

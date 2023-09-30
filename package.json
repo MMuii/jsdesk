@@ -2,6 +2,7 @@
   "name": "jsdesk",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://mmuii.github.io/jsdesk",
   "dependencies": {
     "@monaco-editor/react": "^4.5.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -38,10 +39,10 @@
     "xstate": "^4.32.1"
   },
   "scripts": {
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
-    "build": "CI=false && react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "CI=false && react-scripts build"
   },
   "eslintConfig": {
     "extends": [
@@ -70,6 +71,7 @@
     "@types/react-pdf": "5.7.2",
     "@types/safe-json-stringify": "^1.1.2",
     "@types/styled-components": "^5.1.25",
+    "gh-pages": "^6.0.0",
     "prettier": "^2.7.1"
   }
 }

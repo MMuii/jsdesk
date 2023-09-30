@@ -2,6 +2,10 @@
 
 Yeah, it's yet another JavaScript desktop. But with some cool features. 😎
 
+## Live demo
+
+Feel free to play with it here: https://mmuii.github.io/jsdesk/
+
 ## Why?
 
 I've made it simply for fun and for experimenting with some React mechanics. At the beggining I wanted to create only a terminal-like app, but then I thought it would be cool to be able to drag the terminal throughout the screen, and... it evolved to _yet another JavaScript desktop_ 🎉
